@@ -16,6 +16,8 @@ import java.awt.event.MouseMotionListener;
  * @author Seyed Mohammad Ghaffarian
  */
 public class GameState {
+
+	private GameMap gameMap;
 	
 	public int locX, locY, diam;
 	public boolean gameOver;
@@ -44,6 +46,10 @@ public class GameState {
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 	}
+
+	public void setGameMap(GameMap gameMap) {
+		this.gameMap = gameMap;
+	}
 	
 	/**
 	 * The method which updates the game state.
@@ -62,10 +68,10 @@ public class GameState {
 		if (keyRIGHT)
 			locX += 4;
 
-		locX = Math.max(locX, 0);
-		locX = Math.min(locX, GameFrame.GAME_WIDTH - diam);
-		locY = Math.max(locY, 0);
-		locY = Math.min(locY, GameFrame.GAME_HEIGHT - diam);
+		locX = Math.max(locX, GameFrame.DRAWING_START_X);
+		locX = Math.min(locX, gameMap.numberOfColumns * GameMap.CHANGING_FACTOR - diam + GameFrame.DRAWING_START_X);
+		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
+		locY = Math.min(locY, ( gameMap.numberOfRows + 1 ) * GameMap.CHANGING_FACTOR - diam);
 	}
 	
 	

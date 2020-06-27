@@ -27,11 +27,11 @@ public class Main {
 				frame.setVisible(true);
 				frame.initBufferStrategy();
 				// Create and execute the game-loop
-				GameLoop game = new GameLoop(frame);
-				game.init();
 				GameMap gameMap = new GameMap();
 				gameMap.init();
 				frame.setGameMap(gameMap);
+				GameLoop game = new GameLoop(frame);
+				game.init();
 				ThreadPool.execute(game);
 				// and the game starts ...
 			}

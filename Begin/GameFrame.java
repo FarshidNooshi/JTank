@@ -71,6 +71,10 @@ public class GameFrame extends JFrame {
 		this.gameMap = gameMap;
 	}
 
+	public GameMap getGameMap() {
+		return gameMap;
+	}
+
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
