@@ -1,5 +1,5 @@
 /*** In The Name of Allah ***/
-package game.sample.ball;
+package game.Begin;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -1,5 +1,5 @@
 /*** In The Name of Allah ***/
-package game.sample.ball;
+package game.Begin;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -29,6 +29,8 @@ public class Main {
 				// Create and execute the game-loop
 				GameLoop game = new GameLoop(frame);
 				game.init();
+				GameMap gameMap = new GameMap();
+				gameMap.init();
 				ThreadPool.execute(game);
 				// and the game starts ...
 			}
