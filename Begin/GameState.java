@@ -59,19 +59,23 @@ public class GameState {
 			locY = mouseY - diam / 2;
 			locX = mouseX - diam / 2;
 		}
-		if (keyUP)
-			locY -= 4;
-		if (keyDOWN)
-			locY += 4;
-		if (keyLEFT)
-			locX -= 4;
-		if (keyRIGHT)
-			locX += 4;
+		if (keyUP) {
+			locY -= 8;
+		}
+		if (keyDOWN) {
+			locY += 8;
+		}
+		if (keyLEFT) {
+			locX -= 8;
+		}
+		if (keyRIGHT) {
+			locX += 8;
+		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X);
-		locX = Math.min(locX, gameMap.numberOfColumns * GameMap.CHANGING_FACTOR - diam + GameFrame.DRAWING_START_X);
+		locX = Math.min(locX, gameMap.numberOfColumns * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-		locY = Math.min(locY, ( gameMap.numberOfRows + 1 ) * GameMap.CHANGING_FACTOR - diam);
+		locY = Math.min(locY, gameMap.numberOfRows * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
 	}
 	
 	
