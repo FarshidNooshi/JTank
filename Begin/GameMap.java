@@ -13,11 +13,18 @@ public class GameMap {
     int[][] binaryMap;
 
     public GameMap() {
-        numberOfRows = random.nextInt(12) + 7;
-        numberOfColumns = random.nextInt(12) + 7;
+        numberOfRows = random.nextInt(4) + 4;
+        numberOfColumns = random.nextInt(12) + 4;
     }
 
     public void init() {
         binaryMap = new int[numberOfRows][numberOfColumns];
+        makeGameMap();
+    }
+
+    private void makeGameMap() {
+        for (int y = 0; y < numberOfRows; y++)
+            for (int x = 0; x < numberOfColumns; x++)
+               binaryMap[y][x] = random.nextInt() % 3;
     }
 }

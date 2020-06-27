@@ -28,6 +28,9 @@ public class GameFrame extends JFrame {
 	public static final int GAME_HEIGHT = 720;                  // 720p game resolution
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
 
+	public static final int DRAWING_START_X = 40;
+	public static final int DRAWING_START_Y = 80;
+
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	private BufferedImage image;
 
@@ -35,6 +38,8 @@ public class GameFrame extends JFrame {
 	private ArrayList<Float> fpsHistory;
 
 	private BufferStrategy bufferStrategy;
+
+	private GameMap gameMap;
 	
 	public GameFrame(String title) {
 		super(title);
@@ -62,7 +67,10 @@ public class GameFrame extends JFrame {
 		bufferStrategy = getBufferStrategy();
 	}
 
-	
+	public void setGameMap(GameMap gameMap) {
+		this.gameMap = gameMap;
+	}
+
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
@@ -101,12 +109,36 @@ public class GameFrame extends JFrame {
 		// Draw background
 		g2d.setColor(Color.GRAY);
 		g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-		// Draw ball
-		g2d.setColor(Color.BLACK);
+		// Draw Map
+		int horizonAt = DRAWING_START_X;
+		int verticalAt = DRAWING_START_Y;
+
+		for (int y = 0; y < gameMap.numberOfRows; y++) {
+			for (int x = 0; x < gameMap.numberOfColumns; x++) {
+
+				switch (gameMap.binaryMap[y][x]) {
+					case 0:
+						g2d.setColor(Color.WHITE);
+						break;
+					case 1:
+						g2d.setColor(Color.BLACK);
+						break;
+					case 2:
+						g2d.setColor(Color.DARK_GRAY);
+						break;
+				}
+
+				g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
+				horizonAt += GameMap.CHANGING_FACTOR;
+			}
+
+			horizonAt = DRAWING_START_X;
+			verticalAt += GameMap.CHANGING_FACTOR;
+		}
 		//g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
 		//g2d.drawImage(image,state.locX,state.locY,null);
-		g2d.drawImage(image, state.locX, state.locY, 50,50, null);
+		g2d.drawImage(image, state.locX, state.locY, 40,40, null);
 
 
 		// Print FPS info

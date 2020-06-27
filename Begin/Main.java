@@ -31,6 +31,7 @@ public class Main {
 				game.init();
 				GameMap gameMap = new GameMap();
 				gameMap.init();
+				frame.setGameMap(gameMap);
 				ThreadPool.execute(game);
 				// and the game starts ...
 			}
