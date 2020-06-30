@@ -55,21 +55,42 @@ public class GameState {
 	 * The method which updates the game state.
 	 */
 	public void update() {
+
+		int xChange = locX , yChange = locY;
+
 		if (mousePress) {
 			locY = mouseY - diam / 2;
 			locX = mouseX - diam / 2;
 		}
 		if (keyUP) {
-			locY -= 8;
+			yChange = Math.max(0, (yChange - 8) / (GameMap.CHANGING_FACTOR));
+			xChange = xChange / (GameMap.CHANGING_FACTOR);
+			if (gameMap.binaryMap[yChange][xChange] == 0)
+				locY -= 8;
 		}
+		xChange = locX;
+		yChange = locY;
 		if (keyDOWN) {
-			locY += 8;
+			yChange = Math.min(gameMap.numberOfRows, (yChange + 8) / (GameMap.CHANGING_FACTOR));
+			xChange = xChange / (GameMap.CHANGING_FACTOR);
+			if (gameMap.binaryMap[yChange][xChange] == 0)
+				locY += 8;
 		}
+		xChange = locX;
+		yChange = locY;
 		if (keyLEFT) {
-			locX -= 8;
+			yChange = yChange / (GameMap.CHANGING_FACTOR);
+			xChange = Math.max(0, (xChange - 8) / (GameMap.CHANGING_FACTOR));
+			if (gameMap.binaryMap[yChange][xChange] == 0)
+				locX -= 8;
 		}
+		xChange = locX;
+		yChange = locY;
 		if (keyRIGHT) {
-			locX += 8;
+			yChange = yChange / (GameMap.CHANGING_FACTOR);
+			xChange = Math.min(gameMap.numberOfColumns, (xChange + 8) / (GameMap.CHANGING_FACTOR));
+			if (gameMap.binaryMap[yChange][xChange] == 0)
+				locX += 8;
 		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X);

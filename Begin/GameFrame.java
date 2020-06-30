@@ -5,11 +5,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
@@ -52,7 +54,7 @@ public class GameFrame extends JFrame {
 			image = ImageIO.read(new File("Icon.png"));
 		}
 		catch(IOException e){
-			System.out.println(e);
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -133,6 +135,8 @@ public class GameFrame extends JFrame {
 				}
 
 				g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
+				g2d.setColor(Color.GREEN);
+				g2d.drawString((verticalAt / 80 - 1) + " " + (horizonAt / 80), horizonAt + 40, verticalAt + 40);
 				horizonAt += GameMap.CHANGING_FACTOR;
 			}
 
@@ -142,8 +146,7 @@ public class GameFrame extends JFrame {
 		//g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
 		//g2d.drawImage(image,state.locX,state.locY,null);
-		g2d.drawImage(image, state.locX, state.locY, 40,40, null);
-
+		g2d.drawImage(image, state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();
