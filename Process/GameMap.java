@@ -25,6 +25,6 @@ public class GameMap {
     private void makeGameMap() {
         for (int y = 0; y < numberOfRows; y++)
             for (int x = 0; x < numberOfColumns; x++)
-               binaryMap[y][x] = random.nextInt() % 3;
+               binaryMap[y][x] = 0;
     }
 }

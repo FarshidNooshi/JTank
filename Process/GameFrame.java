@@ -133,8 +133,6 @@ public class GameFrame extends JFrame {
 				}
 
 				g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
-				g2d.setColor(Color.GREEN);
-				g2d.drawString((verticalAt / 80 - 1) + " " + (horizonAt / 80), horizonAt + 40, verticalAt + 40);
 				horizonAt += GameMap.CHANGING_FACTOR;
 			}
 
