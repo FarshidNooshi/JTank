@@ -1,6 +1,8 @@
 /*** In The Name of Allah ***/
 package game.Process;
 
+import game.Control.LocationController;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -19,7 +21,7 @@ public class GameState {
 
 	private GameMap gameMap;
 	
-	public int locX, locY, diam;
+	public static int locX, locY, diam;
 	public boolean gameOver;
 	
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
@@ -29,8 +31,6 @@ public class GameState {
 	private MouseHandler mouseHandler;
 	
 	public GameState() {
-		locX = 100;
-		locY = 100;
 		diam = 32;
 		gameOver = false;
 		//
@@ -47,6 +47,11 @@ public class GameState {
 		mouseHandler = new MouseHandler();
 	}
 
+	public static void setLocation (int x, int y) {
+		locX = x;
+		locY = y;
+	}
+
 	public void setGameMap(GameMap gameMap) {
 		this.gameMap = gameMap;
 	}
@@ -56,22 +61,32 @@ public class GameState {
 	 */
 	public void update() {
 		if (mousePress) {
+			int oldY = locY;
+			int oldX = locX;
 			int bound = locY - mouseY;
 			locY = (Math.abs(bound) > 8) ? (locY > mouseY) ? locY - 8 : locY + 8 : mouseY;
+			if(!LocationController.check(locX, locY))
+				locY = oldY;
 			bound = locX - mouseX;
 			locX = (Math.abs(bound) > 8) ? (locX > mouseX) ? locX - 8 : locX + 8 : mouseX;
+			if(!LocationController.check(locX, locY))
+				locX = oldX;
 		}
 		if (keyUP) {
-			locY -= 8;
+			if (LocationController.check(locX, locY - 8))
+				locY -= 8;
 		}
 		if (keyDOWN) {
-			locY += 8;
+			if (LocationController.check(locX, locY + 8))
+				locY += 8;
 		}
 		if (keyLEFT) {
-			locX -= 8;
+			if (LocationController.check(locX - 8, locY))
+				locX -= 8;
 		}
 		if (keyRIGHT) {
-			locX += 8;
+			if (LocationController.check(locX + 8, locY))
+				locX += 8;
 		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X);
