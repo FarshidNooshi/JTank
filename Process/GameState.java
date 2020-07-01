@@ -61,17 +61,23 @@ public class GameState {
 	 */
 	public void update() {
 		if (mousePress) {
+
 			int oldY = locY;
 			int oldX = locX;
+
 			int bound = locY - mouseY;
 			locY = (Math.abs(bound) > 8) ? (locY > mouseY) ? locY - 8 : locY + 8 : mouseY;
+
 			if(!LocationController.check(locX, locY))
 				locY = oldY;
+
 			bound = locX - mouseX;
 			locX = (Math.abs(bound) > 8) ? (locX > mouseX) ? locX - 8 : locX + 8 : mouseX;
+
 			if(!LocationController.check(locX, locY))
 				locX = oldX;
 		}
+
 		if (keyUP) {
 			if (LocationController.check(locX, locY - 8))
 				locY -= 8;

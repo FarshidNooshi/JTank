@@ -22,29 +22,35 @@ public class GameMap {
 
     public void init() {
         binaryMap = new int[numberOfRows][numberOfColumns];
-        LocationController.init();
+        LocationController.init(); // Creating the controller
         makeGameMap();
     }
 
     private void makeGameMap() {
+
         for (int y = 0; y < numberOfRows; y++) {
             for (int x = 0; x < numberOfColumns; x++) {
+
                 binaryMap[y][x] = random.nextInt(3);
                 if (binaryMap[y][x] != 0)
                     LocationController.add(new Location(GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR));
             }
         }
+
         setPlaces();
     }
 
     private void setPlaces () {
+
         while (true) {
+
             int x = random.nextInt(numberOfColumns);
             int y = random.nextInt(numberOfRows);
             if (binaryMap[y][x] == 0) {
                 GameState.setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X,y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
                 break;
             }
+
         }
     }
 }
