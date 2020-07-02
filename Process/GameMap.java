@@ -27,7 +27,6 @@ public class GameMap {
     }
 
     private void makeGameMap() {
-
         for (int y = 0; y < numberOfRows; y++) {
             for (int x = 0; x < numberOfColumns; x++) {
 
@@ -36,21 +35,16 @@ public class GameMap {
                     LocationController.add(new Location(GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR));
             }
         }
-
-        setPlaces();
     }
 
-    private void setPlaces () {
-
+    public void setPlaces (GameState gameState) {
         while (true) {
-
             int x = random.nextInt(numberOfColumns);
             int y = random.nextInt(numberOfRows);
             if (binaryMap[y][x] == 0) {
-                GameState.setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X,y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
+                gameState.setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X,y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
                 break;
             }
-
         }
     }
 }

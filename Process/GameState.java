@@ -47,7 +47,7 @@ public class GameState {
 		mouseHandler = new MouseHandler();
 	}
 
-	public static void setLocation (int x, int y) {
+	public void setLocation (int x, int y) {
 		locX = x;
 		locY = y;
 	}

@@ -9,7 +9,7 @@ public class LocationController {
     private static ArrayList<Location> locations;
     private static boolean created = false;
 
-    public static void init(GameState gameState) {
+    public static void init() {
         locations = new ArrayList<>();
         created = true;
     }
