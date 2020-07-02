@@ -28,8 +28,8 @@ public class GameFrame extends JFrame {
 	public static final int GAME_HEIGHT = 720;                  // 720p game resolution
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
 
-	public static final int DRAWING_START_X = 40;
-	public static final int DRAWING_START_Y = 80;
+	public static final int DRAWING_START_X = 40;				   // The drawing starting location
+	public static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
 
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	private BufferedImage image;
@@ -67,10 +67,21 @@ public class GameFrame extends JFrame {
 		bufferStrategy = getBufferStrategy();
 	}
 
+	/**
+	 * A setter method for setting the map of the game.
+	 *
+	 * @param gameMap the game map
+	 */
 	public void setGameMap(GameMap gameMap) {
 		this.gameMap = gameMap;
 	}
 
+	/**
+	 * To get the game map that is only exist in
+	 * game frame class.
+	 *
+	 * @return the game frame
+	 */
 	public GameMap getGameMap() {
 		return gameMap;
 	}
@@ -110,16 +121,19 @@ public class GameFrame extends JFrame {
 	 * Rendering all game elements based on the game state.
 	 */
 	private void doRendering(Graphics2D g2d, GameState state) {
+
 		// Draw background
 		g2d.setColor(Color.GRAY);
 		g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
 		// Draw Map
 		int horizonAt = DRAWING_START_X;
 		int verticalAt = DRAWING_START_Y;
-
+		// The loop of drawing
 		for (int y = 0; y < gameMap.numberOfRows; y++) {
-			for (int x = 0; x < gameMap.numberOfColumns; x++) {
 
+			for (int x = 0; x < gameMap.numberOfColumns; x++) {
+				// Choosing the color of the house
 				switch (gameMap.binaryMap[y][x]) {
 					case 0:
 						g2d.setColor(Color.WHITE);
@@ -131,7 +145,7 @@ public class GameFrame extends JFrame {
 						g2d.setColor(Color.DARK_GRAY);
 						break;
 				}
-
+				// Drawing the house
 				g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
 				horizonAt += GameMap.CHANGING_FACTOR;
 			}
@@ -139,8 +153,8 @@ public class GameFrame extends JFrame {
 			horizonAt = DRAWING_START_X;
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
-		//g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
+		//g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 		//g2d.drawImage(image,state.locX,state.locY,null);
 		g2d.drawImage(image, state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
 
