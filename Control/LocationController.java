@@ -1,5 +1,7 @@
 package game.Control;
 
+import game.Process.GameState;
+
 import java.util.ArrayList;
 
 public class LocationController {
@@ -7,7 +9,7 @@ public class LocationController {
     private static ArrayList<Location> locations;
     private static boolean created = false;
 
-    public static void init() {
+    public static void init(GameState gameState) {
         locations = new ArrayList<>();
         created = true;
     }
