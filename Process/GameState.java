@@ -23,7 +23,8 @@ public class GameState {
 	
 	public static int locX, locY, diam;
 	public boolean gameOver;
-	
+	public static int speed;
+
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
 	private int mouseX, mouseY;	
@@ -32,6 +33,7 @@ public class GameState {
 	
 	public GameState() {
 		diam = 32;
+		speed = 4;
 		gameOver = false;
 		//
 		keyUP = false;
@@ -65,34 +67,40 @@ public class GameState {
 			int oldY = locY;
 			int oldX = locX;
 
+			long distanceFromMouse = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
+			if (distanceFromMouse > 2 * Math.pow(10, 4))
+				GameState.speed = 8;
+
 			int bound = locY - mouseY;
-			locY = (Math.abs(bound) > 8) ? (locY > mouseY) ? locY - 8 : locY + 8 : mouseY;
+			locY = (Math.abs(bound) > GameState.speed) ? (locY > mouseY) ? locY - GameState.speed : locY + GameState.speed : mouseY;
 
 			if(!LocationController.check(locX, locY))
 				locY = oldY;
 
 			bound = locX - mouseX;
-			locX = (Math.abs(bound) > 8) ? (locX > mouseX) ? locX - 8 : locX + 8 : mouseX;
+			locX = (Math.abs(bound) > GameState.speed) ? (locX > mouseX) ? locX - GameState.speed : locX + GameState.speed : mouseX;
 
 			if(!LocationController.check(locX, locY))
 				locX = oldX;
+
+			GameState.speed = 4;
 		}
 
 		if (keyUP) {
-			if (LocationController.check(locX, locY - 8))
-				locY -= 8;
+			if (LocationController.check(locX, locY - GameState.speed))
+				locY -= GameState.speed;
 		}
 		if (keyDOWN) {
-			if (LocationController.check(locX, locY + 8))
-				locY += 8;
+			if (LocationController.check(locX, locY + GameState.speed))
+				locY += GameState.speed;
 		}
 		if (keyLEFT) {
-			if (LocationController.check(locX - 8, locY))
-				locX -= 8;
+			if (LocationController.check(locX - GameState.speed, locY))
+				locX -= GameState.speed;
 		}
 		if (keyRIGHT) {
-			if (LocationController.check(locX + 8, locY))
-				locX += 8;
+			if (LocationController.check(locX + GameState.speed, locY))
+				locX += GameState.speed;
 		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X);
