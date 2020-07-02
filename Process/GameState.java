@@ -124,15 +124,19 @@ public class GameState {
 			switch (e.getKeyCode())
 			{
 				case KeyEvent.VK_UP:
+				case KeyEvent.VK_W:
 					keyUP = true;
 					break;
 				case KeyEvent.VK_DOWN:
+				case KeyEvent.VK_S:
 					keyDOWN = true;
 					break;
 				case KeyEvent.VK_LEFT:
+				case KeyEvent.VK_A:
 					keyLEFT = true;
 					break;
 				case KeyEvent.VK_RIGHT:
+				case KeyEvent.VK_D:
 					keyRIGHT = true;
 					break;
 				case KeyEvent.VK_ESCAPE:
@@ -146,15 +150,19 @@ public class GameState {
 			switch (e.getKeyCode())
 			{
 				case KeyEvent.VK_UP:
+				case KeyEvent.VK_W:
 					keyUP = false;
 					break;
 				case KeyEvent.VK_DOWN:
+				case KeyEvent.VK_S:
 					keyDOWN = false;
 					break;
 				case KeyEvent.VK_LEFT:
+				case KeyEvent.VK_A:
 					keyLEFT = false;
 					break;
 				case KeyEvent.VK_RIGHT:
+				case KeyEvent.VK_D:
 					keyRIGHT = false;
 					break;
 			}
