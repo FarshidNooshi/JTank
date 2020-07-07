@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -139,10 +141,10 @@ public class GameFrame extends JFrame {
 						g2d.setColor(Color.WHITE);
 						break;
 					case 1:
-						g2d.setColor(Color.BLACK);
+						g2d.setColor(Color.DARK_GRAY);
 						break;
 					case 2:
-						g2d.setColor(Color.DARK_GRAY);
+						g2d.setColor(Color.BLACK);
 						break;
 				}
 				// Drawing the house
@@ -154,9 +156,15 @@ public class GameFrame extends JFrame {
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
 
-		//g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
-		//g2d.drawImage(image,state.locX,state.locY,null);
-		g2d.drawImage(image, state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
+		// This is the rotation finding part
+		int rotateDegree = state.direction(); // The rotation degree
+		double rotation = Math.toRadians(rotateDegree);
+		// Using affine to rotate
+		AffineTransform tx = new AffineTransform();
+		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+		// draw the rotated image
+		g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();

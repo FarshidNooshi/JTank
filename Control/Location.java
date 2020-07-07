@@ -12,6 +12,8 @@ import game.Process.GameMap;
 public class Location {
 
     // The two points of the walls
+    private int binaryX;
+    private int binaryY;
     private int topX;
     private int topY;
     private int bottomX;
@@ -23,7 +25,9 @@ public class Location {
      * @param topX the first point x coordinate
      * @param topY the first point y coordinate
      */
-    public Location (int topX, int topY) {
+    public Location (int binaryX, int binaryY, int topX, int topY) {
+        this.binaryX = binaryX;
+        this.binaryY = binaryY;
         this.topX = topX;
         this.topY = topY;
         bottomX = topX + GameMap.CHANGING_FACTOR; // We calculate the second point coordinates base on the
@@ -53,5 +57,9 @@ public class Location {
      */
     public boolean isMatch (int inputX, int inputY) {
         return inputX == topX && inputY == topY;
+    }
+
+    public boolean samePlace (int inputX, int inputY) {
+        return inputX == binaryX && inputY == binaryY;
     }
 }

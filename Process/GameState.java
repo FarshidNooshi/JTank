@@ -21,9 +21,10 @@ public class GameState {
 
 	private GameMap gameMap;
 	
-	public static int locX, locY, diam;
+	public int locX, locY, diam;
 	public boolean gameOver;
 	public static int speed;
+	private int currentDirection; // This is the last rotation degree
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
@@ -35,6 +36,7 @@ public class GameState {
 		diam = 32;
 		speed = 4;
 		gameOver = false;
+		currentDirection = 0;
 		//
 		keyUP = false;
 		keyDOWN = false;
@@ -107,6 +109,48 @@ public class GameState {
 		locX = Math.min(locX, gameMap.numberOfColumns * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, gameMap.numberOfRows * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+	}
+
+	/**
+	 * This method will check the control buttons
+	 * and will send the rotation degree as int.
+	 *
+	 * @return the rotation
+	 */
+	public int direction () {
+		if (keyUP && keyLEFT) {
+			currentDirection = 225;
+			return 225;
+		}
+		if (keyUP && keyRIGHT) {
+			currentDirection = 315;
+			return 315;
+		}
+		if (keyDOWN && keyRIGHT) {
+			currentDirection = 45;
+			return 45;
+		}
+		if (keyDOWN && keyLEFT) {
+			currentDirection = 135;
+			return 135;
+		}
+		if (keyUP) {
+			currentDirection = 270;
+			return 270;
+		}
+		if (keyDOWN) {
+			currentDirection = 90;
+			return 90;
+		}
+		if (keyLEFT) {
+			currentDirection = 180;
+			return 180;
+		}
+		if (keyRIGHT) {
+			currentDirection = 0;
+			return 0;
+		}
+		return currentDirection; // If no move is made
 	}
 	
 	

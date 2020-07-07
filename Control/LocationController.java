@@ -55,6 +55,18 @@ public class LocationController {
             }
     }
 
+    public static void removeBinary (int x, int y) {
+        // Check for class creations
+        if (!created)
+            return;
+        // Search for any match
+        for (Location l : locations)
+            if (l.samePlace(x, y)) {
+                locations.remove(l);
+                break;
+            }
+    }
+
     /**
      * This method iterates through the walls
      * and will check the overlapping in tank
