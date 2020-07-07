@@ -1,4 +1,3 @@
-/*** In The Name of Allah ***/
 package game.Process;
 
 /**
@@ -12,8 +11,7 @@ package game.Process;
  * Detailed discussion on different game loop design
  * patterns is available in the following link:
  *    http://gameprogrammingpatterns.com/game-loop.html
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class GameLoop implements Runnable {
 	
@@ -26,6 +24,12 @@ public class GameLoop implements Runnable {
 	private GameFrame canvas;
 	private GameState state;
 
+	/**
+	 * The constructor of the game loop.
+	 * To create the frame of the game.
+	 *
+	 * @param frame the game frame
+	 */
 	public GameLoop(GameFrame frame) {
 		canvas = frame;
 	}
@@ -34,7 +38,7 @@ public class GameLoop implements Runnable {
 	 * This must be called before the game loop starts.
 	 */
 	public void init() {
-		state = new GameState();
+		state = new GameState(); // Creating the states
 		state.setGameMap(canvas.getGameMap());
 		canvas.getGameMap().setPlaces(state); // Setting the tank in the map
 		canvas.addKeyListener(state.getKeyListener());

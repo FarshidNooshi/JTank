@@ -1,4 +1,3 @@
-/*** In The Name of Allah ***/
 package game.Process;
 
 import java.util.concurrent.ExecutorService;
@@ -6,8 +5,7 @@ import java.util.concurrent.Executors;
 
 /**
  * This class holds a global thread-pool for executing our threads.
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class ThreadPool {
 	

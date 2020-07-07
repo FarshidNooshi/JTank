@@ -1,4 +1,3 @@
-/*** In The Name of Allah ***/
 package game.Process;
 
 import java.awt.Color;
@@ -22,8 +21,7 @@ import javax.swing.JFrame;
  * For more information on BufferStrategy check out:
  *    http://docs.oracle.com/javase/tutorial/extra/fullscreen/bufferstrategy.html
  *    http://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferStrategy.html
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class GameFrame extends JFrame {
 	
@@ -42,14 +40,20 @@ public class GameFrame extends JFrame {
 	private BufferStrategy bufferStrategy;
 
 	private GameMap gameMap;
-	
+
+	/**
+	 * The constructor of the Game frame class to set
+	 * the sizes and the images.
+	 *
+	 * @param title the name of the game
+	 */
 	public GameFrame(String title) {
 		super(title);
 		setResizable(false);
 		setSize(GAME_WIDTH, GAME_HEIGHT);
 		lastRender = -1;
 		fpsHistory = new ArrayList<>(100);
-
+		// Opening the image
 		try{
 			image = ImageIO.read(new File("Icon.png"));
 		}

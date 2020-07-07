@@ -1,4 +1,3 @@
-/*** In The Name of Allah ***/
 package game.Process;
 
 import java.awt.EventQueue;
@@ -6,8 +5,7 @@ import javax.swing.JFrame;
 
 /**
  * Program start.
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class Main {
 	

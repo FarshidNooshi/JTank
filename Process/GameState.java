@@ -1,4 +1,3 @@
-/*** In The Name of Allah ***/
 package game.Process;
 
 import game.Control.LocationController;
