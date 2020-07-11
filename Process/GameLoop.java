@@ -39,7 +39,7 @@ public class GameLoop implements Runnable {
 	 */
 	public void init() {
 		state = new GameState(); // Creating the states
-		state.setGameMap(canvas.getGameMap());
+		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
 		canvas.getGameMap().setPlaces(state); // Setting the tank in the map
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
@@ -52,11 +52,11 @@ public class GameLoop implements Runnable {
 		while (!gameOver) {
 			try {
 				long start = System.currentTimeMillis();
-				//
+				// updating the game
 				state.update();
 				canvas.render(state);
 				gameOver = state.gameOver;
-				//
+				// calculating the delay for avoiding lags in the game
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
 				if (delay > 0)
 					Thread.sleep(delay);

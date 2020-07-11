@@ -84,7 +84,6 @@ public class LocationController {
         for (Location l : locations)
             if( l.isOverlap(x, y) )
                 return false;
-
         return true;
     }
 }

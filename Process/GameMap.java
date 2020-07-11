@@ -2,7 +2,6 @@ package game.Process;
 
 import game.Control.Location;
 import game.Control.LocationController;
-
 import java.util.Random;
 
 /**
@@ -48,7 +47,6 @@ public class GameMap {
      in a big size in gui.
      */
     private void makeGameMap() {
-
         for (int y = 0; y < numberOfRows; y++)
         {
             for (int x = 0; x < numberOfColumns; x++)
@@ -70,7 +68,7 @@ public class GameMap {
     public void setPlaces (GameState gameState) {
         while (true)
         {
-            int x = random.nextInt(numberOfColumns);
+            int x = random.nextInt(numberOfColumns); // A random place for the states
             int y = random.nextInt(numberOfRows);
 
             if (binaryMap[y][x] == 0)

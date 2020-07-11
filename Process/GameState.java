@@ -18,7 +18,7 @@ import java.awt.event.MouseMotionListener;
  */
 public class GameState {
 
-	private GameMap gameMap;
+	private int mapRowsLimit, mapColsLimit; // This is the map limits
 	
 	public int locX, locY, diam;
 	public boolean gameOver;
@@ -55,59 +55,61 @@ public class GameState {
 		locY = y;
 	}
 
-	public void setGameMap(GameMap gameMap) {
-		this.gameMap = gameMap;
+	public void setLimits(int mapRows, int mapCols) {
+		mapRowsLimit = mapRows;
+		mapColsLimit = mapCols;
 	}
 	
 	/**
 	 * The method which updates the game state.
 	 */
 	public void update() {
-		if (mousePress) {
-
-			int oldY = locY;
+		if (mousePress)
+		{
+			int oldY = locY; // Keeping the old coordinates
 			int oldX = locX;
 
-			long distanceFromMouse = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
-			if (distanceFromMouse > 2 * Math.pow(10, 4))
-				GameState.speed = 8;
+			if (Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2) > 2 * Math.pow(10, 4))
+				GameState.speed = 8; // The new speed based on the distance from mouse
 
 			int bound = locY - mouseY;
 			locY = (Math.abs(bound) > GameState.speed) ? (locY > mouseY) ? locY - GameState.speed : locY + GameState.speed : mouseY;
-
 			if(!LocationController.check(locX, locY))
 				locY = oldY;
 
 			bound = locX - mouseX;
 			locX = (Math.abs(bound) > GameState.speed) ? (locX > mouseX) ? locX - GameState.speed : locX + GameState.speed : mouseX;
-
 			if(!LocationController.check(locX, locY))
 				locX = oldX;
 
 			GameState.speed = 4;
 		}
 
-		if (keyUP) {
+		if (keyUP)
+		{
 			if (LocationController.check(locX, locY - GameState.speed))
 				locY -= GameState.speed;
 		}
-		if (keyDOWN) {
+		if (keyDOWN)
+		{
 			if (LocationController.check(locX, locY + GameState.speed))
 				locY += GameState.speed;
 		}
-		if (keyLEFT) {
+		if (keyLEFT)
+		{
 			if (LocationController.check(locX - GameState.speed, locY))
 				locX -= GameState.speed;
 		}
-		if (keyRIGHT) {
+		if (keyRIGHT)
+		{
 			if (LocationController.check(locX + GameState.speed, locY))
 				locX += GameState.speed;
 		}
 
-		locX = Math.max(locX, GameFrame.DRAWING_START_X);
-		locX = Math.min(locX, gameMap.numberOfColumns * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
+		locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
+		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-		locY = Math.min(locY, gameMap.numberOfRows * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
 	}
 
 	/**

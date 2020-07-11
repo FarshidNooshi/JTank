@@ -39,7 +39,7 @@ public class GameFrame extends JFrame {
 
 	private BufferStrategy bufferStrategy;
 
-	private GameMap gameMap;
+	private GameMap gameMap; // This is the map of each game
 
 	/**
 	 * The constructor of the Game frame class to set
@@ -133,7 +133,7 @@ public class GameFrame extends JFrame {
 		g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
 		// Draw Map
-		int horizonAt = DRAWING_START_X;
+		int horizonAt = DRAWING_START_X; // To locate the starting position
 		int verticalAt = DRAWING_START_Y;
 		// The loop of drawing
 		for (int y = 0; y < gameMap.numberOfRows; y++) {
@@ -206,5 +206,4 @@ public class GameFrame extends JFrame {
 			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
 		}
 	}
-	
 }

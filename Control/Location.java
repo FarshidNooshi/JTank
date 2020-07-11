@@ -12,11 +12,11 @@ import game.Process.GameMap;
 public class Location {
 
     // The two points of the walls
-    private int binaryX;
+    private int binaryX; // In-array indexes
     private int binaryY;
-    private int topX;
+    private int topX; // In-map top left coordinates
     private int topY;
-    private int bottomX;
+    private int bottomX; // In-map bottom right coordinates
     private int bottomY;
 
     /**
@@ -59,6 +59,15 @@ public class Location {
         return inputX == topX && inputY == topY;
     }
 
+    /**
+     * This method will check if the given coordinates is the array
+     * coordinates of the wall or not.
+     * This is for deleting the walls from the binary map.
+     *
+     * @param inputX the input x coordinate
+     * @param inputY the input y coordinate
+     * @return is the same wall or not
+     */
     public boolean samePlace (int inputX, int inputY) {
         return inputX == binaryX && inputY == binaryY;
     }
