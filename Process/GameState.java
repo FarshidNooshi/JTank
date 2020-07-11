@@ -117,6 +117,10 @@ public class GameState {
 	 * @return the rotation
 	 */
 	public int direction () {
+		// Check to see if we are using mouse
+		if (mousePress)
+			return mouseDirection();
+		// or using keyboard
 		if (keyUP && keyLEFT) {
 			currentDirection = 225;
 			return 225;
@@ -150,6 +154,51 @@ public class GameState {
 			return 0;
 		}
 		return currentDirection; // If no move is made
+	}
+
+	/*
+	 * this method is the same as the direction method
+	 * but it has different parameters to compare the
+	 * current place and the mouse place to chose the direction.
+	 *
+	 */
+	private int mouseDirection () {
+		if (mouseX < locX) {
+			if (mouseY < locY) {
+				currentDirection = 225;
+				return 225;
+			}
+			if (mouseY > locY) {
+				currentDirection = 135;
+				return 135;
+			}
+			else  {
+				currentDirection = 180;
+				return 180;
+			}
+		} else if (mouseX > locX) {
+			if (mouseY < locY) {
+				currentDirection = 315;
+				return 315;
+			}
+			if (mouseY > locY) {
+				currentDirection = 45;
+				return 45;
+			} else {
+				currentDirection = 0;
+				return 0;
+			}
+		} else {
+			if (mouseY < locY) {
+				currentDirection = 270;
+				return 270;
+			}
+			if (mouseY > locY) {
+				currentDirection = 90;
+				return 90;
+			} else
+			return currentDirection;
+		}
 	}
 	
 	
@@ -228,8 +277,8 @@ public class GameState {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			mouseX = e.getX();
-			mouseY = e.getY();
+			mouseX = e.getX() - GameMap.CHANGING_FACTOR / 4; // This is for placing the mouse
+			mouseY = e.getY() - GameMap.CHANGING_FACTOR / 4; // at the center of the shape
 			mousePress = true;
 		}
 
@@ -240,8 +289,8 @@ public class GameState {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			mouseX = e.getX();
-			mouseY = e.getY();
+			mouseX = e.getX() - GameMap.CHANGING_FACTOR / 4;
+			mouseY = e.getY() - GameMap.CHANGING_FACTOR / 4;
 		}
 	}
 }
