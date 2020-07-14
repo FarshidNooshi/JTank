@@ -49,12 +49,28 @@ public class Location {
                 ( topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR /bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound );
     }
 
-    public int getTopX() {
+    public int getBinaryX() {
         return binaryX;
     }
 
-    public int getTopY() {
+    public int getBinaryY() {
         return binaryY;
+    }
+
+    public int getTopX() {
+        return topX;
+    }
+
+    public int getTopY() {
+        return topY;
+    }
+
+    public int getBottomX() {
+        return bottomX;
+    }
+
+    public int getBottomY() {
+        return bottomY;
     }
 
     /**

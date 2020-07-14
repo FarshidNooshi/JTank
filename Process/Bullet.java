@@ -79,11 +79,32 @@ public class Bullet {
             if (location != null) {
                 if (location.type == 1) {
                     isAlive = false;
-                    gameMap.binaryMap[location.getTopY()][location.getTopX()] = 0;
+                    gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()] = 0;
                     return;
                 } else {
-                    isAlive = false;
-                    return;
+
+                    int xTop = location.getTopX();
+                    int yYop = location.getTopY();
+                    int xDown = location.getBottomX();
+                    int yDown = location.getBottomY();
+
+                    if (xTop < locX && locX < xDown && !LEFT) {
+                        if (locY <= yYop) {
+                            UP = true;
+                            DOWN = false;
+                        } else {
+                            UP = false;
+                            DOWN = true;
+                        }
+                    } else if (yYop < locY && locY < yDown) {
+                        if (locX < xTop) {
+                            LEFT = true;
+                            RIGHT = false;
+                        } else {
+                            LEFT = false;
+                            RIGHT = true;
+                        }
+                    }
                 }
             }
 
@@ -102,6 +123,23 @@ public class Bullet {
             if (RIGHT)
             {
                 locX += speed;
+            }
+
+            if (locX == GameFrame.DRAWING_START_X) {
+                LEFT = false;
+                RIGHT = true;
+            }
+            if (locX  + diam == mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
+                RIGHT = false;
+                LEFT = true;
+            }
+            if (locY == GameFrame.DRAWING_START_Y) {
+                UP = false;
+                DOWN = true;
+            }
+            if (locY + diam == mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
+                UP = true;
+                DOWN = false;
             }
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
