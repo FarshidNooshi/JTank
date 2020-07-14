@@ -1,6 +1,11 @@
 package game.Process;
 
+import game.Control.Location;
+import game.Control.LocationController;
+
 public class Bullet {
+
+    private GameMap gameMap;
 
     public int locX, locY, diam;
     public boolean isAlive;
@@ -11,13 +16,14 @@ public class Bullet {
 
     private boolean UP, DOWN, RIGHT, LEFT;
 
-    public Bullet (int locX, int locY, int mapRowsLimit, int mapColsLimit) {
+    public Bullet (int locX, int locY, int mapRowsLimit, int mapColsLimit, GameMap gameMap) {
         this.locX = locX + GameMap.CHANGING_FACTOR / 4;
         this.locY = locY + GameMap.CHANGING_FACTOR / 4;
         this.mapRowsLimit = mapRowsLimit;
         this.mapColsLimit = mapColsLimit;
         diam = 8;
         isAlive = true;
+        this.gameMap = gameMap;
         start = System.currentTimeMillis();
     }
 
@@ -69,6 +75,18 @@ public class Bullet {
             if (time >= 4)
                 isAlive = false;
 
+            Location location = LocationController.bulletWallCheck(locX, locY);
+            if (location != null) {
+                if (location.type == 1) {
+                    isAlive = false;
+                    gameMap.binaryMap[location.getTopY()][location.getTopX()] = 0;
+                    return;
+                } else {
+                    isAlive = false;
+                    return;
+                }
+            }
+
             if (UP)
             {
                 locY -= speed;
@@ -87,9 +105,9 @@ public class Bullet {
             }
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
-            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
+            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_X);
             locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_Y);
         }
     }
 }

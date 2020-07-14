@@ -55,7 +55,7 @@ public class GameMap {
                 if (random.nextInt(100) % 5 == 0)
                     binaryMap[y][x] = 2;
                 if (binaryMap[y][x] != 0)
-                    LocationController.add(new Location(x, y,GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR));
+                    LocationController.add(new Location(x, y,GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x]));
             }
         }
     }

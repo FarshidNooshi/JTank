@@ -12,6 +12,7 @@ import game.Process.GameMap;
 public class Location {
 
     // The two points of the walls
+    public int type;
     private int binaryX; // In-array indexes
     private int binaryY;
     private int topX; // In-map top left coordinates
@@ -25,13 +26,14 @@ public class Location {
      * @param topX the first point x coordinate
      * @param topY the first point y coordinate
      */
-    public Location (int binaryX, int binaryY, int topX, int topY) {
+    public Location (int binaryX, int binaryY, int topX, int topY, int type) {
         this.binaryX = binaryX;
         this.binaryY = binaryY;
         this.topX = topX;
         this.topY = topY;
         bottomX = topX + GameMap.CHANGING_FACTOR; // We calculate the second point coordinates base on the
         bottomY = topY + GameMap.CHANGING_FACTOR; // changing factor in the game
+        this.type = type;
     }
 
     /**
@@ -42,9 +44,17 @@ public class Location {
      * @param userY the tank y coordinate
      * @return the result of overlapping
      */
-    public boolean isOverlap (int userX, int userY) {
-        return ( topX < userX && bottomX > userX || topX < userX + GameMap.CHANGING_FACTOR / 2 && bottomX > userX + GameMap.CHANGING_FACTOR / 2 ) &&
-                ( topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR / 2 && bottomY > userY + GameMap.CHANGING_FACTOR / 2 );
+    public boolean isOverlap (int userX, int userY, int bound) {
+        return ( topX < userX && bottomX > userX || topX < userX + GameMap.CHANGING_FACTOR / bound && bottomX > userX + GameMap.CHANGING_FACTOR / bound ) &&
+                ( topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR /bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound );
+    }
+
+    public int getTopX() {
+        return binaryX;
+    }
+
+    public int getTopY() {
+        return binaryY;
     }
 
     /**

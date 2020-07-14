@@ -1,5 +1,7 @@
 package game.Control;
 
+import game.Process.GameMap;
+
 import java.util.ArrayList;
 
 /**
@@ -21,7 +23,7 @@ public class LocationController {
      * required.
      *
      */
-    public static void init() {
+    public static void init () {
         locations = new ArrayList<>();
         created = true;
     }
@@ -82,8 +84,26 @@ public class LocationController {
             return true;
         // Search for any overlap
         for (Location l : locations)
-            if( l.isOverlap(x, y) )
+            if ( l.isOverlap(x, y, 2) )
                 return false;
         return true;
+    }
+
+
+    public static Location bulletWallCheck (int x, int y) {
+
+        if (!created)
+            return null;
+
+        for (Location l : locations) {
+            if ( l.isOverlap(x, y, 16)) {
+                if (l.type == 1) {
+                    locations.remove(l);
+                }
+                return l;
+            }
+        }
+
+        return null;
     }
 }
