@@ -1,5 +1,7 @@
 package game.Process;
 
+import game.Control.LocationController;
+
 import java.nio.BufferOverflowException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,6 +74,10 @@ public class GameLoop implements Runnable {
 				Iterator<Bullet> iterator = bullets.iterator();
 				while (iterator.hasNext()) {
 					Bullet bullet = iterator.next();
+					if (LocationController.tankGotShot(bullet.locX, bullet.locY, state.locX, state.locY) && !bullet.justShot) {
+						state.gameOver = true;
+						bullet.isAlive = false;
+					}
 					if (bullet.isAlive)
 						executorService.execute(bullet.getMover());
 					else

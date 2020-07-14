@@ -173,7 +173,8 @@ public class GameFrame extends JFrame {
 		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 		// draw the rotated image
-		g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
+		if (!state.gameOver)
+			g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();

@@ -106,4 +106,8 @@ public class LocationController {
 
         return null;
     }
+
+    public static boolean tankGotShot (int bullX, int bullY, int tankX, int tankY) {
+        return tankX <= bullX && bullX <= tankX + GameMap.CHANGING_FACTOR / 2 && tankY <= bullY && bullY <= tankY + GameMap.CHANGING_FACTOR / 2;
+    }
 }

@@ -8,7 +8,8 @@ public class Bullet {
     private GameMap gameMap;
 
     public int locX, locY, diam;
-    public boolean isAlive;
+    private int firstX, firstY;
+    public boolean isAlive, justShot;
     public static int speed = 4;
     private long start;
 
@@ -19,10 +20,13 @@ public class Bullet {
     public Bullet (int locX, int locY, int mapRowsLimit, int mapColsLimit, GameMap gameMap) {
         this.locX = locX + GameMap.CHANGING_FACTOR / 4;
         this.locY = locY + GameMap.CHANGING_FACTOR / 4;
+        firstX = this.locX;
+        firstY = this.locY;
         this.mapRowsLimit = mapRowsLimit;
         this.mapColsLimit = mapColsLimit;
         diam = 8;
         isAlive = true;
+        justShot = true;
         this.gameMap = gameMap;
         start = System.currentTimeMillis();
     }
@@ -74,6 +78,10 @@ public class Bullet {
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
             if (time >= 4)
                 isAlive = false;
+            if (justShot) {
+                if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
+                    justShot = false;
+            }
 
             Location location = LocationController.bulletWallCheck(locX, locY);
             if (location != null) {
