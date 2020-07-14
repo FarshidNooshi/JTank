@@ -5,6 +5,7 @@ public class Bullet {
     public int locX, locY, diam;
     public boolean isAlive;
     public static int speed = 4;
+    private long start;
 
     private int mapRowsLimit, mapColsLimit;
 
@@ -16,6 +17,8 @@ public class Bullet {
         this.mapRowsLimit = mapRowsLimit;
         this.mapColsLimit = mapColsLimit;
         diam = 32;
+        isAlive = true;
+        start = System.currentTimeMillis();
     }
 
     public void setDirections (boolean UP, boolean DOWN, boolean RIGHT, boolean LEFT) {
@@ -33,6 +36,11 @@ public class Bullet {
 
         @Override
         public void run() {
+
+            int time = (int) ((System.currentTimeMillis() - start) / 1000);
+            if (time >= 4)
+                isAlive = false;
+
             if (UP)
             {
                 locY -= speed;

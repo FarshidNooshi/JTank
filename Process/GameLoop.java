@@ -1,5 +1,11 @@
 package game.Process;
 
+import java.nio.BufferOverflowException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * A very simple structure for the main game loop.
  * THIS IS NOT PERFECT, but works for most situations.
@@ -20,6 +26,9 @@ public class GameLoop implements Runnable {
 	 * Higher is better, but any value above 24 is fine.
 	 */
 	public static final int FPS = 30;
+
+	private ArrayList<Bullet> bullets;
+	private ExecutorService executorService;
 	
 	private GameFrame canvas;
 	private GameState state;
@@ -40,6 +49,8 @@ public class GameLoop implements Runnable {
 	public void init() {
 		state = new GameState(); // Creating the states
 		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
+		bullets = new ArrayList<>();
+		executorService = Executors.newCachedThreadPool();
 		canvas.getGameMap().setPlaces(state); // Setting the tank in the map
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
@@ -53,9 +64,22 @@ public class GameLoop implements Runnable {
 			try {
 				long start = System.currentTimeMillis();
 				// updating the game
+				if (state.shotFired) {
+					Bullet bullet = new Bullet(state.locX, state.locY, canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
+					bullets.add(bullet);
+					bullet.setDirections(state.keyUP, state.keyDOWN, state.keyRIGHT, state.keyLEFT);
+				}
+				Iterator<Bullet> iterator = bullets.iterator();
+				while (iterator.hasNext()) {
+					Bullet bullet = iterator.next();
+					if (bullet.isAlive)
+						executorService.execute(bullet.getMover());
+					else
+						iterator.remove();
+				}
 				state.update();
 				//TODO: add a update method for the bullets
-				canvas.render(state);
+				canvas.render(state, bullets);
 				gameOver = state.gameOver;
 				// calculating the delay for avoiding lags in the game
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
@@ -64,6 +88,6 @@ public class GameLoop implements Runnable {
 			} catch (InterruptedException ex) {
 			}
 		}
-		canvas.render(state);
+		canvas.render(state, bullets);
 	}
 }

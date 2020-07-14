@@ -25,11 +25,13 @@ public class GameState {
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
 
-	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
+	public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
+
+	public boolean shotFired;
 	
 	public GameState() {
 		diam = 32;
@@ -63,6 +65,9 @@ public class GameState {
 	 * The method which updates the game state.
 	 */
 	public void update() {
+
+		shotFired = false;
+
 		if (mousePress)
 		{
 			int oldY = locY; // Keeping the old coordinates
@@ -240,6 +245,9 @@ public class GameState {
 					break;
 				case KeyEvent.VK_ESCAPE:
 					gameOver = true;
+					break;
+				case KeyEvent.VK_SPACE:
+					shotFired = true;
 					break;
 			}
 		}
