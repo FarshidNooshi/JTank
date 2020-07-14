@@ -12,20 +12,48 @@ public class Bullet {
     private boolean UP, DOWN, RIGHT, LEFT;
 
     public Bullet (int locX, int locY, int mapRowsLimit, int mapColsLimit) {
-        this.locX = locX;
-        this.locY = locY;
+        this.locX = locX + GameMap.CHANGING_FACTOR / 4;
+        this.locY = locY + GameMap.CHANGING_FACTOR / 4;
         this.mapRowsLimit = mapRowsLimit;
         this.mapColsLimit = mapColsLimit;
-        diam = 32;
+        diam = 8;
         isAlive = true;
         start = System.currentTimeMillis();
     }
 
-    public void setDirections (boolean UP, boolean DOWN, boolean RIGHT, boolean LEFT) {
-        this.UP = UP;
-        this.DOWN = DOWN;
-        this.RIGHT = RIGHT;
-        this.LEFT = LEFT;
+    public void setDirections (int directions) {
+
+        switch (directions) {
+            case 225:
+                UP = true;
+                LEFT = true;
+                break;
+            case 315:
+                UP = true;
+                RIGHT = true;
+                break;
+            case 45:
+                DOWN = true;
+                RIGHT = true;
+                break;
+            case 135:
+                DOWN = true;
+                LEFT = true;
+                break;
+            case 270:
+                UP = true;
+                break;
+            case 90:
+                DOWN = true;
+                break;
+            case 180:
+                LEFT = true;
+                break;
+            case 0:
+                RIGHT = true;
+                break;
+        }
+
     }
 
     public BulletMove getMover () {

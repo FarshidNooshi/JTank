@@ -25,7 +25,7 @@ public class GameState {
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
 
-	public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
+	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;

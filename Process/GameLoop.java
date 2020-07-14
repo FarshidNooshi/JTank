@@ -67,7 +67,7 @@ public class GameLoop implements Runnable {
 				if (state.shotFired) {
 					Bullet bullet = new Bullet(state.locX, state.locY, canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
 					bullets.add(bullet);
-					bullet.setDirections(state.keyUP, state.keyDOWN, state.keyRIGHT, state.keyLEFT);
+					bullet.setDirections(state.direction());
 				}
 				Iterator<Bullet> iterator = bullets.iterator();
 				while (iterator.hasNext()) {
