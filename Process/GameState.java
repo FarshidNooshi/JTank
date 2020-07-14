@@ -22,7 +22,7 @@ public class GameState {
 	
 	public int locX, locY, diam;
 	public boolean gameOver;
-	public static int speed;
+	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
@@ -33,7 +33,6 @@ public class GameState {
 	
 	public GameState() {
 		diam = 32;
-		speed = 4;
 		gameOver = false;
 		currentDirection = 0;
 		//
@@ -68,9 +67,10 @@ public class GameState {
 		{
 			int oldY = locY; // Keeping the old coordinates
 			int oldX = locX;
+			int speedHolder = GameState.speed;
 
 			if (Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2) > 2 * Math.pow(10, 4))
-				GameState.speed = 8; // The new speed based on the distance from mouse
+				GameState.speed *= 2; // The new speed based on the distance from mouse
 
 			int bound = locY - mouseY;
 			locY = (Math.abs(bound) > GameState.speed) ? (locY > mouseY) ? locY - GameState.speed : locY + GameState.speed : mouseY;
@@ -82,7 +82,7 @@ public class GameState {
 			if(!LocationController.check(locX, locY))
 				locX = oldX;
 
-			GameState.speed = 4;
+			GameState.speed = speedHolder; // Resetting the game speed
 		}
 
 		if (keyUP)
@@ -202,8 +202,7 @@ public class GameState {
 			return currentDirection;
 		}
 	}
-	
-	
+
 	public KeyListener getKeyListener() {
 		return keyHandler;
 	}
@@ -213,8 +212,6 @@ public class GameState {
 	public MouseMotionListener getMouseMotionListener() {
 		return mouseHandler;
 	}
-
-
 
 	/**
 	 * The keyboard handler.
@@ -296,4 +293,3 @@ public class GameState {
 		}
 	}
 }
-

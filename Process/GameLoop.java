@@ -54,6 +54,7 @@ public class GameLoop implements Runnable {
 				long start = System.currentTimeMillis();
 				// updating the game
 				state.update();
+				//TODO: add a update method for the bullets
 				canvas.render(state);
 				gameOver = state.gameOver;
 				// calculating the delay for avoiding lags in the game

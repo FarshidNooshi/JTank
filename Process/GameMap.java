@@ -92,4 +92,6 @@ public class GameMap {
                 if (binaryMap[y][x] == -1)
                     binaryMap[y][x] = 0;
     }
+
+    //TODO: add a method to create a map that all the tanks are connected to each other.
 }
