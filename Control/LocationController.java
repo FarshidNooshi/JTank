@@ -103,7 +103,6 @@ public class LocationController {
                 return l;
             }
         }
-
         return null;
     }
 

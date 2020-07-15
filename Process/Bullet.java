@@ -5,8 +5,8 @@ import game.Control.LocationController;
 
 public class Bullet {
 
+    //Each bullet needs the map
     private GameMap gameMap;
-
     //Location fields
     public int locX, locY, diam;
     private int firstX, firstY;
@@ -15,28 +15,38 @@ public class Bullet {
     //Speed and time fields
     public static int speed = 8;
     private long start;
-
+    //The limits fields
     private int mapRowsLimit, mapColsLimit;
-
+    //Movement booleans
     private boolean UP, DOWN, RIGHT, LEFT;
 
-    public Bullet (int locX, int locY, int mapRowsLimit, int mapColsLimit, GameMap gameMap) {
-        this.locX = locX + GameMap.CHANGING_FACTOR / 4;
-        this.locY = locY + GameMap.CHANGING_FACTOR / 4;
+    public Bullet (int locX, int locY ,GameMap gameMap) {
+        // The starting point of the square
+        this.locX = locX + GameMap.CHANGING_FACTOR / 4; // This is for putting the bullet at the
+        this.locY = locY + GameMap.CHANGING_FACTOR / 4; // center of the tank
+        // Keeping the old coordinate
         firstX = this.locX;
         firstY = this.locY;
-        this.mapRowsLimit = mapRowsLimit;
-        this.mapColsLimit = mapColsLimit;
+        // Setting the limits
+        this.mapRowsLimit = gameMap.numberOfRows;
+        this.mapColsLimit = gameMap.numberOfColumns;
+        // The radius of the circle
         diam = 8;
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
-        start = System.currentTimeMillis();
+        start = System.currentTimeMillis(); // Keeping the start time
     }
 
+    /**
+     * This method will get the tank location and will
+     * chose the bullet direction to go.
+     *
+     * @param directions the tank direction
+     */
     public void setDirections (int directions) {
-
-        switch (directions) {
+        switch (directions)
+        {
             case 225:
                 UP = true;
                 LEFT = true;
@@ -66,60 +76,63 @@ public class Bullet {
                 RIGHT = true;
                 break;
         }
-
     }
 
+    /**
+     * This method will create a runnable of the BulletMove
+     * and will give it back so it can be execute.
+     *
+     * @return an instance of the runnable
+     */
     public BulletMove getMover () {
         return new BulletMove();
     }
 
+    /*
+
+        This class is an inner class which will
+        update the bullet class.
+        It changes the bullet place and will check
+        the walls and the changes in that the bullet had
+        make in the map.
+
+     */
     class BulletMove implements Runnable {
 
-        @Override
-        public void run() {
-
-            int time = (int) ((System.currentTimeMillis() - start) / 1000);
-            if (time >= 4)
-                isAlive = false;
-            if (justShot) {
-                if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
-                    justShot = false;
+        private void wallChangingWay (Location location) {
+            // Getting the locations needed of the wall
+            int xTop = location.getTopX() + diam; // The top coordinates
+            int yYop = location.getTopY() + diam;
+            int xDown = location.getBottomX() - diam; // The bottom coordinates
+            int yDown = location.getBottomY() - diam;
+            int centerX = (xTop + xDown) / 2; // The center coordinates
+            int centerY = (yYop + yDown) / 2;
+            // Changing the direction based on the place of the wall
+            if (locY + diam / 4 > centerY && locX + diam / 4 <= xDown && locX + diam / 4 >= xTop) {
+                UP = false;
+                DOWN = true;
             }
-
-            Location location = LocationController.bulletWallCheck(locX, locY);
-            if (location != null) {
-                if (location.type == 1) {
-                    isAlive = false;
-                    gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()] = 0;
-                    return;
-                } else {
-
-                    int xTop = location.getTopX() + diam;
-                    int yYop = location.getTopY() + diam;
-                    int xDown = location.getBottomX() - diam;
-                    int yDown = location.getBottomY() - diam;
-                    int centerX = (xTop + xDown) / 2;
-                    int centerY = (yYop + yDown) / 2;
-
-                    if (locY + diam / 2 > centerY && locX + diam / 2 <= xDown && locX + diam / 2 >= xTop) {
-                        UP = false;
-                        DOWN = true;
-                    }
-                    if (locX + diam / 2 < centerX && locY + diam / 2 <= yDown && locY + diam / 2 >= yYop) {
-                        LEFT = true;
-                        RIGHT = false;
-                    }
-                    if (locY + diam / 2 < centerY && locX + diam / 2 < xDown && locX + diam / 2 > xTop) {
-                        UP = true;
-                        DOWN = false;
-                    }
-                    if (locX + diam / 2 > centerX && locY + diam / 2 < yDown && locY + diam / 2 > yYop) {
-                        LEFT = false;
-                        RIGHT = true;
-                    }
-                }
+            if (locX + diam / 4 < centerX && locY + diam / 4 <= yDown && locY + diam / 4 >= yYop) {
+                LEFT = true;
+                RIGHT = false;
             }
+            if (locY + diam / 4 < centerY && locX + diam / 4 < xDown && locX + diam / 4 > xTop) {
+                UP = true;
+                DOWN = false;
+            }
+            if (locX + diam / 4 > centerX && locY + diam / 4 < yDown && locY + diam / 4 > yYop) {
+                LEFT = false;
+                RIGHT = true;
+            }
+        }
 
+        /*
+            This method will update the movement of the
+            bullet.
+
+         */
+        private void update () {
+            // Update the location
             if (UP)
             {
                 locY -= speed;
@@ -136,7 +149,7 @@ public class Bullet {
             {
                 locX += speed;
             }
-
+            // The walls bouncy
             if (locX + diam / 2 <= GameFrame.DRAWING_START_X) {
                 LEFT = false;
                 RIGHT = true;
@@ -158,6 +171,37 @@ public class Bullet {
             locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_X);
             locY = Math.max(locY, GameFrame.DRAWING_START_Y);
             locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_Y);
+        }
+
+        @Override
+        public void run() {
+
+            // The time checking
+            int time = (int) ((System.currentTimeMillis() - start) / 1000);
+            if (time >= 4)
+                isAlive = false; // The time limit
+            if (justShot)
+            {
+                if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
+                    justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
+            }
+
+            // To check if the bullet is hitting any walls
+            Location location = LocationController.bulletWallCheck(locX + diam / 2, locY + diam / 2);
+
+            if (location != null)
+            {
+                if (location.type == 1)
+                {
+                    isAlive = false; // This means that the bullet has hit a breakable wall
+                    gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()] = 0;
+                    return;
+                } else {
+                    wallChangingWay(location);
+                }
+            }
+            // The bullet update method
+            update();
         }
     }
 }
