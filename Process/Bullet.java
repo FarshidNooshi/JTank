@@ -7,10 +7,13 @@ public class Bullet {
 
     private GameMap gameMap;
 
+    //Location fields
     public int locX, locY, diam;
     private int firstX, firstY;
+    //Status fields
     public boolean isAlive, justShot;
-    public static int speed = 4;
+    //Speed and time fields
+    public static int speed = 8;
     private long start;
 
     private int mapRowsLimit, mapColsLimit;
@@ -91,27 +94,28 @@ public class Bullet {
                     return;
                 } else {
 
-                    int xTop = location.getTopX();
-                    int yYop = location.getTopY();
-                    int xDown = location.getBottomX();
-                    int yDown = location.getBottomY();
+                    int xTop = location.getTopX() + diam;
+                    int yYop = location.getTopY() + diam;
+                    int xDown = location.getBottomX() - diam;
+                    int yDown = location.getBottomY() - diam;
+                    int centerX = (xTop + xDown) / 2;
+                    int centerY = (yYop + yDown) / 2;
 
-                    if (xTop < locX && locX < xDown && !LEFT) {
-                        if (locY <= yYop) {
-                            UP = true;
-                            DOWN = false;
-                        } else {
-                            UP = false;
-                            DOWN = true;
-                        }
-                    } else if (yYop < locY && locY < yDown) {
-                        if (locX < xTop) {
-                            LEFT = true;
-                            RIGHT = false;
-                        } else {
-                            LEFT = false;
-                            RIGHT = true;
-                        }
+                    if (locY + diam / 2 > centerY && locX + diam / 2 <= xDown && locX + diam / 2 >= xTop) {
+                        UP = false;
+                        DOWN = true;
+                    }
+                    if (locX + diam / 2 < centerX && locY + diam / 2 <= yDown && locY + diam / 2 >= yYop) {
+                        LEFT = true;
+                        RIGHT = false;
+                    }
+                    if (locY + diam / 2 < centerY && locX + diam / 2 < xDown && locX + diam / 2 > xTop) {
+                        UP = true;
+                        DOWN = false;
+                    }
+                    if (locX + diam / 2 > centerX && locY + diam / 2 < yDown && locY + diam / 2 > yYop) {
+                        LEFT = false;
+                        RIGHT = true;
                     }
                 }
             }
@@ -133,19 +137,19 @@ public class Bullet {
                 locX += speed;
             }
 
-            if (locX == GameFrame.DRAWING_START_X) {
+            if (locX + diam / 2 <= GameFrame.DRAWING_START_X) {
                 LEFT = false;
                 RIGHT = true;
             }
-            if (locX  + diam == mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
+            if (locX  + diam / 2 >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
                 RIGHT = false;
                 LEFT = true;
             }
-            if (locY == GameFrame.DRAWING_START_Y) {
+            if (locY  + diam / 2 <= GameFrame.DRAWING_START_Y) {
                 UP = false;
                 DOWN = true;
             }
-            if (locY + diam == mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
+            if (locY + diam / 2 >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
                 UP = true;
                 DOWN = false;
             }

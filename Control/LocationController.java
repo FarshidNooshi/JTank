@@ -96,7 +96,7 @@ public class LocationController {
             return null;
 
         for (Location l : locations) {
-            if ( l.isOverlap(x, y, 16)) {
+            if ( l.isOverlap(x, y, 8)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }

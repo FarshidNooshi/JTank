@@ -2,9 +2,8 @@ package game.Process;
 
 import game.Control.LocationController;
 
-import java.nio.BufferOverflowException;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +28,7 @@ public class GameLoop implements Runnable {
 	 */
 	public static final int FPS = 30;
 
-	private ArrayList<Bullet> bullets;
+	private CopyOnWriteArrayList<Bullet> bullets;
 	private ExecutorService executorService;
 	
 	private GameFrame canvas;
@@ -51,7 +50,7 @@ public class GameLoop implements Runnable {
 	public void init() {
 		state = new GameState(); // Creating the states
 		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
-		bullets = new ArrayList<>();
+		bullets = new CopyOnWriteArrayList<>();
 		executorService = Executors.newCachedThreadPool();
 		canvas.getGameMap().setPlaces(state); // Setting the tank in the map
 		canvas.addKeyListener(state.getKeyListener());
@@ -81,7 +80,7 @@ public class GameLoop implements Runnable {
 					if (bullet.isAlive)
 						executorService.execute(bullet.getMover());
 					else
-						iterator.remove();
+						bullets.remove(bullet);
 				}
 				state.update();
 				//TODO: add a update method for the bullets

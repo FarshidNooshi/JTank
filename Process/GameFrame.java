@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
@@ -95,7 +96,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
-	public void render(GameState state, ArrayList<Bullet> bullets) {
+	public void render(GameState state, CopyOnWriteArrayList<Bullet> bullets) {
 		// Render single frame
 		do {
 			// The following loop ensures that the contents of the drawing buffer
@@ -126,7 +127,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Rendering all game elements based on the game state.
 	 */
-	private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
+	private void doRendering(Graphics2D g2d, GameState state, CopyOnWriteArrayList<Bullet> bullets) {
 
 		// Draw background
 		g2d.setColor(Color.GRAY);
