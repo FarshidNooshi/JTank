@@ -3,6 +3,7 @@ package game.Control;
 import game.Process.GameMap;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class known as location controller is
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class LocationController {
 
     // The list of the walls ,each type
-    private static ArrayList<Location> locations;
+    private static CopyOnWriteArrayList<Location> locations;
     private static boolean created = false;
 
     /**
@@ -24,7 +25,7 @@ public class LocationController {
      *
      */
     public static void init () {
-        locations = new ArrayList<>();
+        locations = new CopyOnWriteArrayList<>();
         created = true;
     }
 
@@ -96,7 +97,7 @@ public class LocationController {
             return null;
 
         for (Location l : locations) {
-            if ( l.isOverlap(x, y, 8)) {
+            if ( l.isOverlap(x, y, 4)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }

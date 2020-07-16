@@ -3,6 +3,8 @@ package game.Process;
 import game.Control.Location;
 import game.Control.LocationController;
 
+import java.util.Date;
+
 public class Bullet {
 
     //Each bullet needs the map
@@ -101,28 +103,31 @@ public class Bullet {
 
         private void wallChangingWay (Location location) {
             // Getting the locations needed of the wall
-            int xTop = location.getTopX() + diam; // The top coordinates
-            int yYop = location.getTopY() + diam;
-            int xDown = location.getBottomX() - diam; // The bottom coordinates
-            int yDown = location.getBottomY() - diam;
-            int centerX = (xTop + xDown) / 2; // The center coordinates
-            int centerY = (yYop + yDown) / 2;
-            // Changing the direction based on the place of the wall
-            if (locY + diam / 4 > centerY && locX + diam / 4 <= xDown && locX + diam / 4 >= xTop) {
+            boolean LeftBefore = LEFT;
+            boolean RightBefore = RIGHT;
+            boolean UpBefore = UP;
+            boolean DownBefore = DOWN;
+            int centerX = locX + diam / 2;
+            int centerY = locY + diam / 2;
+            boolean top = location.isOverlap(centerX, centerY - diam / 2, 0);
+            boolean bottom = location.isOverlap(centerX, centerY + diam / 2, 0);
+            boolean left = location.isOverlap(centerX - diam / 2, centerY, 0);
+            boolean right = location.isOverlap(centerX + diam / 2, centerY, 0);
+            if (top && UpBefore && !bottom) {
                 UP = false;
                 DOWN = true;
             }
-            if (locX + diam / 4 < centerX && locY + diam / 4 <= yDown && locY + diam / 4 >= yYop) {
-                LEFT = true;
-                RIGHT = false;
-            }
-            if (locY + diam / 4 < centerY && locX + diam / 4 < xDown && locX + diam / 4 > xTop) {
+            if (bottom && DownBefore && !top) {
                 UP = true;
                 DOWN = false;
             }
-            if (locX + diam / 4 > centerX && locY + diam / 4 < yDown && locY + diam / 4 > yYop) {
+            if (left && LeftBefore && !right) {
                 LEFT = false;
                 RIGHT = true;
+            }
+            if (right && RightBefore && !left) {
+                LEFT = true;
+                RIGHT = false;
             }
         }
 
