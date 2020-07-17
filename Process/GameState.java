@@ -25,15 +25,14 @@ public class GameState {
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
 	private long lastShotTime;
-	private int turnPassed;
+	private int turnPassed; // This is a simple counter we need for shots fired
+	public boolean shotFired, waitForSecond; // These booleans are for the shots
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
-
-	public boolean shotFired, waitForSecond;
 	
 	public GameState() {
 		diam = 32;
@@ -48,17 +47,30 @@ public class GameState {
 		mousePress = false;
 		mouseX = 0;
 		mouseY = 0;
-		lastShotTime = System.currentTimeMillis();
+		lastShotTime = 1000;
 		//
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 	}
 
+	/**
+	 * A setter method for setting the locations.
+	 *
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 */
 	public void setLocation (int x, int y) {
 		locX = x;
 		locY = y;
 	}
 
+	/**
+	 * This is a method for setting the borders
+	 * limits.
+	 *
+	 * @param mapRows the rows limit
+	 * @param mapCols the cols limit
+	 */
 	public void setLimits(int mapRows, int mapCols) {
 		mapRowsLimit = mapRows;
 		mapColsLimit = mapCols;
@@ -69,6 +81,7 @@ public class GameState {
 	 */
 	public void update() {
 
+		// The second bullet fire
 		shotFired = false;
 		if (turnPassed == 3 && waitForSecond) {
 			shotFired = true;
@@ -122,7 +135,7 @@ public class GameState {
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
-		turnPassed++;
+		turnPassed++; // Need to increase counter
 	}
 
 	/**
