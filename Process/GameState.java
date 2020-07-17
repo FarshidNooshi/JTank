@@ -24,6 +24,7 @@ public class GameState {
 	public boolean gameOver;
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
+	private long lastShotTime;
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
@@ -46,6 +47,7 @@ public class GameState {
 		mousePress = false;
 		mouseX = 0;
 		mouseY = 0;
+		lastShotTime = System.currentTimeMillis();
 		//
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
@@ -247,8 +249,20 @@ public class GameState {
 					gameOver = true;
 					break;
 				case KeyEvent.VK_SPACE:
-					shotFired = true;
+					takeAShot();
 					break;
+			}
+		}
+
+		/*
+			This method limits the times between each shot
+			fired.
+		 */
+		private void takeAShot () {
+			long time = System.currentTimeMillis();
+			if ((time - lastShotTime) / 1000 > 1) {
+				lastShotTime = time;
+				shotFired = true;
 			}
 		}
 

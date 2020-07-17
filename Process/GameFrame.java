@@ -160,7 +160,7 @@ public class GameFrame extends JFrame {
 			horizonAt = DRAWING_START_X;
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
-
+		// Drawing the bullets
 		g2d.setColor(Color.RED);
 		for (Bullet bullet : bullets) {
 			g2d.fillOval(bullet.locX, bullet.locY, bullet.diam, bullet.diam);

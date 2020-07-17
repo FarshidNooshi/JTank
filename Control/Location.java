@@ -25,6 +25,9 @@ public class Location {
      *
      * @param topX the first point x coordinate
      * @param topY the first point y coordinate
+     * @param binaryX the in 2d array place x
+     * @param binaryY the in 2d array place y
+     * @param type the type of the wall
      */
     public Location (int binaryX, int binaryY, int topX, int topY, int type) {
         this.binaryX = binaryX;
@@ -42,6 +45,7 @@ public class Location {
      *
      * @param userX the tank x coordinate
      * @param userY the tank y coordinate
+     * @param bound is the gap of the overlapping
      * @return the result of overlapping
      */
     public boolean isOverlap (int userX, int userY, int bound) {
@@ -56,28 +60,24 @@ public class Location {
                 ( topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR /bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound );
     }
 
+    /**
+     * A getter method for getting the in 2d
+     * array x coordinate.
+     *
+     * @return the x coordinate in 2d array
+     */
     public int getBinaryX() {
         return binaryX;
     }
 
+    /**
+     * A getter method for getting the in 2d
+     * array y coordinate.
+     *
+     * @return the y coordinate in 2d array
+     */
     public int getBinaryY() {
         return binaryY;
-    }
-
-    public int getTopX() {
-        return topX;
-    }
-
-    public int getTopY() {
-        return topY;
-    }
-
-    public int getBottomX() {
-        return bottomX;
-    }
-
-    public int getBottomY() {
-        return bottomY;
     }
 
     /**

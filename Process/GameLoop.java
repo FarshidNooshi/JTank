@@ -70,10 +70,11 @@ public class GameLoop implements Runnable {
 					bullets.add(bullet);
 					bullet.setDirections(state.direction());
 				}
+				// The bullets loop
 				Iterator<Bullet> iterator = bullets.iterator();
 				while (iterator.hasNext()) {
 					Bullet bullet = iterator.next();
-					if (LocationController.tankGotShot(bullet.locX, bullet.locY, state.locX, state.locY) && !bullet.justShot) {
+					if (LocationController.tankGotShot(bullet.locX + bullet.diam / 2, bullet.locY + bullet.diam / 2, state.locX, state.locY) && !bullet.justShot) {
 						state.gameOver = true;
 						bullet.isAlive = false;
 					}

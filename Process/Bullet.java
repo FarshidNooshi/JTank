@@ -3,25 +3,26 @@ package game.Process;
 import game.Control.Location;
 import game.Control.LocationController;
 
-import java.util.Date;
-
 public class Bullet {
 
-    //Each bullet needs the map
-    private GameMap gameMap;
+    private GameMap gameMap; //Each bullet needs the map
     //Location fields
     public int locX, locY, diam;
     private int firstX, firstY;
-    //Status fields
-    public boolean isAlive, justShot;
+    public boolean isAlive, justShot; //Status fields
     //Speed and time fields
     public static int speed = 8;
     private long start;
-    //The limits fields
-    private int mapRowsLimit, mapColsLimit;
-    //Movement booleans
-    private boolean UP, DOWN, RIGHT, LEFT;
+    private int mapRowsLimit, mapColsLimit; //The limits fields
+    private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
 
+    /**
+     * The constructor of the bullet class.
+     *
+     * @param locX the first x coordinate
+     * @param locY the first y coordinate
+     * @param gameMap the game map instance
+     */
     public Bullet (int locX, int locY ,GameMap gameMap) {
         // The starting point of the square
         this.locX = locX + GameMap.CHANGING_FACTOR / 4; // This is for putting the bullet at the
@@ -101,31 +102,33 @@ public class Bullet {
      */
     class BulletMove implements Runnable {
 
+        /*
+            This method will change the directions of the bullet
+            base on the wall that it hits.
+         */
         private void wallChangingWay (Location location) {
             // Getting the locations needed of the wall
-            boolean LeftBefore = LEFT;
-            boolean RightBefore = RIGHT;
-            boolean UpBefore = UP;
-            boolean DownBefore = DOWN;
-            int centerX = locX + diam / 2;
-            int centerY = locY + diam / 2;
+            int centerX = locX + diam / 2; // We locate the center of
+            int centerY = locY + diam / 2; // bullet
+            // And then check for points of the circle for overlapping
             boolean top = location.isOverlap(centerX, centerY - diam / 2, 0);
             boolean bottom = location.isOverlap(centerX, centerY + diam / 2, 0);
             boolean left = location.isOverlap(centerX - diam / 2, centerY, 0);
             boolean right = location.isOverlap(centerX + diam / 2, centerY, 0);
-            if (top && UpBefore && !bottom) {
+
+            if (top && !bottom) {
                 UP = false;
                 DOWN = true;
             }
-            if (bottom && DownBefore && !top) {
+            if (bottom && !top) {
                 UP = true;
                 DOWN = false;
             }
-            if (left && LeftBefore && !right) {
+            if (left && !right) {
                 LEFT = false;
                 RIGHT = true;
             }
-            if (right && RightBefore && !left) {
+            if (right && !left) {
                 LEFT = true;
                 RIGHT = false;
             }
@@ -134,26 +137,19 @@ public class Bullet {
         /*
             This method will update the movement of the
             bullet.
-
+            Changing the place and the borders bouncy.
          */
         private void update () {
             // Update the location
             if (UP)
-            {
                 locY -= speed;
-            }
             if (DOWN)
-            {
                 locY += speed;
-            }
             if (LEFT)
-            {
                 locX -= speed;
-            }
             if (RIGHT)
-            {
                 locX += speed;
-            }
+
             // The walls bouncy
             if (locX + diam / 2 <= GameFrame.DRAWING_START_X) {
                 LEFT = false;
@@ -180,11 +176,11 @@ public class Bullet {
 
         @Override
         public void run() {
-
             // The time checking
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
             if (time >= 4)
                 isAlive = false; // The time limit
+
             if (justShot)
             {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
