@@ -25,6 +25,7 @@ public class GameState {
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
 	private long lastShotTime;
+	private int turnPassed;
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
@@ -32,7 +33,7 @@ public class GameState {
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
 
-	public boolean shotFired;
+	public boolean shotFired, waitForSecond;
 	
 	public GameState() {
 		diam = 32;
@@ -69,6 +70,10 @@ public class GameState {
 	public void update() {
 
 		shotFired = false;
+		if (turnPassed == 3 && waitForSecond) {
+			shotFired = true;
+			waitForSecond = false;
+		}
 
 		if (mousePress)
 		{
@@ -117,6 +122,7 @@ public class GameState {
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+		turnPassed++;
 	}
 
 	/**
@@ -263,6 +269,8 @@ public class GameState {
 			if ((time - lastShotTime) / 1000 > 1) {
 				lastShotTime = time;
 				shotFired = true;
+				turnPassed = 0;
+				waitForSecond = true;
 			}
 		}
 
