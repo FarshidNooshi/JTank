@@ -130,10 +130,6 @@ public class GameState implements Serializable {
 		{
 			TankLine.solveTheorem(-1);
 		}
-		if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
-			locY = locY + (int)TankLine.y;
-			locX = locX + (int)TankLine.x;
-		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
