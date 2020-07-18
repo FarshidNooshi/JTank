@@ -25,7 +25,7 @@ import javax.swing.JFrame;
  *
  */
 public class GameFrame extends JFrame {
-	
+
 	public static final int GAME_HEIGHT = 720;                  // 720p game resolution
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
 
@@ -62,7 +62,7 @@ public class GameFrame extends JFrame {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This must be called once after the JFrame is shown:
 	 *    frame.setVisible(true);
@@ -96,7 +96,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
-	public void render(ArrayList<GameState> states, ArrayList<Bullet> bullets) {
+	public void render(GameState state) {
 		// Render single frame
 		do {
 			// The following loop ensures that the contents of the drawing buffer
@@ -106,7 +106,7 @@ public class GameFrame extends JFrame {
 				// to make sure the strategy is validated
 				Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
 				try {
-					doRendering(graphics, states, bullets);
+					doRendering(graphics, state);
 				} finally {
 					// Dispose the graphics
 					graphics.dispose();
@@ -123,11 +123,11 @@ public class GameFrame extends JFrame {
 		// Repeat the rendering if the drawing buffer was lost
 		} while (bufferStrategy.contentsLost());
 	}
-	
+
 	/**
 	 * Rendering all game elements based on the game state.
 	 */
-	private void doRendering(Graphics2D g2d, ArrayList<GameState> states, ArrayList<Bullet> bullets) {
+	private void doRendering(Graphics2D g2d, GameState state) {
 
 		// Draw background
 		g2d.setColor(Color.GRAY);
@@ -160,25 +160,19 @@ public class GameFrame extends JFrame {
 			horizonAt = DRAWING_START_X;
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
-		// Drawing the bullets
-		g2d.setColor(Color.RED);
-		for (Bullet bullet : bullets) {
-			System.out.println(bullet.locX + "  " + bullet.locY);
-			g2d.fillOval(bullet.locX, bullet.locY, bullet.diam, bullet.diam);
-		}
+
 
 		// This is the rotation finding part
-		for (GameState state : states) {
-			int rotateDegree = state.direction(); // The rotation degree
-			double rotation = Math.toRadians(rotateDegree);
-			// Using affine to rotate
-			AffineTransform tx = new AffineTransform();
-			tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
-			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-			// draw the rotated image
-			if (!state.gameOver)
-				g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2, GameMap.CHANGING_FACTOR / 2, null);
-		}
+		int rotateDegree = state.direction(); // The rotation degree
+		double rotation = Math.toRadians(rotateDegree);
+		// Using affine to rotate
+		AffineTransform tx = new AffineTransform();
+		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+		// draw the rotated image
+		if (!state.gameOver)
+			g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2, GameMap.CHANGING_FACTOR / 2, null);
+
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();
@@ -208,14 +202,12 @@ public class GameFrame extends JFrame {
 		g2d.setFont(g2d.getFont().deriveFont(18.0f));
 		g2d.drawString(userGuide, 10, GAME_HEIGHT - 10);
 		// Draw GAME OVER
-		for (GameState state : states) {
-			if (state.gameOver) {
-				String str = "GAME OVER";
-				g2d.setColor(new Color(100, 12, 22));
-				g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
-				int strWidth = g2d.getFontMetrics().stringWidth(str);
-				g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
-			}
+		if (state.gameOver) {
+			String str = "GAME OVER";
+			g2d.setColor(new Color(100, 12, 22));
+			g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
+			int strWidth = g2d.getFontMetrics().stringWidth(str);
+			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
 		}
 	}
 }

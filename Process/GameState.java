@@ -25,9 +25,6 @@ public class GameState implements Serializable {
 	public boolean gameOver;
 	public static int speed = 4;
 	private int currentDirection; // This is the last rotation degree
-	private long lastShotTime;
-	private int turnPassed; // This is a simple counter we need for shots fired
-	public boolean shotFired, waitForSecond; // These booleans are for the shots
 
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
@@ -48,7 +45,6 @@ public class GameState implements Serializable {
 		mousePress = false;
 		mouseX = 0;
 		mouseY = 0;
-		lastShotTime = 1000;
 		//
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
@@ -81,13 +77,6 @@ public class GameState implements Serializable {
 	 * The method which updates the game state.
 	 */
 	public void update() {
-
-		// The second bullet fire
-		shotFired = false;
-		if (turnPassed == 3 && waitForSecond) {
-			shotFired = true;
-			waitForSecond = false;
-		}
 
 		if (mousePress)
 		{
@@ -135,7 +124,6 @@ public class GameState implements Serializable {
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
-		turnPassed++; // Need to increase counter
 	}
 
 	/**
@@ -148,50 +136,6 @@ public class GameState implements Serializable {
 		return currentDirection; // If no move is made
 	}
 
-	/*
-	 * this method is the same as the direction method
-	 * but it has different parameters to compare the
-	 * current place and the mouse place to chose the direction.
-	 *
-	 */
-	private int mouseDirection () {
-		if (mouseX < locX) {
-			if (mouseY < locY) {
-				currentDirection = 225;
-				return 225;
-			}
-			if (mouseY > locY) {
-				currentDirection = 135;
-				return 135;
-			}
-			else  {
-				currentDirection = 180;
-				return 180;
-			}
-		} else if (mouseX > locX) {
-			if (mouseY < locY) {
-				currentDirection = 315;
-				return 315;
-			}
-			if (mouseY > locY) {
-				currentDirection = 45;
-				return 45;
-			} else {
-				currentDirection = 0;
-				return 0;
-			}
-		} else {
-			if (mouseY < locY) {
-				currentDirection = 270;
-				return 270;
-			}
-			if (mouseY > locY) {
-				currentDirection = 90;
-				return 90;
-			} else
-			return currentDirection;
-		}
-	}
 
 	public KeyListener getKeyListener() {
 		return keyHandler;
@@ -231,23 +175,6 @@ public class GameState implements Serializable {
 				case KeyEvent.VK_ESCAPE:
 					gameOver = true;
 					break;
-				case KeyEvent.VK_SPACE:
-					takeAShot();
-					break;
-			}
-		}
-
-		/*
-			This method limits the times between each shot
-			fired.
-		 */
-		private void takeAShot () {
-			long time = System.currentTimeMillis();
-			if ((time - lastShotTime) / 1000 > 1) {
-				lastShotTime = time;
-				shotFired = true;
-				turnPassed = 0;
-				waitForSecond = true;
 			}
 		}
 
