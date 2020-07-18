@@ -96,7 +96,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
-	public void render(GameState state, ArrayList<Bullet> bullets) {
+	public void render(ArrayList<GameState> states, ArrayList<Bullet> bullets) {
 		// Render single frame
 		do {
 			// The following loop ensures that the contents of the drawing buffer
@@ -106,7 +106,7 @@ public class GameFrame extends JFrame {
 				// to make sure the strategy is validated
 				Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
 				try {
-					doRendering(graphics, state, bullets);
+					doRendering(graphics, states, bullets);
 				} finally {
 					// Dispose the graphics
 					graphics.dispose();
@@ -127,7 +127,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Rendering all game elements based on the game state.
 	 */
-	private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
+	private void doRendering(Graphics2D g2d, ArrayList<GameState> states, ArrayList<Bullet> bullets) {
 
 		// Draw background
 		g2d.setColor(Color.GRAY);
@@ -168,15 +168,17 @@ public class GameFrame extends JFrame {
 		}
 
 		// This is the rotation finding part
-		int rotateDegree = state.direction(); // The rotation degree
-		double rotation = Math.toRadians(rotateDegree);
-		// Using affine to rotate
-		AffineTransform tx = new AffineTransform();
-		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		// draw the rotated image
-		if (!state.gameOver)
-			g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2,GameMap.CHANGING_FACTOR / 2, null);
+		for (GameState state : states) {
+			int rotateDegree = state.direction(); // The rotation degree
+			double rotation = Math.toRadians(rotateDegree);
+			// Using affine to rotate
+			AffineTransform tx = new AffineTransform();
+			tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+			// draw the rotated image
+			if (!state.gameOver)
+				g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2, GameMap.CHANGING_FACTOR / 2, null);
+		}
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();
@@ -206,12 +208,14 @@ public class GameFrame extends JFrame {
 		g2d.setFont(g2d.getFont().deriveFont(18.0f));
 		g2d.drawString(userGuide, 10, GAME_HEIGHT - 10);
 		// Draw GAME OVER
-		if (state.gameOver) {
-			String str = "GAME OVER";
-			g2d.setColor(new Color(100,12,22));
-			g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
-			int strWidth = g2d.getFontMetrics().stringWidth(str);
-			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+		for (GameState state : states) {
+			if (state.gameOver) {
+				String str = "GAME OVER";
+				g2d.setColor(new Color(100, 12, 22));
+				g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
+				int strWidth = g2d.getFontMetrics().stringWidth(str);
+				g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+			}
 		}
 	}
 }

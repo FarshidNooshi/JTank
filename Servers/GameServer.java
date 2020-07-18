@@ -4,12 +4,15 @@ import game.Control.LocationController;
 import game.Process.Bullet;
 import game.Process.GameMap;
 import game.Process.GameState;
+import game.Process.Main;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,20 +20,25 @@ import java.util.concurrent.Executors;
 public class GameServer {
 
     private static int counter = 100;
+    private static HashMap<Integer, GameState> states;
 
     public static void main (String[] args) {
 
         ExecutorService service = Executors.newCachedThreadPool();
         CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
+        states = new HashMap<>();
 
         GameMap gameMap = new GameMap();
         gameMap.init();
 
         try (ServerSocket welcomeSocket = new ServerSocket(2020)) {
 
-            Socket socket = welcomeSocket.accept();
+            for (int i = 0; i < 2; i++) {
+                Socket socket = welcomeSocket.accept();
 
-            service.execute(new InGameClient(socket, gameMap, bullets));
+                service.execute(new InGameClient(socket, gameMap, bullets, counter));
+                counter++;
+            }
 
         } catch (IOException e) {
             System.out.println("Error in starting server :: " + e.getMessage());
@@ -45,12 +53,14 @@ public class GameServer {
         private GameMap gameMap;
         private ExecutorService executorService;
         private CopyOnWriteArrayList<Bullet> bullets;
+        private final int ID;
 
-        public InGameClient (Socket socket, GameMap gameMap, CopyOnWriteArrayList<Bullet> bullets) {
+        public InGameClient (Socket socket, GameMap gameMap, CopyOnWriteArrayList<Bullet> bullets, int ID) {
             this.socket = socket;
             this.gameMap = gameMap;
             this.bullets = bullets;
             executorService = Executors.newCachedThreadPool();
+            this.ID = ID;
         }
 
         @Override
@@ -63,10 +73,17 @@ public class GameServer {
                 ObjectInputStream ois = new ObjectInputStream(inputStream);
 
                 oos.writeObject(gameMap);
+                outputStream.write(ID);
 
                 while (true) {
 
                     GameState state = (GameState) ois.readObject();
+
+                    if (states.containsKey(ID)) {
+                        states.replace(ID, state);
+                    } else
+                        states.put(ID, state);
+
 
                     if (state.shotFired) {
                         int direction = state.direction();
@@ -90,8 +107,13 @@ public class GameServer {
 
                     state.update();
 
-                    oos.writeObject(state);
-                    oos.reset();
+                    for (Map.Entry<Integer, GameState> entry : states.entrySet()) {
+                        outputStream.write(1);
+                        outputStream.write(entry.getKey());
+                        oos.reset();
+                        oos.writeObject(entry.getValue());
+                    }
+                    outputStream.write(0);
                     oos.writeObject(gameMap.binaryMap);
                     if (bullets.size() == 0)
                         outputStream.write(0);

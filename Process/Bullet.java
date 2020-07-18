@@ -4,8 +4,6 @@ import game.Control.Location;
 import game.Control.LocationController;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Bullet implements Serializable {
 

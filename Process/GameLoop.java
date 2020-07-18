@@ -29,10 +29,13 @@ public class GameLoop implements Runnable {
 	public static final int FPS = 30;
 
 	private ArrayList<Bullet> bullets;
+	private ArrayList<GameState> states;
 	private ExecutorService executorService;
 	
 	private GameFrame canvas;
 	private GameState state;
+
+	private int thisId;
 
 	/**
 	 * The constructor of the game loop.
@@ -51,6 +54,7 @@ public class GameLoop implements Runnable {
 		state = new GameState(); // Creating the states
 		executorService = Executors.newCachedThreadPool();
 		bullets = new ArrayList<>();
+		states = new ArrayList<>();
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
@@ -88,6 +92,7 @@ public class GameLoop implements Runnable {
 			canvas.setGameMap(gameMap);
 			state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
 			canvas.getGameMap().setPlaces(state); // Setting the tank in the map
+			thisId = inputStream.read();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -100,7 +105,20 @@ public class GameLoop implements Runnable {
 
 				try {
 					objectOutputStream.writeObject(state);
-					state = (GameState) objectInputStream.readObject();
+					int newState;
+					states.clear();
+					while (true) {
+						newState = inputStream.read();
+						if (newState == 0)
+							break;
+						int id = inputStream.read();
+						System.out.println(id);
+						if (id != thisId)
+							states.add((GameState) objectInputStream.readObject());
+						else
+							state = (GameState) objectInputStream.readObject();
+					}
+					states.add(state);
 					canvas.addKeyListener(state.getKeyListener());
 					canvas.addMouseListener(state.getMouseListener());
 					canvas.addMouseMotionListener(state.getMouseMotionListener());
@@ -121,7 +139,7 @@ public class GameLoop implements Runnable {
 				}
 
 				//TODO: add a update method for the bullets
-				canvas.render(state, bullets);
+				canvas.render(states, bullets);
 				gameOver = state.gameOver;
 				// calculating the delay for avoiding lags in the game
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
@@ -130,6 +148,6 @@ public class GameLoop implements Runnable {
 			} catch (InterruptedException ex) {
 			}
 		}
-		canvas.render(state, bullets);
+		canvas.render(states, bullets);
 	}
 }
