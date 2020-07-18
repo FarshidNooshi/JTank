@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.Serializable;
 
 /**
  * This class holds the state of game and all of its elements.
@@ -16,7 +17,7 @@ import java.awt.event.MouseMotionListener;
  * 
  * @author Seyed Mohammad Ghaffarian
  */
-public class GameState {
+public class GameState implements Serializable {
 
 	private int mapRowsLimit, mapColsLimit; // This is the map limits
 	
@@ -242,7 +243,7 @@ public class GameState {
 	/**
 	 * The keyboard handler.
 	 */
-	class KeyHandler extends KeyAdapter {
+	class KeyHandler extends KeyAdapter implements Serializable {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -315,7 +316,7 @@ public class GameState {
 	/**
 	 * The mouse handler.
 	 */
-	class MouseHandler extends MouseAdapter {
+	class MouseHandler extends MouseAdapter implements Serializable {
 
 		@Override
 		public void mousePressed(MouseEvent e) {

@@ -3,18 +3,22 @@ package game.Process;
 import game.Control.Location;
 import game.Control.LocationController;
 
-public class Bullet {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-    private GameMap gameMap; //Each bullet needs the map
+public class Bullet implements Serializable {
+
+    transient private GameMap gameMap; //Each bullet needs the map
     //Location fields
     public int locX, locY, diam;
-    private int firstX, firstY;
-    public boolean isAlive, justShot; //Status fields
+    transient private int firstX, firstY;
+    transient public boolean isAlive, justShot; //Status fields
     //Speed and time fields
-    public static int speed = 8;
-    private long start;
-    private int mapRowsLimit, mapColsLimit; //The limits fields
-    private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
+    transient public static int speed = 8;
+    transient private long start;
+    transient private int mapRowsLimit, mapColsLimit; //The limits fields
+    transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
 
     /**
      * The constructor of the bullet class.
@@ -100,7 +104,7 @@ public class Bullet {
         make in the map.
 
      */
-    class BulletMove implements Runnable {
+    class BulletMove implements Runnable, Serializable {
 
         /*
             This method will change the directions of the bullet

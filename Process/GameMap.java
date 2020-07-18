@@ -2,6 +2,8 @@ package game.Process;
 
 import game.Control.Location;
 import game.Control.LocationController;
+
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -10,7 +12,7 @@ import java.util.Random;
  * places the tanks in the empty spaces.
  *
  */
-public class GameMap {
+public class GameMap implements Serializable {
 
     private Random random = new Random(); // The random instance
 
@@ -19,7 +21,7 @@ public class GameMap {
      // The data of the map
     int numberOfRows;
     int numberOfColumns;
-    int[][] binaryMap; // The array of the map
+    public int[][] binaryMap; // The array of the map
 
     /**
      * The constructor of the map class.

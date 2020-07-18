@@ -1,8 +1,8 @@
 package game.Process;
 
-import game.Control.LocationController;
-
-import java.util.Iterator;
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +28,7 @@ public class GameLoop implements Runnable {
 	 */
 	public static final int FPS = 30;
 
-	private CopyOnWriteArrayList<Bullet> bullets;
+	private ArrayList<Bullet> bullets;
 	private ExecutorService executorService;
 	
 	private GameFrame canvas;
@@ -49,10 +49,8 @@ public class GameLoop implements Runnable {
 	 */
 	public void init() {
 		state = new GameState(); // Creating the states
-		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
-		bullets = new CopyOnWriteArrayList<>();
 		executorService = Executors.newCachedThreadPool();
-		canvas.getGameMap().setPlaces(state); // Setting the tank in the map
+		bullets = new ArrayList<>();
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
@@ -61,30 +59,67 @@ public class GameLoop implements Runnable {
 	@Override
 	public void run() {
 		boolean gameOver = false;
+
+		Socket clientSocket;
+		try {
+			clientSocket = new Socket("127.0.0.1", 2020);
+		} catch (IOException e) {
+			System.out.println("Error in connecting to server :: " + e.getMessage());
+			return;
+		}
+
+		InputStream inputStream;
+		OutputStream outputStream;
+		ObjectOutputStream objectOutputStream;
+		ObjectInputStream objectInputStream;
+
+		try {
+			inputStream = clientSocket.getInputStream();
+			outputStream = clientSocket.getOutputStream();
+			objectOutputStream = new ObjectOutputStream(outputStream);
+			objectInputStream = new ObjectInputStream(inputStream);
+		} catch (IOException e) {
+			System.out.println("Error in connecting to server :: " + e.getMessage());
+			return;
+		}
+
+		try {
+			GameMap gameMap = (GameMap) objectInputStream.readObject();
+			canvas.setGameMap(gameMap);
+			state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns); // Giving the limits
+			canvas.getGameMap().setPlaces(state); // Setting the tank in the map
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
 		while (!gameOver) {
 			try {
+
 				long start = System.currentTimeMillis();
 				// updating the game
-				if (state.shotFired) {
-					int direction = state.direction();
-					Bullet bullet = new Bullet(state.locX, state.locY, canvas.getGameMap());
-					bullets.add(bullet);
-					bullet.setDirections(direction);
-				}
-				// The bullets loop
-				Iterator<Bullet> iterator = bullets.iterator();
-				while (iterator.hasNext()) {
-					Bullet bullet = iterator.next();
-					if (LocationController.tankGotShot(bullet.locX + bullet.diam / 2, bullet.locY + bullet.diam / 2, state.locX, state.locY) && !bullet.justShot) {
-						state.gameOver = true;
-						bullet.isAlive = false;
+
+				try {
+					objectOutputStream.writeObject(state);
+					state = (GameState) objectInputStream.readObject();
+					canvas.addKeyListener(state.getKeyListener());
+					canvas.addMouseListener(state.getMouseListener());
+					canvas.addMouseMotionListener(state.getMouseMotionListener());
+					canvas.getGameMap().binaryMap = (int[][]) objectInputStream.readObject();
+					state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
+					int done;
+					bullets.clear();
+					while (true) {
+						done = inputStream.read();
+						if (done == 0)
+							break;
+						System.out.println(done);
+						bullets.add((Bullet) objectInputStream.readObject());
 					}
-					if (bullet.isAlive)
-						executorService.execute(bullet.getMover());
-					else
-						bullets.remove(bullet);
+				} catch (IOException | ClassNotFoundException e) {
+					e.printStackTrace();
+					return;
 				}
-				state.update();
+
 				//TODO: add a update method for the bullets
 				canvas.render(state, bullets);
 				gameOver = state.gameOver;
