@@ -20,10 +20,6 @@ public class TankLine {
     }
 
     public static void solveTheorem (int way) {
-        if (grand == 88) {
-            x = 0;
-            y = way > 0 ? -8 : 8;
-        }
         x = GameState.speed / (1 + Math.pow(grand, 2));
         if (way > 0)
             x = Math.sqrt(x);
