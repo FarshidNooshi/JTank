@@ -207,7 +207,7 @@ public class GameFrame extends JFrame {
 		// Draw GAME OVER
 		if (state.gameOver) {
 			String str = "GAME OVER";
-			g2d.setColor(Color.WHITE);
+			g2d.setColor(new Color(100,12,22));
 			g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
 			int strWidth = g2d.getFontMetrics().stringWidth(str);
 			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
