@@ -113,23 +113,26 @@ public class GameState implements Serializable {
 
 		if (keyUP)
 		{
-			if (LocationController.check(locX, locY - GameState.speed))
-				locY -= GameState.speed;
+			currentDirection -= 5;
 		}
 		if (keyDOWN)
 		{
-			if (LocationController.check(locX, locY + GameState.speed))
-				locY += GameState.speed;
+			currentDirection += 5;
 		}
+
+		TankLine.setTheta(currentDirection);
+
 		if (keyLEFT)
 		{
-			if (LocationController.check(locX - GameState.speed, locY))
-				locX -= GameState.speed;
+			TankLine.solveTheorem(-1);
 		}
 		if (keyRIGHT)
 		{
-			if (LocationController.check(locX + GameState.speed, locY))
-				locX += GameState.speed;
+			TankLine.solveTheorem(-1);
+		}
+		if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
+			locY = locY + (int)TankLine.y;
+			locX = locX + (int)TankLine.x;
 		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
@@ -146,42 +149,6 @@ public class GameState implements Serializable {
 	 * @return the rotation
 	 */
 	public int direction () {
-		// Check to see if we are using mouse
-		if (mousePress)
-			return mouseDirection();
-		// or using keyboard
-		if (keyUP && keyLEFT) {
-			currentDirection = 225;
-			return 225;
-		}
-		if (keyUP && keyRIGHT) {
-			currentDirection = 315;
-			return 315;
-		}
-		if (keyDOWN && keyRIGHT) {
-			currentDirection = 45;
-			return 45;
-		}
-		if (keyDOWN && keyLEFT) {
-			currentDirection = 135;
-			return 135;
-		}
-		if (keyUP) {
-			currentDirection = 270;
-			return 270;
-		}
-		if (keyDOWN) {
-			currentDirection = 90;
-			return 90;
-		}
-		if (keyLEFT) {
-			currentDirection = 180;
-			return 180;
-		}
-		if (keyRIGHT) {
-			currentDirection = 0;
-			return 0;
-		}
 		return currentDirection; // If no move is made
 	}
 

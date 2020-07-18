@@ -112,7 +112,6 @@ public class GameLoop implements Runnable {
 						if (newState == 0)
 							break;
 						int id = inputStream.read();
-						System.out.println(id);
 						if (id != thisId)
 							states.add((GameState) objectInputStream.readObject());
 						else
