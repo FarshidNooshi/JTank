@@ -10,7 +10,7 @@ import game.Process.GameMap;
  *
  */
 public class Location {
-
+//test
     // The two points of the walls
     public int type;
     private int binaryX; // In-array indexes
