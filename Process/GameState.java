@@ -82,22 +82,28 @@ public class GameState implements Serializable {
 		{
 			mouseDirection();
 
-			int oldY = locY; // Keeping the old coordinates
-			int oldX = locX;
 			int speedHolder = GameState.speed;
+			long distance = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
 
-			if (Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2) > 2 * Math.pow(10, 4))
+			if (distance > 2 * Math.pow(10, 4))
 				GameState.speed *= 2; // The new speed based on the distance from mouse
 
-			int bound = locY - mouseY;
-			locY = (Math.abs(bound) > GameState.speed) ? (locY > mouseY) ? locY - GameState.speed : locY + GameState.speed : mouseY;
-			if(!LocationController.check(locX, locY))
-				locY = oldY;
+			if (distance < 64) {
+				locX = mouseX;
+				locY = mouseY;
+			} else {
 
-			bound = locX - mouseX;
-			locX = (Math.abs(bound) > GameState.speed) ? (locX > mouseX) ? locX - GameState.speed : locX + GameState.speed : mouseX;
-			if(!LocationController.check(locX, locY))
-				locX = oldX;
+				if (locX <= mouseX)
+					TankLine.solveTheorem(1);
+				else
+					TankLine.solveTheorem(-1);
+
+				if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
+					locY += (int) TankLine.y;
+					locX += (int) TankLine.x;
+				}
+			}
+
 
 			GameState.speed = speedHolder; // Resetting the game speed
 		}
