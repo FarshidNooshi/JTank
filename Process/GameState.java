@@ -80,6 +80,8 @@ public class GameState implements Serializable {
 
 		if (mousePress)
 		{
+			mouseDirection();
+
 			int oldY = locY; // Keeping the old coordinates
 			int oldX = locX;
 			int speedHolder = GameState.speed;
@@ -133,6 +135,13 @@ public class GameState implements Serializable {
 	 */
 	public int direction () {
 		return currentDirection; // If no move is made
+	}
+
+	private void mouseDirection () {
+		if ( locX != mouseX )
+			currentDirection = 180 + (int) Math.toDegrees(Math.atan2((locY - mouseY), (locX - mouseX)));
+		else
+			currentDirection = mouseY > locY ? 90 : 270;
 	}
 
 
