@@ -20,19 +20,15 @@ public class TankLine {
     }
 
     public static void solveTheorem (int way) {
-
         if (grand == 9000) {
             x = 0;
             y = way > 0 ? GameState.speed : -1 * GameState.speed;
         }
-
         x = Math.pow(GameState.speed, 2) / (1 + Math.pow(grand, 2));
-
         if (way > 0)
             x = Math.sqrt(x);
         else
             x = -1 * Math.sqrt(x);
-
         y = x * grand;
     }
 }
