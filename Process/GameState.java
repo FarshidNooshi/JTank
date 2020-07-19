@@ -14,8 +14,7 @@ import java.io.Serializable;
 /**
  * This class holds the state of game and all of its elements.
  * This class also handles user inputs, which affect the game state.
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class GameState implements Serializable {
 
@@ -88,30 +87,31 @@ public class GameState implements Serializable {
 			if (distance > 2 * Math.pow(10, 4))
 				GameState.speed *= 2; // The new speed based on the distance from mouse
 
-			if (distance < 64) {
+			if (distance < 64)
+			{
 				locX = mouseX;
 				locY = mouseY;
 			} else {
-
 				if (locX <= mouseX)
-					TankLine.solveTheorem(1);
+					if (locY > mouseY)
+						TankLine.solveTheorem(1);
+					else
+						TankLine.solveTheorem(1);
 				else
 					TankLine.solveTheorem(-1);
-
-				if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
+				if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y))
+				{
 					locY += (int) TankLine.y;
 					locX += (int) TankLine.x;
 				}
 			}
-
-
 			GameState.speed = speedHolder; // Resetting the game speed
 		}
 
 		if (keyUP)
-			currentDirection -= 1;
+			currentDirection -= 5;
 		if (keyDOWN)
-			currentDirection += 1;
+			currentDirection += 5;
 
 		TankLine.setTheta(currentDirection);
 
@@ -120,8 +120,10 @@ public class GameState implements Serializable {
 		if (keyRIGHT)
 			TankLine.solveTheorem(1);
 
-		if (keyLEFT || keyRIGHT) {
-			if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
+		if (keyLEFT || keyRIGHT)
+		{
+			if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y))
+			{
 				locY += (int) TankLine.y;
 				locX += (int) TankLine.x;
 			}
@@ -140,7 +142,7 @@ public class GameState implements Serializable {
 	 * @return the rotation
 	 */
 	public int direction () {
-		return currentDirection; // If no move is made
+		return currentDirection;
 	}
 
 	private void mouseDirection () {
