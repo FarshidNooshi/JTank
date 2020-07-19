@@ -101,23 +101,22 @@ public class GameState implements Serializable {
 		}
 
 		if (keyUP)
-		{
-			currentDirection -= 5;
-		}
+			currentDirection -= 1;
 		if (keyDOWN)
-		{
-			currentDirection += 5;
-		}
+			currentDirection += 1;
 
 		TankLine.setTheta(currentDirection);
 
 		if (keyLEFT)
-		{
 			TankLine.solveTheorem(-1);
-		}
 		if (keyRIGHT)
-		{
-			TankLine.solveTheorem(-1);
+			TankLine.solveTheorem(1);
+
+		if (keyLEFT || keyRIGHT) {
+			if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y)) {
+				locY += (int) TankLine.y;
+				locX += (int) TankLine.x;
+			}
 		}
 
 		locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
