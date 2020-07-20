@@ -92,13 +92,9 @@ public class GameState implements Serializable {
 				locX = mouseX;
 				locY = mouseY;
 			} else {
-				if (locX <= mouseX)
-					if (locY > mouseY)
-						VectorFactory.solveTheorem(1);
-					else
-						VectorFactory.solveTheorem(1);
-				else
-					VectorFactory.solveTheorem(-1);
+
+				VectorFactory.solveTheorem(1);
+
 				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
 				{
 					locY += (int) VectorFactory.y;
