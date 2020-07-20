@@ -94,15 +94,15 @@ public class GameState implements Serializable {
 			} else {
 				if (locX <= mouseX)
 					if (locY > mouseY)
-						TankLine.solveTheorem(1);
+						VectorFactory.solveTheorem(1);
 					else
-						TankLine.solveTheorem(1);
+						VectorFactory.solveTheorem(1);
 				else
-					TankLine.solveTheorem(-1);
-				if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y))
+					VectorFactory.solveTheorem(-1);
+				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
 				{
-					locY += (int) TankLine.y;
-					locX += (int) TankLine.x;
+					locY += (int) VectorFactory.y;
+					locX += (int) VectorFactory.x;
 				}
 			}
 			GameState.speed = speedHolder; // Resetting the game speed
@@ -113,19 +113,19 @@ public class GameState implements Serializable {
 		if (keyDOWN)
 			currentDirection += 5;
 
-		TankLine.setTheta(currentDirection);
+		VectorFactory.setTheta(currentDirection);
 
 		if (keyLEFT)
-			TankLine.solveTheorem(-1);
+			VectorFactory.solveTheorem(-1);
 		if (keyRIGHT)
-			TankLine.solveTheorem(1);
+			VectorFactory.solveTheorem(1);
 
 		if (keyLEFT || keyRIGHT)
 		{
-			if (LocationController.check(locX + (int)TankLine.x, locY + (int)TankLine.y))
+			if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
 			{
-				locY += (int) TankLine.y;
-				locX += (int) TankLine.x;
+				locY += (int) VectorFactory.y;
+				locX += (int) VectorFactory.x;
 			}
 		}
 
