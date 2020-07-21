@@ -116,6 +116,11 @@ public class GameState implements Serializable {
 			}
 		}
 
+		if (keyUP)
+			currentDirection -= 5;
+		if (keyDOWN)
+			currentDirection += 5;
+
 		vectorFactory.setTheta(currentDirection);
 
 		if (keyLEFT)

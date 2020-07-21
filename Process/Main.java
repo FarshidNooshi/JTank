@@ -21,8 +21,8 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				Log.run();
-//				startTheGame();
+				//Log.run();
+				startTheGame();
 			}
 
 			private void startTheGame() {
