@@ -1,5 +1,10 @@
 package game.Process;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * A very simple structure for the main game loop.
  * THIS IS NOT PERFECT, but works for most situations.
@@ -24,6 +29,9 @@ public class GameLoop implements Runnable {
 	private GameFrame canvas;
 	private GameState state;
 
+	private ArrayList<Bullet> bullets;
+	private ExecutorService executorService;
+
 	/**
 	 * The constructor of the game loop.
 	 * To create the frame of the game.
@@ -44,6 +52,8 @@ public class GameLoop implements Runnable {
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
 		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
+		bullets = new ArrayList<>();
+		executorService = Executors.newCachedThreadPool();
 	}
 
 	@Override
@@ -54,10 +64,23 @@ public class GameLoop implements Runnable {
 		while (!gameOver) {
 			try {
 				long start = System.currentTimeMillis();
+				if (state.shotFired) {
+					Bullet bullet = new Bullet(state.locX, state.locY, canvas.getGameMap());
+					bullet.setDirections(state.direction());
+					bullets.add(bullet);
+				}
+				Iterator<Bullet> iterator = bullets.iterator();
+				while (iterator.hasNext()) {
+					Bullet bullet = iterator.next();
+					if (bullet.isAlive)
+						executorService.execute(bullet.getMover());
+					else
+						iterator.remove();
+				}
 				// updating the game
 				state.update();
 				//TODO: add a update method for the bullets
-				canvas.render(state);
+				canvas.render(state, bullets);
 				gameOver = state.gameOver;
 				// calculating the delay for avoiding lags in the game
 				long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
@@ -66,6 +89,6 @@ public class GameLoop implements Runnable {
 			} catch (InterruptedException ex) {
 			}
 		}
-		canvas.render(state);
+		canvas.render(state, bullets);
 	}
 }

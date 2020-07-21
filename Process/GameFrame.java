@@ -34,6 +34,7 @@ public class GameFrame extends JFrame {
 
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	private BufferedImage image;
+	private BufferedImage bullet;
 
 	private long lastRender;
 	private ArrayList<Float> fpsHistory;
@@ -56,7 +57,8 @@ public class GameFrame extends JFrame {
 		fpsHistory = new ArrayList<>(100);
 		// Opening the image
 		try{
-			image = ImageIO.read(new File("Icon.png"));
+			image = ImageIO.read(new File("./src/game/IconsInGame/Icon.png"));
+			bullet = ImageIO.read(new File("./src/game/IconsInGame/fireball2.png"));
 		}
 		catch(IOException e){
 			System.out.println(e.getMessage());
@@ -96,7 +98,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
-	public void render(GameState state) {
+	public void render(GameState state, ArrayList<Bullet> bullets) {
 		// Render single frame
 		do {
 			// The following loop ensures that the contents of the drawing buffer
@@ -106,7 +108,7 @@ public class GameFrame extends JFrame {
 				// to make sure the strategy is validated
 				Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
 				try {
-					doRendering(graphics, state);
+					doRendering(graphics, state, bullets);
 				} finally {
 					// Dispose the graphics
 					graphics.dispose();
@@ -127,7 +129,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Rendering all game elements based on the game state.
 	 */
-	private void doRendering(Graphics2D g2d, GameState state) {
+	private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
 
 		// Draw background
 		g2d.setColor(Color.GRAY);
@@ -161,13 +163,23 @@ public class GameFrame extends JFrame {
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
 
+		g2d.setColor(Color.RED);
+		for (Bullet i : bullets) {
+			int rotateDegree = i.direction; // The rotation degree
+			double rotation = Math.toRadians(rotateDegree);
+			// Using affine to rotate
+			AffineTransform tx = new AffineTransform();
+			tx.rotate(rotation, 200, 200);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+			g2d.drawImage(op.filter(bullet, null), i.locX, i.locY, i.diam, i.diam, null);
+		}
 
 		// This is the rotation finding part
 		int rotateDegree = state.direction(); // The rotation degree
 		double rotation = Math.toRadians(rotateDegree);
 		// Using affine to rotate
 		AffineTransform tx = new AffineTransform();
-		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 20, GameMap.CHANGING_FACTOR + 20);
+		tx.rotate(rotation, GameMap.CHANGING_FACTOR + 25, GameMap.CHANGING_FACTOR + 25);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 		// draw the rotated image
 		if (!state.gameOver)
