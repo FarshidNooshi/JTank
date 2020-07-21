@@ -2,16 +2,16 @@ package game.Process;
 
 public class VectorFactory {
 
-    private static int theta = 0;
-    private static double grand;
+    private int theta = 0;
+    private double grand;
     static double x, y;
 
-    public static void setTheta (int newTheta) {
+    public void setTheta (int newTheta) {
         theta = newTheta;
         theoremMaker();
     }
 
-    private static void theoremMaker () {
+    private void theoremMaker () {
         int holder = theta % 360;
         if (holder == 90 || holder == 270 || holder == -270 || holder == -90)
             grand = 9000;
@@ -19,7 +19,7 @@ public class VectorFactory {
             grand = Math.tan(Math.toRadians(theta));
     }
 
-    public static void solveTheorem (int way) {
+    public void solveTheorem (int way) {
         int place = theta % 360;
 
         if (grand == 9000) {

@@ -30,10 +30,14 @@ public class GameState implements Serializable {
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
+	public boolean shotFired;
+
+	private VectorFactory vectorFactory;
 	
 	public GameState() {
 		diam = 32;
 		gameOver = false;
+		shotFired = false;
 		currentDirection = 0;
 		//
 		keyUP = false;
@@ -47,6 +51,8 @@ public class GameState implements Serializable {
 		//
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
+		//
+		vectorFactory = new VectorFactory();
 	}
 
 	/**
@@ -77,6 +83,8 @@ public class GameState implements Serializable {
 	 */
 	public void update() {
 
+		shotFired = false;
+
 		if (mousePress)
 		{
 			mouseDirection();
@@ -93,7 +101,7 @@ public class GameState implements Serializable {
 				locY = mouseY;
 			} else {
 
-				VectorFactory.solveTheorem(1);
+				vectorFactory.solveTheorem(1);
 
 				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
 				{
@@ -109,12 +117,12 @@ public class GameState implements Serializable {
 		if (keyDOWN)
 			currentDirection += 5;
 
-		VectorFactory.setTheta(currentDirection);
+		vectorFactory.setTheta(currentDirection);
 
 		if (keyLEFT)
-			VectorFactory.solveTheorem(-1);
+			vectorFactory.solveTheorem(-1);
 		if (keyRIGHT)
-			VectorFactory.solveTheorem(1);
+			vectorFactory.solveTheorem(1);
 
 		if (keyLEFT || keyRIGHT)
 		{
@@ -183,6 +191,9 @@ public class GameState implements Serializable {
 				case KeyEvent.VK_RIGHT:
 				case KeyEvent.VK_D:
 					keyRIGHT = true;
+					break;
+				case KeyEvent.VK_SPACE:
+					shotFired = true;
 					break;
 				case KeyEvent.VK_ESCAPE:
 					gameOver = true;

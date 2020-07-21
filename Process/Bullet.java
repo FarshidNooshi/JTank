@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Bullet implements Serializable {
 
     transient private GameMap gameMap; //Each bullet needs the map
+    transient private VectorFactory vectorFactory;
     //Location fields
     public int locX, locY, diam;
     transient private int firstX, firstY;
@@ -41,6 +42,7 @@ public class Bullet implements Serializable {
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
+        vectorFactory = new VectorFactory();
         start = System.currentTimeMillis(); // Keeping the start time
     }
 
@@ -114,8 +116,8 @@ public class Bullet implements Serializable {
                 direction = 360 - direction;
             }
 
-            VectorFactory.setTheta(direction);
-            VectorFactory.solveTheorem(1);
+            vectorFactory.setTheta(direction);
+            vectorFactory.solveTheorem(1);
 
             locX += VectorFactory.x;
             locY += VectorFactory.y;

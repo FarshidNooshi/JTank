@@ -96,7 +96,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Game rendering with triple-buffering using BufferStrategy.
 	 */
-	public void render(GameState state) {
+	public void render(GameState state, ArrayList<Bullet> bullets) {
 		// Render single frame
 		do {
 			// The following loop ensures that the contents of the drawing buffer
@@ -106,7 +106,7 @@ public class GameFrame extends JFrame {
 				// to make sure the strategy is validated
 				Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
 				try {
-					doRendering(graphics, state);
+					doRendering(graphics, state, bullets);
 				} finally {
 					// Dispose the graphics
 					graphics.dispose();
@@ -127,7 +127,7 @@ public class GameFrame extends JFrame {
 	/**
 	 * Rendering all game elements based on the game state.
 	 */
-	private void doRendering(Graphics2D g2d, GameState state) {
+	private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
 
 		// Draw background
 		g2d.setColor(Color.GRAY);
@@ -160,6 +160,10 @@ public class GameFrame extends JFrame {
 			horizonAt = DRAWING_START_X;
 			verticalAt += GameMap.CHANGING_FACTOR;
 		}
+
+		g2d.setColor(Color.RED);
+		for (Bullet i : bullets)
+			g2d.fillOval(i.locX, i.locY, i.diam, i.diam);
 
 
 		// This is the rotation finding part
