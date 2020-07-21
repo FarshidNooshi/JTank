@@ -52,7 +52,7 @@ public class GameState implements Serializable {
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
 		//
-		vectorFactory = new VectorFactory();
+		vectorFactory = new VectorFactory(speed);
 	}
 
 	/**
@@ -103,10 +103,10 @@ public class GameState implements Serializable {
 
 				vectorFactory.solveTheorem(1);
 
-				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
+				if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y))
 				{
-					locY += (int) VectorFactory.y;
-					locX += (int) VectorFactory.x;
+					locY += (int) vectorFactory.y;
+					locX += (int) vectorFactory.x;
 				}
 			}
 			GameState.speed = speedHolder; // Resetting the game speed
@@ -126,10 +126,10 @@ public class GameState implements Serializable {
 
 		if (keyLEFT || keyRIGHT)
 		{
-			if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
+			if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y))
 			{
-				locY += (int) VectorFactory.y;
-				locX += (int) VectorFactory.x;
+				locY += (int) vectorFactory.y;
+				locX += (int) vectorFactory.x;
 			}
 		}
 

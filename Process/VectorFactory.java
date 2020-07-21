@@ -4,7 +4,12 @@ public class VectorFactory {
 
     private int theta = 0;
     private double grand;
-    static double x, y;
+    public double x, y;
+    private final int speed;
+
+    public VectorFactory (int speed) {
+        this.speed = speed;
+    }
 
     public void setTheta (int newTheta) {
         theta = newTheta;
@@ -25,13 +30,13 @@ public class VectorFactory {
         if (grand == 9000) {
             x = 0;
             if (theta == 270 || theta == -90)
-                y = way > 0 ? -1 * GameState.speed : GameState.speed;
+                y = way > 0 ? -1 * speed : speed;
             else
-                y = way > 0 ? GameState.speed : -1 * GameState.speed;
+                y = way > 0 ? speed : -1 * speed;
             return;
         }
 
-        x = Math.pow(GameState.speed, 2) / (1 + Math.pow(grand, 2));
+        x = Math.pow(speed, 2) / (1 + Math.pow(grand, 2));
 
         if (place > 90 && place < 270 || place < -90 && place > -270) {
             if (way > 0)

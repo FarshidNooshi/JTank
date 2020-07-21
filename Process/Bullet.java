@@ -14,7 +14,7 @@ public class Bullet implements Serializable {
     transient private int firstX, firstY;
     transient public boolean isAlive, justShot; //Status fields
     //Speed and time fields
-    transient public static int speed = 16;
+    transient public static int speed = 8;
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
     transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
@@ -42,7 +42,7 @@ public class Bullet implements Serializable {
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
-        vectorFactory = new VectorFactory();
+        vectorFactory = new VectorFactory(speed);
         start = System.currentTimeMillis(); // Keeping the start time
     }
 
@@ -119,8 +119,8 @@ public class Bullet implements Serializable {
             vectorFactory.setTheta(direction);
             vectorFactory.solveTheorem(1);
 
-            locX += VectorFactory.x;
-            locY += VectorFactory.y;
+            locX += (int) vectorFactory.x;
+            locY += (int) vectorFactory.y;
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
             locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_X);
