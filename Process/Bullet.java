@@ -18,7 +18,7 @@ public class Bullet implements Serializable {
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
     transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
-    transient private int direction;
+    transient public int direction;
 
     /**
      * The constructor of the bullet class.
@@ -38,7 +38,7 @@ public class Bullet implements Serializable {
         this.mapRowsLimit = gameMap.numberOfRows;
         this.mapColsLimit = gameMap.numberOfColumns;
         // The radius of the circle
-        diam = 8;
+        diam = 16;
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
