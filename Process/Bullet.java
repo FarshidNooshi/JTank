@@ -86,10 +86,10 @@ public class Bullet implements Serializable {
             int centerX = locX + diam / 2; // We locate the center of
             int centerY = locY + diam / 2; // bullet
             // And then check for points of the circle for overlapping
-            boolean top = location.isOverlap(centerX, centerY - diam / 2, 0);
-            boolean bottom = location.isOverlap(centerX, centerY + diam / 2, 0);
-            boolean left = location.isOverlap(centerX - diam / 2, centerY, 0);
-            boolean right = location.isOverlap(centerX + diam / 2, centerY, 0);
+            boolean top = location.isOverlap(centerX, centerY - diam / 2 - 4, 0);
+            boolean bottom = location.isOverlap(centerX, centerY + diam / 2 + 4, 0);
+            boolean left = location.isOverlap(centerX - diam / 2 - 4, centerY, 0);
+            boolean right = location.isOverlap(centerX + diam / 2 + 4, centerY, 0);
 
             if (top && !bottom || bottom && !top) {
                 direction = 360 - direction;
