@@ -7,21 +7,33 @@ import java.awt.*;
 
 /**
  * Program start.
+ * This is the client starting part where we open the
+ * login page and get user login or sig up inputs
+ * to enter the user into the game server.
+ *
  */
 public class Main {
 
     public static void main(String[] args) {
+
         // Initialize the global thread-pool
         ThreadPool.init();
 
         // Show the game menu ...
+        Main.startTheGame();
 
         // After the player clicks 'PLAY' ...
         EventQueue.invokeLater(Log::run);
     }
 
-    public void startTheGame() {
-        GameFrame frame = new GameFrame("Simple Ball !");
+    /**
+     * This is the part where we connect the user to the
+     * server game that the user chooses or creates.
+     *
+     */
+    public static void startTheGame() {
+
+        GameFrame frame = new GameFrame("GameName !");
         frame.setLocationRelativeTo(null); // put frame at center of screen
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

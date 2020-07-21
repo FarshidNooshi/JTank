@@ -1,12 +1,22 @@
 package game.Server;
 
 import java.io.Serializable;
-import java.net.PasswordAuthentication;
-import java.util.Arrays;
 
+/**
+ * This class is a single user information keeper
+ * to store and restore the users information.
+ *
+ */
 public class User implements Serializable {
+
     private String userName, password;
 
+    /**
+     * The main constructor of the User class.
+     *
+     * @param userName the username
+     * @param password the password
+     */
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
@@ -23,10 +33,20 @@ public class User implements Serializable {
                 user.userName.equals(userName);
     }
 
+    /**
+     * A getter method for getting the user name.
+     *
+     * @return the username
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * A getter method for getting the user password.
+     *
+     * @return the user password
+     */
     public String getPassword() {
         return password;
     }
