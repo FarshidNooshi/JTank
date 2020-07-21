@@ -17,6 +17,7 @@ public class Bullet implements Serializable {
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
     transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
+    transient private int direction;
 
     /**
      * The constructor of the bullet class.
@@ -50,37 +51,7 @@ public class Bullet implements Serializable {
      * @param directions the tank direction
      */
     public void setDirections (int directions) {
-        switch (directions)
-        {
-            case 225:
-                UP = true;
-                LEFT = true;
-                break;
-            case 315:
-                UP = true;
-                RIGHT = true;
-                break;
-            case 45:
-                DOWN = true;
-                RIGHT = true;
-                break;
-            case 135:
-                DOWN = true;
-                LEFT = true;
-                break;
-            case 270:
-                UP = true;
-                break;
-            case 90:
-                DOWN = true;
-                break;
-            case 180:
-                LEFT = true;
-                break;
-            case 0:
-                RIGHT = true;
-                break;
-        }
+        this.direction = directions;
     }
 
     /**
@@ -118,21 +89,11 @@ public class Bullet implements Serializable {
             boolean left = location.isOverlap(centerX - diam / 2, centerY, 0);
             boolean right = location.isOverlap(centerX + diam / 2, centerY, 0);
 
-            if (top && !bottom) {
-                UP = false;
-                DOWN = true;
+            if (top && !bottom || bottom && !top) {
+                direction = 360 - direction;
             }
-            if (bottom && !top) {
-                UP = true;
-                DOWN = false;
-            }
-            if (left && !right) {
-                LEFT = false;
-                RIGHT = true;
-            }
-            if (right && !left) {
-                LEFT = true;
-                RIGHT = false;
+            if (left && !right || right && !left) {
+                direction = 180 - direction;
             }
         }
 
@@ -142,33 +103,22 @@ public class Bullet implements Serializable {
             Changing the place and the borders bouncy.
          */
         private void update () {
+
             // Update the location
-            if (UP)
-                locY -= speed;
-            if (DOWN)
-                locY += speed;
-            if (LEFT)
-                locX -= speed;
-            if (RIGHT)
-                locX += speed;
 
             // The walls bouncy
-            if (locX + diam / 2 <= GameFrame.DRAWING_START_X) {
-                LEFT = false;
-                RIGHT = true;
+            if (locX + diam / 2 <= GameFrame.DRAWING_START_X || locX  + diam / 2 >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
+                direction = 180 - direction;
             }
-            if (locX  + diam / 2 >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
-                RIGHT = false;
-                LEFT = true;
+            if (locY  + diam / 2 <= GameFrame.DRAWING_START_Y || locY + diam / 2 >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
+                direction = 360 - direction;
             }
-            if (locY  + diam / 2 <= GameFrame.DRAWING_START_Y) {
-                UP = false;
-                DOWN = true;
-            }
-            if (locY + diam / 2 >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
-                UP = true;
-                DOWN = false;
-            }
+
+            VectorFactory.setTheta(direction);
+            VectorFactory.solveTheorem(1);
+
+            locX += VectorFactory.x;
+            locY += VectorFactory.y;
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
             locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_X);
