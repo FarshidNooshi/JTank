@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 public class Writer {
     private ObjectOutputStream out;
 
-    public Writer(String path) throws IOException {
+    Writer(String path) throws IOException {
         out = new ObjectOutputStream(new FileOutputStream(new File(path)));
     }
 
@@ -19,4 +19,5 @@ public class Writer {
         out.writeObject(obj);
         out.close();
     }
+
 }
