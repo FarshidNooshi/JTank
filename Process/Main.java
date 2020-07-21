@@ -1,5 +1,7 @@
 package game.Process;
 
+import game.Log;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
@@ -19,6 +21,11 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				Log.run();
+//				startTheGame();
+			}
+
+			private void startTheGame() {
 				GameFrame frame = new GameFrame("Simple Ball !");
 				frame.setLocationRelativeTo(null); // put frame at center of screen
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
