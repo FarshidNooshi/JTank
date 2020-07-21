@@ -51,12 +51,9 @@ public class GameLoop implements Runnable {
 		canvas.addKeyListener(state.getKeyListener());
 		canvas.addMouseListener(state.getMouseListener());
 		canvas.addMouseMotionListener(state.getMouseMotionListener());
-<<<<<<< HEAD
 		state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
-=======
 		bullets = new ArrayList<>();
 		executorService = Executors.newCachedThreadPool();
->>>>>>> add_bullets
 	}
 
 	@Override

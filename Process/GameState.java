@@ -91,8 +91,7 @@ public class GameState implements Serializable {
 			waitForSecondShot = false;
 		}
 
-		if (mousePress)
-		{
+		if (mousePress) {
 			mouseDirection();
 
 			int speedHolder = GameState.speed;
@@ -101,72 +100,21 @@ public class GameState implements Serializable {
 			if (distance > 2 * Math.pow(10, 4))
 				GameState.speed *= 2; // The new speed based on the distance from mouse
 
-			if (distance < 64)
-			{
+			if (distance < 64) {
 				locX = mouseX;
 				locY = mouseY;
 			} else {
 
-<<<<<<< HEAD
-				VectorFactory.solveTheorem(1);
-
-				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
-				{
-					locY += (int) VectorFactory.y;
-					locX += (int) VectorFactory.x;
-=======
 				vectorFactory.solveTheorem(1);
 
-				if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y))
-				{
+				if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y)) {
 					locY += (int) vectorFactory.y;
 					locX += (int) vectorFactory.x;
->>>>>>> add_bullets
+					vectorFactory.solveTheorem(1);
 				}
+				GameState.speed = speedHolder; // Resetting the game speed
 			}
-			GameState.speed = speedHolder; // Resetting the game speed
 		}
-
-		if (keyUP)
-<<<<<<< HEAD
-<<<<<<< HEAD
-			currentDirection -= 1;
-		if (keyDOWN)
-			currentDirection += 1;
-=======
-			currentDirection -= 5;
-		if (keyDOWN)
-			currentDirection += 5;
->>>>>>> making_360_direction
-
-		VectorFactory.setTheta(currentDirection);
-
-		if (keyLEFT)
-<<<<<<< HEAD
-			TankLine.solveTheorem(-1);
-		if (keyRIGHT)
-			TankLine.solveTheorem(1);
-
-		if (keyRIGHT || keyLEFT) {
-			if (LocationController.check(locX + (int) TankLine.x, locY + (int) TankLine.y)) {
-				locY += TankLine.y;
-				locX += TankLine.x;
-=======
-			VectorFactory.solveTheorem(-1);
-		if (keyRIGHT)
-			VectorFactory.solveTheorem(1);
-
-		if (keyLEFT || keyRIGHT)
-		{
-			if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
-			{
-				locY += (int) VectorFactory.y;
-				locX += (int) VectorFactory.x;
->>>>>>> making_360_direction
-=======
-			currentDirection -= 5;
-		if (keyDOWN)
-			currentDirection += 5;
 
 		vectorFactory.setTheta(currentDirection);
 
@@ -181,7 +129,6 @@ public class GameState implements Serializable {
 			{
 				locY += (int) vectorFactory.y;
 				locX += (int) vectorFactory.x;
->>>>>>> add_bullets
 			}
 		}
 
