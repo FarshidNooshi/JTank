@@ -30,7 +30,9 @@ public class GameState implements Serializable {
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
-	public boolean shotFired;
+	public boolean shotFired, waitForSecondShot;
+	private long shotTimeLimit;
+	private int roundCounter;
 
 	private VectorFactory vectorFactory;
 	
@@ -84,6 +86,10 @@ public class GameState implements Serializable {
 	public void update() {
 
 		shotFired = false;
+		if (waitForSecondShot && roundCounter > 3) {
+			shotFired = true;
+			waitForSecondShot = false;
+		}
 
 		if (mousePress)
 		{
@@ -137,6 +143,7 @@ public class GameState implements Serializable {
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+		roundCounter++;
 	}
 
 	/**
@@ -193,11 +200,21 @@ public class GameState implements Serializable {
 					keyRIGHT = true;
 					break;
 				case KeyEvent.VK_SPACE:
-					shotFired = true;
+					takeAShot();
 					break;
 				case KeyEvent.VK_ESCAPE:
 					gameOver = true;
 					break;
+			}
+		}
+
+		private void takeAShot () {
+			int time = (int) (( System.currentTimeMillis() - shotTimeLimit ) / 1000);
+			if (time > 1) {
+				shotTimeLimit = System.currentTimeMillis();
+				shotFired = true;
+				waitForSecondShot = true;
+				roundCounter = 0;
 			}
 		}
 
