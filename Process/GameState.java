@@ -30,10 +30,16 @@ public class GameState implements Serializable {
 	private int mouseX, mouseY;	
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
+	public boolean shotFired, waitForSecondShot;
+	private long shotTimeLimit;
+	private int roundCounter;
+
+	private VectorFactory vectorFactory;
 	
 	public GameState() {
 		diam = 32;
 		gameOver = false;
+		shotFired = false;
 		currentDirection = 0;
 		//
 		keyUP = false;
@@ -47,6 +53,8 @@ public class GameState implements Serializable {
 		//
 		keyHandler = new KeyHandler();
 		mouseHandler = new MouseHandler();
+		//
+		vectorFactory = new VectorFactory(speed);
 	}
 
 	/**
@@ -77,6 +85,12 @@ public class GameState implements Serializable {
 	 */
 	public void update() {
 
+		shotFired = false;
+		if (waitForSecondShot && roundCounter > 3) {
+			shotFired = true;
+			waitForSecondShot = false;
+		}
+
 		if (mousePress)
 		{
 			mouseDirection();
@@ -93,18 +107,28 @@ public class GameState implements Serializable {
 				locY = mouseY;
 			} else {
 
+<<<<<<< HEAD
 				VectorFactory.solveTheorem(1);
 
 				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
 				{
 					locY += (int) VectorFactory.y;
 					locX += (int) VectorFactory.x;
+=======
+				vectorFactory.solveTheorem(1);
+
+				if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y))
+				{
+					locY += (int) vectorFactory.y;
+					locX += (int) vectorFactory.x;
+>>>>>>> add_bullets
 				}
 			}
 			GameState.speed = speedHolder; // Resetting the game speed
 		}
 
 		if (keyUP)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			currentDirection -= 1;
 		if (keyDOWN)
@@ -139,6 +163,25 @@ public class GameState implements Serializable {
 				locY += (int) VectorFactory.y;
 				locX += (int) VectorFactory.x;
 >>>>>>> making_360_direction
+=======
+			currentDirection -= 5;
+		if (keyDOWN)
+			currentDirection += 5;
+
+		vectorFactory.setTheta(currentDirection);
+
+		if (keyLEFT)
+			vectorFactory.solveTheorem(-1);
+		if (keyRIGHT)
+			vectorFactory.solveTheorem(1);
+
+		if (keyLEFT || keyRIGHT)
+		{
+			if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y))
+			{
+				locY += (int) vectorFactory.y;
+				locX += (int) vectorFactory.x;
+>>>>>>> add_bullets
 			}
 		}
 
@@ -146,6 +189,7 @@ public class GameState implements Serializable {
 		locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
 		locY = Math.max(locY, GameFrame.DRAWING_START_Y);
 		locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+		roundCounter++;
 	}
 
 	/**
@@ -201,9 +245,22 @@ public class GameState implements Serializable {
 				case KeyEvent.VK_D:
 					keyRIGHT = true;
 					break;
+				case KeyEvent.VK_SPACE:
+					takeAShot();
+					break;
 				case KeyEvent.VK_ESCAPE:
 					gameOver = true;
 					break;
+			}
+		}
+
+		private void takeAShot () {
+			int time = (int) (( System.currentTimeMillis() - shotTimeLimit ) / 1000);
+			if (time > 1) {
+				shotTimeLimit = System.currentTimeMillis();
+				shotFired = true;
+				waitForSecondShot = true;
+				roundCounter = 0;
 			}
 		}
 
