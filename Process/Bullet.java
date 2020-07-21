@@ -14,7 +14,7 @@ public class Bullet implements Serializable {
     transient private int firstX, firstY;
     transient public boolean isAlive, justShot; //Status fields
     //Speed and time fields
-    transient public static int speed = 8;
+    transient public static int speed = 16;
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
     transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
@@ -109,10 +109,10 @@ public class Bullet implements Serializable {
             // Update the location
 
             // The walls bouncy
-            if (locX + diam / 2 <= GameFrame.DRAWING_START_X || locX  + diam / 2 >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
+            if (locX <= GameFrame.DRAWING_START_X || locX + diam >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
                 direction = 180 - direction;
             }
-            if (locY  + diam / 2 <= GameFrame.DRAWING_START_Y || locY + diam / 2 >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
+            if (locY <= GameFrame.DRAWING_START_Y || locY + diam >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
                 direction = 360 - direction;
             }
 
