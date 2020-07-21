@@ -14,8 +14,7 @@ import java.io.Serializable;
 /**
  * This class holds the state of game and all of its elements.
  * This class also handles user inputs, which affect the game state.
- * 
- * @author Seyed Mohammad Ghaffarian
+ *
  */
 public class GameState implements Serializable {
 
@@ -80,34 +79,46 @@ public class GameState implements Serializable {
 
 		if (mousePress)
 		{
-			int oldY = locY; // Keeping the old coordinates
-			int oldX = locX;
-			int speedHolder = GameState.speed;
+			mouseDirection();
 
-			if (Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2) > 2 * Math.pow(10, 4))
+			int speedHolder = GameState.speed;
+			long distance = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
+
+			if (distance > 2 * Math.pow(10, 4))
 				GameState.speed *= 2; // The new speed based on the distance from mouse
 
-			int bound = locY - mouseY;
-			locY = (Math.abs(bound) > GameState.speed) ? (locY > mouseY) ? locY - GameState.speed : locY + GameState.speed : mouseY;
-			if(!LocationController.check(locX, locY))
-				locY = oldY;
+			if (distance < 64)
+			{
+				locX = mouseX;
+				locY = mouseY;
+			} else {
 
-			bound = locX - mouseX;
-			locX = (Math.abs(bound) > GameState.speed) ? (locX > mouseX) ? locX - GameState.speed : locX + GameState.speed : mouseX;
-			if(!LocationController.check(locX, locY))
-				locX = oldX;
+				VectorFactory.solveTheorem(1);
 
+				if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
+				{
+					locY += (int) VectorFactory.y;
+					locX += (int) VectorFactory.x;
+				}
+			}
 			GameState.speed = speedHolder; // Resetting the game speed
 		}
 
 		if (keyUP)
+<<<<<<< HEAD
 			currentDirection -= 1;
 		if (keyDOWN)
 			currentDirection += 1;
+=======
+			currentDirection -= 5;
+		if (keyDOWN)
+			currentDirection += 5;
+>>>>>>> making_360_direction
 
-		TankLine.setTheta(currentDirection);
+		VectorFactory.setTheta(currentDirection);
 
 		if (keyLEFT)
+<<<<<<< HEAD
 			TankLine.solveTheorem(-1);
 		if (keyRIGHT)
 			TankLine.solveTheorem(1);
@@ -116,6 +127,18 @@ public class GameState implements Serializable {
 			if (LocationController.check(locX + (int) TankLine.x, locY + (int) TankLine.y)) {
 				locY += TankLine.y;
 				locX += TankLine.x;
+=======
+			VectorFactory.solveTheorem(-1);
+		if (keyRIGHT)
+			VectorFactory.solveTheorem(1);
+
+		if (keyLEFT || keyRIGHT)
+		{
+			if (LocationController.check(locX + (int) VectorFactory.x, locY + (int) VectorFactory.y))
+			{
+				locY += (int) VectorFactory.y;
+				locX += (int) VectorFactory.x;
+>>>>>>> making_360_direction
 			}
 		}
 
@@ -132,7 +155,14 @@ public class GameState implements Serializable {
 	 * @return the rotation
 	 */
 	public int direction () {
-		return currentDirection; // If no move is made
+		return currentDirection;
+	}
+
+	private void mouseDirection () {
+		if ( locX != mouseX )
+			currentDirection = 180 + (int) Math.toDegrees(Math.atan2((locY - mouseY), (locX - mouseX)));
+		else
+			currentDirection = mouseY > locY ? 90 : 270;
 	}
 
 
