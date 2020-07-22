@@ -1,13 +1,14 @@
 package game.Server;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,6 +24,11 @@ public class Main {
     // TODO: 21-Jul-20 bayad ghesmate entezar baraye bazi dorost beshe
 
     public static void main(String[] args) {
+        try {
+            clearData();
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
         // MultiClient main server
         ExecutorService pool = Executors.newCachedThreadPool();
         // Number of the users in the server
@@ -42,6 +48,13 @@ public class Main {
             System.err.println(ex.getMessage());
         }
         System.out.println("done.");
+    }
+
+    public static void clearData() throws URISyntaxException, IOException {
+        String path = new URI("src/game/Server/info.aut").getPath(); // File path of users
+        ArrayList<User> arrayList = new ArrayList<>();
+        Writer writer = new Writer(path); // Save all the users again
+        writer.WriteToFile(arrayList);
     }
 }
 
@@ -63,37 +76,39 @@ class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            OutputStream out = connectionSocket.getOutputStream();
-            InputStream in = connectionSocket.getInputStream();
+            PrintStream out = new PrintStream(connectionSocket.getOutputStream());
+            Scanner in = new Scanner(connectionSocket.getInputStream());
             {
-                byte[] buffer = new byte[2048]; // Buffer strategy to read from client socket
-                int read = in.read();
-                String tmp = String.valueOf(in.read(buffer, 0, read));
+                String tmp = in.nextLine();
                 if (tmp.equals("Log in")) {
-                    String userName = String.valueOf(in.read(buffer, 0, in.read())); // Checking the users
-                    String password = String.valueOf(in.read(buffer, 0, in.read())); // username and password
+                    String userName = in.nextLine(); // Checking the users
+                    String password = in.nextLine(); // username and password
                     if (check(userName, password)) {
+                        out.println("user entered the game.");
                         // TODO: 21-Jul-20 authenticated user.
                     } else {
-                        // TODO: 21-JUL-20 give suitable error.
+                        out.println("user not found.");
                     }
-                } else if (tmp.equals("Sign in")) {
-                    String userName = String.valueOf(in.read(buffer, 0, in.read())); // The sign up part where
-                    String password = String.valueOf(in.read(buffer, 0, in.read())); // we save the new user information
+                } else if (tmp.equalsIgnoreCase("Sign up")) {
+                    String userName = in.nextLine(); // Checking the users
+                    String password = in.nextLine(); // username and password
                     // check for non repeated names
                     if (!find(userName)) {
                         User userToCreate = new User(userName, password);
                         try {
                             String path = new URI("src/game/Server/info.aut").getPath(); // File path of users
                             ArrayList<User> arrayList;
+                            //noinspection unchecked
                             arrayList = (ArrayList<User>) new Reader(path).ReadFromFile(); // Reading the old users info
                             Writer writer = new Writer(path); // Save all the users again
                             arrayList.add(userToCreate);
                             writer.WriteToFile(arrayList);
+                            out.println("accepted");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        // TODO: 21-Jul-20 join user in
+                    } else {
+                        out.println("not accepted, user name exist.");
                     }
                 } else {
                     // TODO: 21-Jul-20  gamePlay should be implemented here.
@@ -118,15 +133,16 @@ class ClientHandler implements Runnable {
     private boolean find(String userName) {
         try {
             String path = new URI("src/game/Server/info.aut").getPath();
-            ArrayList<User> arrayList;
-            arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
+            //noinspection unchecked
+            ArrayList<User> arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
+            System.out.println(arrayList.size());
             for (User user : arrayList)
                 if (user.getUserName().equals(userName))
                     return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     /*
@@ -138,6 +154,7 @@ class ClientHandler implements Runnable {
         try {
             String path = new URI("src/game/Server/info.aut").getPath();
             ArrayList<User> arrayList;
+            //noinspection unchecked
             arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
             for (User user : arrayList)
                 if (user.equals(new User(id, pass)))

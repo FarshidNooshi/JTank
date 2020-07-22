@@ -7,7 +7,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.util.Arrays;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class Log {
     private static JTextField userName = new JTextField("User Name");
@@ -131,6 +135,94 @@ public class Log {
                     passwordField.setText("Password");
             }
         });
+
+        initButtons();
+    }
+
+    private static void initButtons() {
+        logIn.addActionListener(e -> new SwingWorker<>() {
+            /**
+             * Computes a result, or throws an exception if unable to do so.
+             *
+             * <p>
+             * Note that this method is executed only once.
+             *
+             * <p>
+             * Note: this method is executed in a background thread.
+             *
+             * @return the computed result
+             * @throws Exception if unable to compute a result
+             */
+            @Override
+            protected Object doInBackground() {
+                String ip = JOptionPane.showInputDialog("Enter Server Ip");
+                int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
+                String ret = null;
+                try (Socket socket = new Socket(ip, port)) {
+                    ret = getString(socket, "Log in");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return ret;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    JOptionPane.showMessageDialog(null, get().toString());
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.execute());
+
+        signUp.addActionListener(e -> new SwingWorker<>() {
+            /**
+             * Computes a result, or throws an exception if unable to do so.
+             *
+             * <p>
+             * Note that this method is executed only once.
+             *
+             * <p>
+             * Note: this method is executed in a background thread.
+             *
+             * @return the computed result
+             * @throws Exception if unable to compute a result
+             */
+            @Override
+            protected Object doInBackground() {
+                String ip = JOptionPane.showInputDialog("Enter Server Ip");
+                int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
+                String ret = null;
+                try (Socket socket = new Socket(ip, port)) {
+                    ret = getString(socket, "Sign up");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return ret;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    JOptionPane.showMessageDialog(null, get().toString());
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.execute());
+    }
+
+    private static String getString(Socket socket, String s) throws IOException {
+        Scanner in = new Scanner(socket.getInputStream());
+        PrintStream out = new PrintStream(socket.getOutputStream());
+        String name = userName.getText();
+        String pass = String.valueOf(passwordField.getPassword());
+        out.println(s);
+        out.println(name);
+        out.println(pass);
+        String ret = in.nextLine();
+        return ret;
     }
 
     private static class MainPanel extends JPanel {
@@ -146,4 +238,5 @@ public class Log {
             g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
         }
     }
+
 }
