@@ -20,7 +20,7 @@ public class Main {
         ThreadPool.init();
 
         // Show the game menu ...
-        Main.startTheGame();
+//        Main.startTheGame();
 
         // After the player clicks 'PLAY' ...
         EventQueue.invokeLater(Log::run);

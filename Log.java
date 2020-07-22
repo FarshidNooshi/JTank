@@ -17,12 +17,13 @@ public class Log {
     private static JLabel userLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/name_48px.png"));
     private static JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
     private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
+    private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
 
     public static void run() {// TODO: 21-Jul-20 local save mishe inke remember beshe
         JFrame frame = new JFrame("J Tank Trouble");
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-        frame.setPreferredSize(new Dimension(500, 500));
-        frame.setLocation(450, 150);
+        frame.setPreferredSize(new Dimension(750, 500));
+        frame.setLocation(250, 100);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
@@ -35,14 +36,16 @@ public class Log {
             }
             assert c != null;
             c.setLayout(null);
-            userLabel.setLocation(150, 50);
-            userName.setLocation(200, 55);
-            passwordLabel.setLocation(150, 100);
-            passwordField.setLocation(200, 105);
-            remember.setLocation(150, 150);
-            showPassword.setLocation(150, 200);
-            logIn.setLocation(150, 250);
-            signUp.setLocation(240, 250);
+            logo.setLocation(125, 0);
+            userLabel.setLocation(250, 125);
+            userName.setLocation(330, 155);
+            passwordLabel.setLocation(250, 175);
+            passwordField.setLocation(330, 205);
+            remember.setLocation(275, 250);
+            showPassword.setLocation(275, 300);
+            logIn.setLocation(275, 350);
+            signUp.setLocation(365, 350);
+            c.add(logo);
             c.add(userLabel);
             c.add(userName);
             c.add(passwordLabel);
@@ -59,12 +62,13 @@ public class Log {
     }
 
     private static void init() {
+        logo.setSize(500, 150);
         logIn.setSize(80, 30);
         signUp.setSize(80, 30);
-        userLabel.setSize(40, 40);
-        userName.setSize(120, 30);
-        passwordLabel.setSize(40, 40);
-        passwordField.setSize(120, 30);
+        userLabel.setSize(90, 90);
+        userName.setSize(140, 25);
+        passwordLabel.setSize(90, 90);
+        passwordField.setSize(140, 25);
         remember.setSize(160, 20);//105
         showPassword.setSize(160, 20);//113
         showPassword.setFont(new Font("Dialog", Font.BOLD, 15));
