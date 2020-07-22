@@ -1,12 +1,12 @@
 package game.Server;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
  * to our main server and will let the user to login or sign up.
  * Then based on the game that the user choose we will connect them
  * to another port.
- *
  */
 public class Main {
 
@@ -58,7 +57,7 @@ public class Main {
     }
 }
 
-/*
+/**
     This is the in-server handler to get the client socket
     and connect the client to a game so that the user
     can play.

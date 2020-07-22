@@ -43,7 +43,7 @@ public class GameMap implements Serializable {
         makeGameMap();
     }
 
-    /*
+    /**
      This method will iterate in the array
      and will make the map binary form to show it
      in a big size in gui.

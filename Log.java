@@ -1,5 +1,7 @@
 package game;
 
+import game.Process.Main;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +24,8 @@ public class Log {
     private static JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
     private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
-
+    protected static JFrame frame = new JFrame("J Tank Trouble");
     public static void run() {// TODO: 21-Jul-20 local save mishe inke remember beshe
-        JFrame frame = new JFrame("J Tank Trouble");
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
         frame.setLocation(250, 100);
@@ -159,7 +160,7 @@ public class Log {
                 int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
                 String ret = null;
                 try (Socket socket = new Socket(ip, port)) {
-                    ret = getString(socket, "Log in");
+                    ret = takeString(socket, "Log in");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -169,6 +170,11 @@ public class Log {
             @Override
             protected void done() {
                 try {
+                    String ret = get().toString();
+                    if (ret.equalsIgnoreCase("user entered the game.")) {
+                        frame.setVisible(false);
+                        Main.startTheGame();
+                    }
                     JOptionPane.showMessageDialog(null, get().toString());
                 } catch (InterruptedException | ExecutionException ex) {
                     ex.printStackTrace();
@@ -195,7 +201,7 @@ public class Log {
                 int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
                 String ret = null;
                 try (Socket socket = new Socket(ip, port)) {
-                    ret = getString(socket, "Sign up");
+                    ret = takeString(socket, "Sign up");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -213,7 +219,7 @@ public class Log {
         }.execute());
     }
 
-    private static String getString(Socket socket, String s) throws IOException {
+    private static String takeString(Socket socket, String s) throws IOException {
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream());
         String name = userName.getText();
