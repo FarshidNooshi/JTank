@@ -31,6 +31,7 @@ public class GameFrame extends JFrame {
     //uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
     private BufferedImage image = null;
     private BufferedImage bullet = null;
+    private int counter = 0;
 
     private long lastRender;
     private ArrayList<Float> fpsHistory;
@@ -53,6 +54,12 @@ public class GameFrame extends JFrame {
         lastRender = -1;
         fpsHistory = new ArrayList<>(100);
         // Opening the image
+        try {
+            image = ImageIO.read(new File("src/game/IconsInGame/Icon.png"));
+            bullet = ImageIO.read(new File("./src/game/IconsInGame/fireball2.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         int response = JOptionPane.showConfirmDialog(this, "do you want to customize your tank ?");
         if (response == JOptionPane.YES_OPTION) {
             this.setVisible(false);
@@ -76,10 +83,11 @@ public class GameFrame extends JFrame {
                 button.addActionListener(e -> {
                     try {
                         image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/" + name));
+                        counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                    if (bullet != null) {
+                    if (counter == 2) {
                         ask.setVisible(false);
                         this.setVisible(true);
                     }
@@ -89,17 +97,18 @@ public class GameFrame extends JFrame {
             tmp = 0;
             for (String name : Objects.requireNonNull(file.list())) {
                 JButton button = new JButton(new ImageIcon("src/game/IconsInGame/Farshid/Bullet/" + name));
-                button.setLocation(  1250 - 40 * (tmp / 5), 100 + 55 * (tmp % 5));
+                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp % 5));
                 button.setSize(30, 45);
                 c.add(button);
                 tmp++;
                 button.addActionListener(e -> {
                     try {
                         bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/" + name));
+                        counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                    if (image != null) {
+                    if (counter == 2) {
                         ask.setVisible(false);
                         this.setVisible(true);
                     }
@@ -109,15 +118,6 @@ public class GameFrame extends JFrame {
             ask.setAlwaysOnTop(true);
             ask.setLocationRelativeTo(null);
             ask.setVisible(true);
-            while (ask.isVisible())
-                Thread.sleep(1);
-        } else {
-            try {
-                image = ImageIO.read(new File("src/game/IconsInGame/Icon.png"));
-            	bullet = ImageIO.read(new File("./src/game/IconsInGame/fireball2.png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

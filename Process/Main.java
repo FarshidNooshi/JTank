@@ -18,9 +18,9 @@ public class Main {
         // Initialize the global thread-pool
         ThreadPool.init();
         //temporary for writing the program.
-        Main.startTheGame();
+//        Main.startTheGame();
         // After the player clicks 'PLAY' ...
-//        EventQueue.invokeLater(Log::run);
+        EventQueue.invokeLater(Log::run);
     }
 
     /**
@@ -32,7 +32,6 @@ public class Main {
         GameFrame frame = new GameFrame("JTank");
         frame.setLocationRelativeTo(null); // put frame at center of screen
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
         frame.setVisible(true);
         frame.initBufferStrategy();
         GameMap gameMap = new GameMap();

@@ -174,6 +174,7 @@ public class Log {
                     if (ret.equalsIgnoreCase("user entered the game.")) {
                         frame.setVisible(false);
                         Main.startTheGame();
+                        return;
                     }
                     JOptionPane.showMessageDialog(null, get().toString());
                 } catch (InterruptedException | ExecutionException ex) {
