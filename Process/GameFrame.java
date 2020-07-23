@@ -225,7 +225,7 @@ public class GameFrame extends JFrame {
             double rotation = Math.toRadians(rotateDegree);
             // Using affine to rotate
             AffineTransform tx = new AffineTransform();
-            tx.rotate(rotation, 200, 200);
+            tx.rotate(rotation, 10, 10);
             AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
             g2d.drawImage(op.filter(bullet, null), i.locX, i.locY, i.diam, i.diam, null);
         }
