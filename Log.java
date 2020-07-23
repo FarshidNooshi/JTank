@@ -156,8 +156,8 @@ public class Log {
              */
             @Override
             protected Object doInBackground() {
-                String ip = JOptionPane.showInputDialog("Enter Server Ip");
-                int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
+                String ip = "127.0.0.1";//you can change it later .
+                int port = 1726;//you can change the port later too.
                 String ret = null;
                 try (Socket socket = new Socket(ip, port)) {
                     ret = takeString(socket, "Log in");
@@ -198,8 +198,8 @@ public class Log {
              */
             @Override
             protected Object doInBackground() {
-                String ip = JOptionPane.showInputDialog("Enter Server Ip");
-                int port = Integer.parseInt(JOptionPane.showInputDialog("Enter Server Port"));
+                String ip = "127.0.0.1";//you can change it later .
+                int port = 1726;//you can change the port later too.
                 String ret = null;
                 try (Socket socket = new Socket(ip, port)) {
                     ret = takeString(socket, "Sign up");
