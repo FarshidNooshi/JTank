@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
  * This class is for reading an object(request) from a path.
  * In this class we read the users information from a saved file
  * to check them for logging in and signing up.
- *
  */
 public class Reader {
 
@@ -44,7 +43,6 @@ public class Reader {
 
     /**
      * Closing the opened file.
-     *
      */
     public void close() {
         try {

@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
  * This class is for writing an object to a file.
  * In this class we create a file and will save the server
  * data in it.
- *
  */
 public class Writer {
 

@@ -7,27 +7,27 @@ import java.io.Serializable;
 
 public class Bullet implements Serializable {
 
-    transient private GameMap gameMap; //Each bullet needs the map
-    transient private VectorFactory vectorFactory;
-    //Location fields
-    public int locX, locY, diam;
-    transient private int firstX, firstY;
-    transient public boolean isAlive, justShot; //Status fields
     //Speed and time fields
     transient public static int speed = 8;
+    //Location fields
+    public int locX, locY, diam;
+    transient public boolean isAlive, justShot; //Status fields
+    transient public int direction;
+    transient private GameMap gameMap; //Each bullet needs the map
+    transient private VectorFactory vectorFactory;
+    transient private int firstX, firstY;
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
     transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
-    transient public int direction;
 
     /**
      * The constructor of the bullet class.
      *
-     * @param locX the first x coordinate
-     * @param locY the first y coordinate
+     * @param locX    the first x coordinate
+     * @param locY    the first y coordinate
      * @param gameMap the game map instance
      */
-    public Bullet (int locX, int locY ,GameMap gameMap) {
+    public Bullet(int locX, int locY, GameMap gameMap) {
         // The starting point of the square
         this.locX = locX + GameMap.CHANGING_FACTOR / 4; // This is for putting the bullet at the
         this.locY = locY + GameMap.CHANGING_FACTOR / 4; // center of the tank
@@ -52,7 +52,7 @@ public class Bullet implements Serializable {
      *
      * @param directions the tank direction
      */
-    public void setDirections (int directions) {
+    public void setDirections(int directions) {
         this.direction = directions;
     }
 
@@ -62,7 +62,7 @@ public class Bullet implements Serializable {
      *
      * @return an instance of the runnable
      */
-    public BulletMove getMover () {
+    public BulletMove getMover() {
         return new BulletMove();
     }
 
@@ -81,7 +81,7 @@ public class Bullet implements Serializable {
             This method will change the directions of the bullet
             base on the wall that it hits.
          */
-        private void wallChangingWay (Location location) {
+        private void wallChangingWay(Location location) {
             // Getting the locations needed of the wall
             int centerX = locX + diam / 2; // We locate the center of
             int centerY = locY + diam / 2; // bullet
@@ -104,7 +104,7 @@ public class Bullet implements Serializable {
             bullet.
             Changing the place and the borders bouncy.
          */
-        private void update () {
+        private void update() {
 
             // Update the location
 
@@ -135,8 +135,7 @@ public class Bullet implements Serializable {
             if (time >= 4)
                 isAlive = false; // The time limit
 
-            if (justShot)
-            {
+            if (justShot) {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
                     justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
             }
@@ -144,10 +143,8 @@ public class Bullet implements Serializable {
             // To check if the bullet is hitting any walls
             Location location = LocationController.bulletWallCheck(locX + diam / 2, locY + diam / 2);
 
-            if (location != null)
-            {
-                if (location.type == 1)
-                {
+            if (location != null) {
+                if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()] = 0;
                     return;

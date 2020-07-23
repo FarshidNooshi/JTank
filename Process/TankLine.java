@@ -2,16 +2,16 @@ package game.Process;
 
 public class TankLine {
 
+    static double x, y;
     private static int theta = 0;
     private static double grand;
-    static double x, y;
 
-    public static void setTheta (int newTheta) {
+    public static void setTheta(int newTheta) {
         theta = newTheta;
         theoremMaker();
     }
 
-    private static void theoremMaker () {
+    private static void theoremMaker() {
         int holder = theta % 360;
         if (holder == 90 || holder == 270 || holder == -270 || holder == -90)
             grand = 9000;
@@ -19,7 +19,7 @@ public class TankLine {
             grand = Math.tan(Math.toRadians(theta));
     }
 
-    public static void solveTheorem (int way) {
+    public static void solveTheorem(int way) {
         if (grand == 9000) {
             x = 0;
             y = (way > 0) ? GameState.speed : -1 * GameState.speed;

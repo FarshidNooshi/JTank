@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * walls are overlapping each other or not.
  * Basically it keeps all the wall date and has
  * methods to check overlapping.
- *
  */
 public class LocationController {
 
@@ -21,9 +20,8 @@ public class LocationController {
     /**
      * The init method will create the objects
      * required.
-     *
      */
-    public static void init () {
+    public static void init() {
         locations = new CopyOnWriteArrayList<>();
         created = true;
     }
@@ -33,7 +31,7 @@ public class LocationController {
      *
      * @param location the new location to add
      */
-    public static void add (Location location) {
+    public static void add(Location location) {
         if (created)
             locations.add(location);
         else
@@ -47,7 +45,7 @@ public class LocationController {
      * @param x the x coordinate
      * @param y the y coordinate
      */
-    public static void remove (int x, int y) {
+    public static void remove(int x, int y) {
         // Check for class creations
         if (!created)
             init();
@@ -59,7 +57,7 @@ public class LocationController {
             }
     }
 
-    public static void removeBinary (int x, int y) {
+    public static void removeBinary(int x, int y) {
         // Check for class creations
         if (!created)
             init();
@@ -80,13 +78,13 @@ public class LocationController {
      * @param y the tank y coordinate
      * @return making overlap or not
      */
-    public static boolean check (int x, int y) {
+    public static boolean check(int x, int y) {
         // Check for class creations
         if (!created)
             return true;
         // Search for any overlap
         for (Location l : locations)
-            if ( l.isOverlap(x, y, 2) )
+            if (l.isOverlap(x, y, 2))
                 return false;
         return true;
     }
@@ -100,13 +98,13 @@ public class LocationController {
      * @param y the bullet y coordinate
      * @return the location of the wall
      */
-    public static Location bulletWallCheck (int x, int y) {
+    public static Location bulletWallCheck(int x, int y) {
 
         if (!created)
             return null;
 
         for (Location l : locations) {
-            if ( l.isOverlap(x, y, 4)) {
+            if (l.isOverlap(x, y, 4)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }
@@ -126,7 +124,7 @@ public class LocationController {
      * @param tankY the tank y coordinate
      * @return true or false
      */
-    public static boolean tankGotShot (int bullX, int bullY, int tankX, int tankY) {
+    public static boolean tankGotShot(int bullX, int bullY, int tankX, int tankY) {
         return tankX < bullX && bullX < tankX + GameMap.CHANGING_FACTOR / 2 && tankY < bullY && bullY < tankY + GameMap.CHANGING_FACTOR / 2;
     }
 }

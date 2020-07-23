@@ -58,9 +58,9 @@ public class Main {
 }
 
 /**
-    This is the in-server handler to get the client socket
-    and connect the client to a game so that the user
-    can play.
+ * This is the in-server handler to get the client socket
+ * and connect the client to a game so that the user
+ * can play.
  */
 class ClientHandler implements Runnable {
 

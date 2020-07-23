@@ -16,6 +16,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 public class Log {
+    protected static JFrame frame = new JFrame("J Tank Trouble");
     private static JTextField userName = new JTextField("User Name");
     private static JPasswordField passwordField = new JPasswordField();
     private static JCheckBox remember = new JCheckBox("Remember me");
@@ -24,7 +25,7 @@ public class Log {
     private static JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
     private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
-    protected static JFrame frame = new JFrame("J Tank Trouble");
+
     public static void run() {// TODO: 21-Jul-20 local save mishe inke remember beshe
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));

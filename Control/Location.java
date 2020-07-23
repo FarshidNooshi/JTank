@@ -7,7 +7,6 @@ import game.Process.GameMap;
  * game walls.
  * Including the starting coordinates and the ending
  * coordinates to avoid calculations in the game processing.
- *
  */
 public class Location {
     // The two points of the walls
@@ -22,13 +21,13 @@ public class Location {
     /**
      * The constructor of the Location class.
      *
-     * @param topX the first point x coordinate
-     * @param topY the first point y coordinate
+     * @param topX    the first point x coordinate
+     * @param topY    the first point y coordinate
      * @param binaryX the in 2d array place x
      * @param binaryY the in 2d array place y
-     * @param type the type of the wall
+     * @param type    the type of the wall
      */
-    public Location (int binaryX, int binaryY, int topX, int topY, int type) {
+    public Location(int binaryX, int binaryY, int topX, int topY, int type) {
         this.binaryX = binaryX;
         this.binaryY = binaryY;
         this.topX = topX;
@@ -47,16 +46,16 @@ public class Location {
      * @param bound is the gap of the overlapping
      * @return the result of overlapping
      */
-    public boolean isOverlap (int userX, int userY, int bound) {
+    public boolean isOverlap(int userX, int userY, int bound) {
         if (bound == 0)
-            return  ( topX <= userX && bottomX >= userX || topX <= userX  && bottomX >= userX ) &&
-                    ( topY <= userY && bottomY >= userY || topY <= userY  && bottomY >= userY );
+            return (topX <= userX && bottomX >= userX || topX <= userX && bottomX >= userX) &&
+                    (topY <= userY && bottomY >= userY || topY <= userY && bottomY >= userY);
         if (bound == 4)
-            return  ( ( Math.abs(topX - userX) <= 4 || topX < userX ) && ( Math.abs(bottomX - userX) <= 4 || bottomX > userX ) || ( Math.abs(topX - userX) <= 4 || topX < userX )  && ( Math.abs(bottomX - userX) <= 4 || bottomX > userX ) ) &&
-                    ( ( Math.abs(topY - userY) <= 4 || topY < userY ) && ( Math.abs(bottomY - userY) <= 4 || bottomY > userY ) || ( Math.abs(topY - userY) <= 4 || topY < userY )  && ( Math.abs(bottomY - userY) <= 4 || bottomY > userY ) );
+            return ((Math.abs(topX - userX) <= 4 || topX < userX) && (Math.abs(bottomX - userX) <= 4 || bottomX > userX) || (Math.abs(topX - userX) <= 4 || topX < userX) && (Math.abs(bottomX - userX) <= 4 || bottomX > userX)) &&
+                    ((Math.abs(topY - userY) <= 4 || topY < userY) && (Math.abs(bottomY - userY) <= 4 || bottomY > userY) || (Math.abs(topY - userY) <= 4 || topY < userY) && (Math.abs(bottomY - userY) <= 4 || bottomY > userY));
         else
-            return ( topX < userX && bottomX > userX || topX < userX + GameMap.CHANGING_FACTOR / bound && bottomX > userX + GameMap.CHANGING_FACTOR / bound ) &&
-                ( topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR /bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound );
+            return (topX < userX && bottomX > userX || topX < userX + GameMap.CHANGING_FACTOR / bound && bottomX > userX + GameMap.CHANGING_FACTOR / bound) &&
+                    (topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR / bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound);
     }
 
     /**
@@ -87,7 +86,7 @@ public class Location {
      * @param inputY the input y coordinate
      * @return match the wall or not
      */
-    public boolean isMatch (int inputX, int inputY) {
+    public boolean isMatch(int inputX, int inputY) {
         return inputX == topX && inputY == topY;
     }
 
@@ -100,7 +99,7 @@ public class Location {
      * @param inputY the input y coordinate
      * @return is the same wall or not
      */
-    public boolean samePlace (int inputX, int inputY) {
+    public boolean samePlace(int inputX, int inputY) {
         return inputX == binaryX && inputY == binaryY;
     }
 }

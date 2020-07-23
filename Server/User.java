@@ -5,7 +5,6 @@ import java.io.Serializable;
 /**
  * This class is a single user information keeper
  * to store and restore the users information.
- *
  */
 public class User implements Serializable {
 
@@ -28,7 +27,7 @@ public class User implements Serializable {
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-        User user = (User)obj;
+        User user = (User) obj;
         return user.password.equals(password) &&
                 user.userName.equals(userName);
     }
