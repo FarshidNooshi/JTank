@@ -53,6 +53,8 @@ public class GameLoop implements Runnable {
         state.setLimits(canvas.getGameMap().numberOfRows, canvas.getGameMap().numberOfColumns);
         bullets = new ArrayList<>();
         executorService = Executors.newCachedThreadPool();
+        state.width = canvas.getImage().getWidth() / 8;
+        state.height = canvas.getImage().getHeight() / 8;
     }
 
     @Override

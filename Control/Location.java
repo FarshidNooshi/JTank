@@ -46,7 +46,7 @@ public class Location {
      * @param bound is the gap of the overlapping
      * @return the result of overlapping
      */
-    public boolean isOverlap(int userX, int userY, int bound) {
+    public boolean isOverlap(int userX, int userY, int bound, int width, int height) {
         if (bound == 0)
             return (topX <= userX && bottomX >= userX || topX <= userX && bottomX >= userX) &&
                     (topY <= userY && bottomY >= userY || topY <= userY && bottomY >= userY);
@@ -54,8 +54,8 @@ public class Location {
             return ((Math.abs(topX - userX) <= 4 || topX < userX) && (Math.abs(bottomX - userX) <= 4 || bottomX > userX) || (Math.abs(topX - userX) <= 4 || topX < userX) && (Math.abs(bottomX - userX) <= 4 || bottomX > userX)) &&
                     ((Math.abs(topY - userY) <= 4 || topY < userY) && (Math.abs(bottomY - userY) <= 4 || bottomY > userY) || (Math.abs(topY - userY) <= 4 || topY < userY) && (Math.abs(bottomY - userY) <= 4 || bottomY > userY));
         else
-            return (topX < userX && bottomX > userX || topX < userX + GameMap.CHANGING_FACTOR / bound && bottomX > userX + GameMap.CHANGING_FACTOR / bound) &&
-                    (topY < userY && bottomY > userY || topY < userY + GameMap.CHANGING_FACTOR / bound && bottomY > userY + GameMap.CHANGING_FACTOR / bound);
+            return (topX < userX && bottomX > userX || topX < userX + width && bottomX > userX + width) &&
+                    (topY < userY && bottomY > userY || topY < userY + height  && bottomY > userY + height);
     }
 
     /**

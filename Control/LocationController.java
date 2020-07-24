@@ -78,13 +78,13 @@ public class LocationController {
      * @param y the tank y coordinate
      * @return making overlap or not
      */
-    public static boolean check(int x, int y) {
+    public static boolean check (int x, int y, int width, int height) {
         // Check for class creations
         if (!created)
             return true;
         // Search for any overlap
         for (Location l : locations)
-            if (l.isOverlap(x, y, 2))
+            if (l.isOverlap(x, y, 2, width, height))
                 return false;
         return true;
     }
@@ -104,7 +104,7 @@ public class LocationController {
             return null;
 
         for (Location l : locations) {
-            if (l.isOverlap(x, y, 4)) {
+            if (l.isOverlap(x, y, 4, 0, 0)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }

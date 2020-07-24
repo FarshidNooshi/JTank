@@ -121,6 +121,14 @@ public class GameFrame extends JFrame {
         }
     }
 
+    public BufferedImage getImage () {
+        return image;
+    }
+
+    public BufferedImage getBulletImage () {
+        return bullet;
+    }
+
     /**
      * This must be called once after the JFrame is shown:
      * frame.setVisible(true);
@@ -187,6 +195,8 @@ public class GameFrame extends JFrame {
      */
     private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
 
+        AffineTransform old = g2d.getTransform();
+
         // Draw background
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -219,33 +229,27 @@ public class GameFrame extends JFrame {
             verticalAt += GameMap.CHANGING_FACTOR;
         }
 
-        g2d.setColor(Color.RED);
         for (Bullet i : bullets) {
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
             // Using affine to rotate
             int w = bullet.getWidth();
             int h = bullet.getHeight();
-            AffineTransform tx = new AffineTransform();
-            tx.translate(GameFrame.DRAWING_START_X, GameFrame.DRAWING_START_Y);
-            tx.rotate(rotation, i.locX + w / 8, i.locY + h / 8);
-            g2d.setTransform(tx);
+            g2d.rotate(rotation, i.locX + w / 8, i.locY + h / 8);
             g2d.drawImage(bullet, i.locX, i.locY, w / 4, h / 4, null);
+            g2d.setTransform(old);
         }
+
 
         // This is the rotation finding part
         int rotateDegree = state.direction(); // The rotation degree
         double rotation = Math.toRadians(rotateDegree);
         // Using affine to rotate
-        AffineTransform tx = new AffineTransform();
-        tx.translate(GameFrame.DRAWING_START_X, GameFrame.DRAWING_START_Y);
-        tx.rotate(rotation, state.locX + image.getWidth() / 8, state.locY + image.getHeight() / 8);
-        g2d.setTransform(tx);
+        g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
         // draw the rotated image
         if (!state.gameOver)
-            g2d.drawImage(image, state.locX, state.locY, image.getWidth() / 4, image.getHeight() / 4, null);
-        g2d.dispose();
-
+            g2d.drawImage(image, state.locX, state.locY, state.width, state.height, null);
+        g2d.setTransform(old);
 
         // Print FPS info
         long currentRender = System.currentTimeMillis();

@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class GameState implements Serializable {
 
     public static int speed = 4;
-    public int locX, locY, diam;
+    public int locX, locY, width, height;
     public boolean gameOver;
     public boolean shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits
@@ -28,7 +28,6 @@ public class GameState implements Serializable {
     private VectorFactory vectorFactory;
 
     public GameState() {
-        diam = 32;
         gameOver = false;
         shotFired = false;
         currentDirection = 0;
@@ -95,10 +94,8 @@ public class GameState implements Serializable {
                 locX = mouseX;
                 locY = mouseY;
             } else {
-
                 vectorFactory.solveTheorem(1);
-
-                if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y)) {
+                if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y, width, height)) {
                     locY += (int) vectorFactory.y;
                     locX += (int) vectorFactory.x;
                     vectorFactory.solveTheorem(1);
@@ -120,16 +117,16 @@ public class GameState implements Serializable {
             vectorFactory.solveTheorem(1);
 
         if (keyLEFT || keyRIGHT) {
-            if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y)) {
+            if (LocationController.check(locX ,locY + (int) vectorFactory.y, width, height))
                 locY += (int) vectorFactory.y;
+            if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
                 locX += (int) vectorFactory.x;
-            }
         }
 
         locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
-        locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_X);
+        locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - width);
         locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-        locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 2 + GameFrame.DRAWING_START_Y);
+        locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - height);
         roundCounter++;
     }
 
