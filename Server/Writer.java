@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is for writing an object to a file.
@@ -31,7 +33,11 @@ public class Writer {
      * @throws IOException class not found exception
      */
     void WriteToFile(Object obj) throws IOException {
-        out.writeObject(obj);
+        if (obj instanceof ArrayList) {
+            ArrayList<User> users = (ArrayList<User>) obj;
+            for (User i : users)
+                out.writeObject(i);
+        }
         out.close();
     }
 }

@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,11 +13,7 @@ import java.util.Objects;
 
 /**
  * The window on which the rendering is performed.
- * This example uses the modern BufferStrategy approach for double-buffering,
- * actually it performs triple-buffering!
- * For more information on BufferStrategy check out:
- * http://docs.oracle.com/javase/tutorial/extra/fullscreen/bufferstrategy.html
- * http://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferStrategy.html
+ *
  */
 public class GameFrame extends JFrame {
 
@@ -28,16 +23,10 @@ public class GameFrame extends JFrame {
     public static final int DRAWING_START_X = 40;                   // The drawing starting location
     public static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
 
-    //uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
     private BufferedImage image = null;
     private BufferedImage bullet = null;
     private int counter = 0;
-
-    private long lastRender;
-    private ArrayList<Float> fpsHistory;
-
     private BufferStrategy bufferStrategy;
-
     private GameMap gameMap; // This is the map of each game
 
     /**
@@ -51,8 +40,6 @@ public class GameFrame extends JFrame {
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-        lastRender = -1;
-        fpsHistory = new ArrayList<>(100);
         // Opening the image
         try {
             image = ImageIO.read(new File("src/game/IconsInGame/Icon.png"));
@@ -60,7 +47,8 @@ public class GameFrame extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int response = JOptionPane.showConfirmDialog(this, "do you want to customize your tank ?");
+        // The choosing tank option page
+        int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
         if (response == JOptionPane.YES_OPTION) {
             this.setVisible(false);
             JFrame ask = new JFrame("Choose tank model");
@@ -70,10 +58,12 @@ public class GameFrame extends JFrame {
             logo.setLocation(300, 0);
             logo.setSize(700, 150);
             ask.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
+            // Getting the tanks images
             File file = new File("src/game/IconsInGame/Farshid/Tank");
             c.setLayout(null);
             int tmp = 0;
             ask.setExtendedState(Frame.MAXIMIZED_BOTH);
+            // Creating buttons
             for (String name : Objects.requireNonNull(file.list())) {
                 JButton button = new JButton(new ImageIcon("src/game/IconsInGame/Farshid/Tank/" + name));
                 button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp % 5));
@@ -93,6 +83,7 @@ public class GameFrame extends JFrame {
                     }
                 });
             }
+            // Reading bullet files
             file = new File("src/game/IconsInGame/Farshid/Bullet");
             tmp = 0;
             for (String name : Objects.requireNonNull(file.list())) {
@@ -121,12 +112,14 @@ public class GameFrame extends JFrame {
         }
     }
 
+    /**
+     * A getter method for getting the selected tank
+     * image.
+     *
+     * @return the tank image
+     */
     public BufferedImage getImage () {
         return image;
-    }
-
-    public BufferedImage getBulletImage () {
-        return bullet;
     }
 
     /**
@@ -194,9 +187,7 @@ public class GameFrame extends JFrame {
      * Rendering all game elements based on the game state.
      */
     private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
-
-        AffineTransform old = g2d.getTransform();
-
+        AffineTransform old = g2d.getTransform(); // Storing the old g2d transform
         // Draw background
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -206,7 +197,6 @@ public class GameFrame extends JFrame {
         int verticalAt = DRAWING_START_Y;
         // The loop of drawing
         for (int y = 0; y < gameMap.numberOfRows; y++) {
-
             for (int x = 0; x < gameMap.numberOfColumns; x++) {
                 // Choosing the color of the house
                 switch (gameMap.binaryMap[y][x]) {
@@ -224,7 +214,6 @@ public class GameFrame extends JFrame {
                 g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
                 horizonAt += GameMap.CHANGING_FACTOR;
             }
-
             horizonAt = DRAWING_START_X;
             verticalAt += GameMap.CHANGING_FACTOR;
         }
@@ -240,7 +229,6 @@ public class GameFrame extends JFrame {
             g2d.setTransform(old);
         }
 
-
         // This is the rotation finding part
         int rotateDegree = state.direction(); // The rotation degree
         double rotation = Math.toRadians(rotateDegree);
@@ -251,32 +239,6 @@ public class GameFrame extends JFrame {
             g2d.drawImage(image, state.locX, state.locY, state.width, state.height, null);
         g2d.setTransform(old);
 
-        // Print FPS info
-        long currentRender = System.currentTimeMillis();
-        if (lastRender > 0) {
-            fpsHistory.add(1000.0f / (currentRender - lastRender));
-            if (fpsHistory.size() > 100) {
-                fpsHistory.remove(0); // remove oldest
-            }
-            float avg = 0.0f;
-            for (float fps : fpsHistory) {
-                avg += fps;
-            }
-            avg /= fpsHistory.size();
-            String str = String.format("Average FPS = %.1f , Last Interval = %d ms",
-                    avg, (currentRender - lastRender));
-            g2d.setColor(Color.CYAN);
-            g2d.setFont(g2d.getFont().deriveFont(18.0f));
-            int strWidth = g2d.getFontMetrics().stringWidth(str);
-            int strHeight = g2d.getFontMetrics().getHeight();
-            g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, strHeight + 50);
-        }
-        lastRender = currentRender;
-        // Print user guide
-        String userGuide = "Use the MOUSE or ARROW KEYS to move the BALL. "
-                + "Press ESCAPE to end the game.";
-        g2d.setFont(g2d.getFont().deriveFont(18.0f));
-        g2d.drawString(userGuide, 10, GAME_HEIGHT - 10);
         // Draw GAME OVER
         if (state.gameOver) {
             String str = "GAME OVER";

@@ -15,7 +15,13 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * This is the login page where the user inputs its username
+ * and its password to connect to the server.
+ *
+ */
 public class Log {
+    // The private fields
     protected static JFrame frame = new JFrame("J Tank Trouble");
     private static JTextField userName = new JTextField("User Name");
     private static JPasswordField passwordField = new JPasswordField();
@@ -33,6 +39,7 @@ public class Log {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
+        // Creating the login page
         Runnable r = () -> {
             JPanel c = null;
             try {
@@ -67,6 +74,10 @@ public class Log {
         SwingUtilities.invokeLater(r);
     }
 
+    /*
+        This method will set the styles to
+        the components.
+     */
     private static void init() {
         logo.setSize(500, 150);
         logIn.setSize(80, 30);
@@ -163,7 +174,7 @@ public class Log {
                 try (Socket socket = new Socket(ip, port)) {
                     ret = takeString(socket, "Log in");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
                 return ret;
             }
@@ -174,12 +185,12 @@ public class Log {
                     String ret = get().toString();
                     if (ret.equalsIgnoreCase("user entered the game.")) {
                         frame.setVisible(false);
-                        Main.startTheGame();
+                        Main.startTheGame(); // Getting into the game
                         return;
                     }
                     JOptionPane.showMessageDialog(null, get().toString());
-                } catch (InterruptedException | ExecutionException ex) {
-                    ex.printStackTrace();
+                } catch (InterruptedException | ExecutionException | NullPointerException ex) {
+                    JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.PLAIN_MESSAGE);
                 }
             }
         }.execute());
@@ -205,7 +216,7 @@ public class Log {
                 try (Socket socket = new Socket(ip, port)) {
                     ret = takeString(socket, "Sign up");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
                 return ret;
             }
@@ -214,8 +225,8 @@ public class Log {
             protected void done() {
                 try {
                     JOptionPane.showMessageDialog(null, get().toString());
-                } catch (InterruptedException | ExecutionException ex) {
-                    ex.printStackTrace();
+                } catch (InterruptedException | ExecutionException | NullPointerException ex) {
+                    JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.PLAIN_MESSAGE);
                 }
             }
         }.execute());
@@ -229,8 +240,8 @@ public class Log {
         out.println(s);
         out.println(name);
         out.println(pass);
-        String ret = in.nextLine();
-        return ret;
+        String tr = in.nextLine();
+        return tr;
     }
 
     private static class MainPanel extends JPanel {
@@ -246,5 +257,4 @@ public class Log {
             g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
         }
     }
-
 }

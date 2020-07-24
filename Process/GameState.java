@@ -11,22 +11,22 @@ import java.io.Serializable;
  */
 public class GameState implements Serializable {
 
-    public static int speed = 4;
-    public int locX, locY, width, height;
-    public boolean gameOver;
-    public boolean shotFired, waitForSecondShot;
+    public int locX, locY, width, height, speed = 4;
+    public boolean gameOver, shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits
     private int currentDirection; // This is the last rotation degree
-    private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
-    private boolean mousePress;
+    private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;
     private int mouseX, mouseY;
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
     private long shotTimeLimit;
     private int roundCounter;
+    private VectorFactory vectorFactory; // Each state has its own vector factory
 
-    private VectorFactory vectorFactory;
-
+    /**
+     * The game state constructor.
+     *
+     */
     public GameState() {
         gameOver = false;
         shotFired = false;
@@ -72,50 +72,48 @@ public class GameState implements Serializable {
 
     /**
      * The method which updates the game state.
+     *
      */
     public void update() {
-
+        // The shooting statements
         shotFired = false;
         if (waitForSecondShot && roundCounter > 3) {
             shotFired = true;
             waitForSecondShot = false;
         }
-
+        // Mouse using
         if (mousePress) {
-            mouseDirection();
+            mouseDirection(); // Setting the mouse direction
 
-            int speedHolder = GameState.speed;
+            int speedHolder = speed; // Changing the speed based on the distance
             long distance = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
-
             if (distance > 2 * Math.pow(10, 4))
-                GameState.speed *= 2; // The new speed based on the distance from mouse
+                speed *= 2; // The new speed based on the distance from mouse
+            vectorFactory.setSpeed(speed);
 
             if (distance < 64) {
                 locX = mouseX;
                 locY = mouseY;
             } else {
                 vectorFactory.solveTheorem(1);
-                if (LocationController.check(locX + (int) vectorFactory.x, locY + (int) vectorFactory.y, width, height)) {
+                if (LocationController.check(locX ,locY + (int) vectorFactory.y, width, height))
                     locY += (int) vectorFactory.y;
+                if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
                     locX += (int) vectorFactory.x;
-                    vectorFactory.solveTheorem(1);
-                }
-                GameState.speed = speedHolder; // Resetting the game speed
+                speed = speedHolder; // Resetting the game speed
             }
         }
-
+        // Up and down will change the direction
         if (keyUP)
             currentDirection -= 5;
         if (keyDOWN)
             currentDirection += 5;
-
-        vectorFactory.setTheta(currentDirection);
-
+        vectorFactory.setTheta(currentDirection); // Setting the direction
+        // Move 8 px on the current vector
         if (keyLEFT)
             vectorFactory.solveTheorem(-1);
         if (keyRIGHT)
             vectorFactory.solveTheorem(1);
-
         if (keyLEFT || keyRIGHT) {
             if (LocationController.check(locX ,locY + (int) vectorFactory.y, width, height))
                 locY += (int) vectorFactory.y;
@@ -127,7 +125,7 @@ public class GameState implements Serializable {
         locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - width);
         locY = Math.max(locY, GameFrame.DRAWING_START_Y);
         locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - height);
-        roundCounter++;
+        roundCounter++; // Need to count for bullet shooting
     }
 
     /**
@@ -140,6 +138,10 @@ public class GameState implements Serializable {
         return currentDirection;
     }
 
+    /*
+        This method will calculate the direction between the
+        mouse location and the state location.
+     */
     private void mouseDirection() {
         if (locX != mouseX)
             currentDirection = 180 + (int) Math.toDegrees(Math.atan2((locY - mouseY), (locX - mouseX)));
@@ -151,11 +153,9 @@ public class GameState implements Serializable {
     public KeyListener getKeyListener() {
         return keyHandler;
     }
-
     public MouseListener getMouseListener() {
         return mouseHandler;
     }
-
     public MouseMotionListener getMouseMotionListener() {
         return mouseHandler;
     }
@@ -164,7 +164,6 @@ public class GameState implements Serializable {
      * The keyboard handler.
      */
     class KeyHandler extends KeyAdapter implements Serializable {
-
         @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
@@ -193,6 +192,11 @@ public class GameState implements Serializable {
             }
         }
 
+        /*
+            This method will shot a bullet and
+            will set the other parameters to shot
+            the second bullet.
+         */
         private void takeAShot() {
             int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);
             if (time > 1) {
@@ -224,18 +228,16 @@ public class GameState implements Serializable {
                     break;
             }
         }
-
     }
 
     /**
      * The mouse handler.
      */
     class MouseHandler extends MouseAdapter implements Serializable {
-
         @Override
         public void mousePressed(MouseEvent e) {
-            mouseX = e.getX() - GameMap.CHANGING_FACTOR / 4; // This is for placing the mouse
-            mouseY = e.getY() - GameMap.CHANGING_FACTOR / 4; // at the center of the shape
+            mouseX = e.getX() - width / 4; // This is for placing the mouse
+            mouseY = e.getY() - height / 4; // at the center of the shape
             mousePress = true;
         }
 
@@ -246,8 +248,8 @@ public class GameState implements Serializable {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            mouseX = e.getX() - GameMap.CHANGING_FACTOR / 4;
-            mouseY = e.getY() - GameMap.CHANGING_FACTOR / 4;
+            mouseX = e.getX() - width / 4;
+            mouseY = e.getY() - height / 4;
         }
     }
 }

@@ -7,10 +7,8 @@ import java.io.Serializable;
 
 public class Bullet implements Serializable {
 
-    //Speed and time fields
-    transient public static int speed = 8;
-    //Location fields
-    public int locX, locY, diam;
+    transient public static int speed = 8; //Speed and time field
+    public int locX, locY, diam;//Location fields
     transient public boolean isAlive, justShot; //Status fields
     transient public int direction;
     transient private GameMap gameMap; //Each bullet needs the map
@@ -18,7 +16,6 @@ public class Bullet implements Serializable {
     transient private int firstX, firstY;
     transient private long start;
     transient private int mapRowsLimit, mapColsLimit; //The limits fields
-    transient private boolean UP, DOWN, RIGHT, LEFT; //Movement booleans
 
     /**
      * The constructor of the bullet class.
@@ -90,7 +87,6 @@ public class Bullet implements Serializable {
             boolean bottom = location.isOverlap(centerX, centerY + diam / 2 + 4, 0, 0, 0);
             boolean left = location.isOverlap(centerX - diam / 2 - 4, centerY, 0, 0, 0);
             boolean right = location.isOverlap(centerX + diam / 2 + 4, centerY, 0, 0, 0);
-
             if (top && !bottom || bottom && !top) {
                 direction = 360 - direction;
             }
@@ -105,9 +101,7 @@ public class Bullet implements Serializable {
             Changing the place and the borders bouncy.
          */
         private void update() {
-
             // Update the location
-
             // The walls bouncy
             if (locX <= GameFrame.DRAWING_START_X || locX + diam >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
                 direction = 180 - direction;
@@ -115,10 +109,9 @@ public class Bullet implements Serializable {
             if (locY <= GameFrame.DRAWING_START_Y || locY + diam >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
                 direction = 360 - direction;
             }
-
+            // Updating the place
             vectorFactory.setTheta(direction);
             vectorFactory.solveTheorem(1);
-
             locX += (int) vectorFactory.x;
             locY += (int) vectorFactory.y;
 
@@ -134,15 +127,12 @@ public class Bullet implements Serializable {
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
             if (time >= 4)
                 isAlive = false; // The time limit
-
             if (justShot) {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
                     justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
             }
-
             // To check if the bullet is hitting any walls
             Location location = LocationController.bulletWallCheck(locX + diam / 2, locY + diam / 2);
-
             if (location != null) {
                 if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall

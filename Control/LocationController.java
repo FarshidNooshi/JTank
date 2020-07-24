@@ -76,6 +76,8 @@ public class LocationController {
      *
      * @param x the tank x coordinate
      * @param y the tank y coordinate
+     * @param width the width of the shape
+     * @param height the height of the shape
      * @return making overlap or not
      */
     public static boolean check (int x, int y, int width, int height) {
@@ -99,12 +101,10 @@ public class LocationController {
      * @return the location of the wall
      */
     public static Location bulletWallCheck(int x, int y) {
-
         if (!created)
             return null;
-
         for (Location l : locations) {
-            if (l.isOverlap(x, y, 4, 0, 0)) {
+            if (l.isOverlap(x, y, 4, 2, 2)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }
