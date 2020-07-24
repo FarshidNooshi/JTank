@@ -224,10 +224,13 @@ public class GameFrame extends JFrame {
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
             // Using affine to rotate
+            int w = bullet.getWidth();
+            int h = bullet.getHeight();
             AffineTransform tx = new AffineTransform();
-            tx.rotate(rotation, 10, 10);
-            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-            g2d.drawImage(op.filter(bullet, null), i.locX, i.locY, i.diam, i.diam, null);
+            tx.translate(GameFrame.DRAWING_START_X, GameFrame.DRAWING_START_Y);
+            tx.rotate(rotation, i.locX + w / 8, i.locY + h / 8);
+            g2d.setTransform(tx);
+            g2d.drawImage(bullet, i.locX, i.locY, w / 4, h / 4, null);
         }
 
         // This is the rotation finding part
@@ -235,11 +238,13 @@ public class GameFrame extends JFrame {
         double rotation = Math.toRadians(rotateDegree);
         // Using affine to rotate
         AffineTransform tx = new AffineTransform();
-        tx.rotate(rotation, GameMap.CHANGING_FACTOR + 25, GameMap.CHANGING_FACTOR + 25);
-        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        tx.translate(GameFrame.DRAWING_START_X, GameFrame.DRAWING_START_Y);
+        tx.rotate(rotation, state.locX + image.getWidth() / 8, state.locY + image.getHeight() / 8);
+        g2d.setTransform(tx);
         // draw the rotated image
         if (!state.gameOver)
-            g2d.drawImage(op.filter(image, null), state.locX, state.locY, GameMap.CHANGING_FACTOR / 2, GameMap.CHANGING_FACTOR / 2, null);
+            g2d.drawImage(image, state.locX, state.locY, image.getWidth() / 4, image.getHeight() / 4, null);
+        g2d.dispose();
 
 
         // Print FPS info

@@ -45,7 +45,7 @@ public class LocationController {
      * @param x the x coordinate
      * @param y the y coordinate
      */
-    public static void remove(int x, int y) {
+    public static void remove (int x, int y) {
         // Check for class creations
         if (!created)
             init();
@@ -57,7 +57,7 @@ public class LocationController {
             }
     }
 
-    public static void removeBinary(int x, int y) {
+    public static void removeBinary (int x, int y) {
         // Check for class creations
         if (!created)
             init();
