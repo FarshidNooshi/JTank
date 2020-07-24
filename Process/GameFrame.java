@@ -224,8 +224,8 @@ public class GameFrame extends JFrame {
             // Using affine to rotate
             int w = bullet.getWidth();
             int h = bullet.getHeight();
-            g2d.rotate(rotation, i.locX + w / 8, i.locY + h / 8);
-            g2d.drawImage(bullet, i.locX, i.locY, w / 4, h / 4, null);
+            g2d.rotate(rotation, i.locX + w / 6, i.locY + h / 6);
+            g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, null);
             g2d.setTransform(old);
         }
 

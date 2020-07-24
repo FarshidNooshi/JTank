@@ -116,9 +116,9 @@ public class Bullet implements Serializable {
             locY += (int) vectorFactory.y;
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
-            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_X);
+            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - diam);
             locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR - GameMap.CHANGING_FACTOR / 16 + GameFrame.DRAWING_START_Y);
+            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - diam);
         }
 
         @Override
