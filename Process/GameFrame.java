@@ -13,7 +13,6 @@ import java.util.Objects;
 
 /**
  * The window on which the rendering is performed.
- *
  */
 public class GameFrame extends JFrame {
 
@@ -118,7 +117,7 @@ public class GameFrame extends JFrame {
      *
      * @return the tank image
      */
-    public BufferedImage getImage () {
+    public BufferedImage getImage() {
         return image;
     }
 
@@ -224,6 +223,7 @@ public class GameFrame extends JFrame {
             // Using affine to rotate
             int w = bullet.getWidth();
             int h = bullet.getHeight();
+            //noinspection IntegerDivisionInFloatingPointContext
             g2d.rotate(rotation, i.locX + w / 6, i.locY + h / 6);
             g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, null);
             g2d.setTransform(old);
