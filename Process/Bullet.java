@@ -5,12 +5,16 @@ import game.Control.LocationController;
 
 import java.io.Serializable;
 
+/**
+ * this class probably represents an implementation for the behaviour of a bullet in the game.
+ */
+
 public class Bullet implements Serializable {
 
-    transient public static int speed = 8; //Speed and time field
-    public int locX, locY, diam;//Location fields
-    transient public boolean isAlive, justShot; //Status fields
-    transient public int direction;
+    private transient final static int SPEED = 8; //Speed and time field
+    int locX, locY, diam;//Location fields
+    transient boolean isAlive, justShot; //Status fields
+    transient int direction;
     transient private GameMap gameMap; //Each bullet needs the map
     transient private VectorFactory vectorFactory;
     transient private int firstX, firstY;
@@ -39,7 +43,7 @@ public class Bullet implements Serializable {
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
-        vectorFactory = new VectorFactory(speed);
+        vectorFactory = new VectorFactory(SPEED);
         start = System.currentTimeMillis(); // Keeping the start time
     }
 
@@ -63,20 +67,17 @@ public class Bullet implements Serializable {
         return new BulletMove();
     }
 
-    /*
-
-        This class is an inner class which will
-        update the bullet class.
-        It changes the bullet place and will check
-        the walls and the changes in that the bullet had
-        make in the map.
-
+    /**
+     * This class is an inner class which will
+     * update the bullet class.
+     * It changes the bullet place and will check
+     * the walls and the changes in that the bullet had
+     * make in the map.
      */
     class BulletMove implements Runnable, Serializable {
-
-        /*
-            This method will change the directions of the bullet
-            base on the wall that it hits.
+        /**
+         * This method will change the directions of the bullet
+         * base on the wall that it hits.
          */
         private void wallChangingWay(Location location) {
             // Getting the locations needed of the wall

@@ -45,7 +45,7 @@ public class LocationController {
      * @param x the x coordinate
      * @param y the y coordinate
      */
-    public static void remove (int x, int y) {
+    public static void remove(int x, int y) {
         // Check for class creations
         if (!created)
             init();
@@ -57,7 +57,12 @@ public class LocationController {
             }
     }
 
-    public static void removeBinary (int x, int y) {
+    /**
+     * this method removes a specific wall(which is in a same place as point(x,y)) from the list
+     * @param x is the x coordinate of the wall
+     * @param y is the y coordinate of the wall
+     */
+    public static void removeBinary(int x, int y) {
         // Check for class creations
         if (!created)
             init();
@@ -74,13 +79,13 @@ public class LocationController {
      * and will check the overlapping in tank
      * with each wall.
      *
-     * @param x the tank x coordinate
-     * @param y the tank y coordinate
-     * @param width the width of the shape
+     * @param x      the tank x coordinate
+     * @param y      the tank y coordinate
+     * @param width  the width of the shape
      * @param height the height of the shape
      * @return making overlap or not
      */
-    public static boolean check (int x, int y, int width, int height) {
+    public static boolean check(int x, int y, int width, int height) {
         // Check for class creations
         if (!created)
             return true;
@@ -104,7 +109,7 @@ public class LocationController {
         if (!created)
             return null;
         for (Location l : locations) {
-            if (l.isOverlap(x, y, 4, 2, 2)) {
+            if (l.isOverlap(x, y, 0, 2, 2)) {
                 if (l.type == 1) {
                     locations.remove(l);
                 }
