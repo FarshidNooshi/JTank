@@ -10,22 +10,20 @@ import java.io.Serializable;
  * This class also handles user inputs, which affect the game state.
  */
 public class GameState implements Serializable {
-
     public int locX, locY, width, height, speed = 4;
     public boolean gameOver, shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits
     private int currentDirection; // This is the last rotation degree
-    private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;
-    private int mouseX, mouseY;
-    private KeyHandler keyHandler;
-    private MouseHandler mouseHandler;
-    private long shotTimeLimit;
-    private int roundCounter;
+    private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;// true if the appropriate arrow key is pressed.
+    private int mouseX, mouseY; // the positions of the mouse clicked pos.
+    private KeyHandler keyHandler; // for handling key events.
+    private MouseHandler mouseHandler;// for handling mouse events.
+    private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
+    private int roundCounter;// idk what is this for ! // TODO: 25-Jul-20 write a good comment for this.
     private VectorFactory vectorFactory; // Each state has its own vector factory
 
     /**
      * The game state constructor.
-     *
      */
     public GameState() {
         gameOver = false;
@@ -72,7 +70,6 @@ public class GameState implements Serializable {
 
     /**
      * The method which updates the game state.
-     *
      */
     public void update() {
         // The shooting statements
@@ -96,7 +93,7 @@ public class GameState implements Serializable {
                 locY = mouseY;
             } else {
                 vectorFactory.solveTheorem(1);
-                if (LocationController.check(locX ,locY + (int) vectorFactory.y, width, height))
+                if (LocationController.check(locX, locY + (int) vectorFactory.y, width, height))
                     locY += (int) vectorFactory.y;
                 if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
                     locX += (int) vectorFactory.x;
@@ -115,7 +112,7 @@ public class GameState implements Serializable {
         if (keyRIGHT)
             vectorFactory.solveTheorem(1);
         if (keyLEFT || keyRIGHT) {
-            if (LocationController.check(locX ,locY + (int) vectorFactory.y, width, height))
+            if (LocationController.check(locX, locY + (int) vectorFactory.y, width, height))
                 locY += (int) vectorFactory.y;
             if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
                 locX += (int) vectorFactory.x;
@@ -153,9 +150,11 @@ public class GameState implements Serializable {
     public KeyListener getKeyListener() {
         return keyHandler;
     }
+
     public MouseListener getMouseListener() {
         return mouseHandler;
     }
+
     public MouseMotionListener getMouseMotionListener() {
         return mouseHandler;
     }

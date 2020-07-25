@@ -12,7 +12,8 @@ import java.io.Serializable;
 public class Bullet implements Serializable {
 
     private transient final static int SPEED = 8; //Speed and time field
-    int locX, locY, diam;//Location fields
+    private final int DIAM = 16;//location fields&radios of the circle
+    int locX, locY;//Location fields
     transient boolean isAlive, justShot; //Status fields
     transient int direction;
     transient private GameMap gameMap; //Each bullet needs the map
@@ -38,8 +39,6 @@ public class Bullet implements Serializable {
         // Setting the limits
         this.mapRowsLimit = gameMap.numberOfRows;
         this.mapColsLimit = gameMap.numberOfColumns;
-        // The radius of the circle
-        diam = 16;
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
@@ -74,20 +73,20 @@ public class Bullet implements Serializable {
      * the walls and the changes in that the bullet had
      * make in the map.
      */
-    class BulletMove implements Runnable, Serializable {
+    private class BulletMove implements Runnable, Serializable {
         /**
          * This method will change the directions of the bullet
          * base on the wall that it hits.
          */
         private void wallChangingWay(Location location) {
             // Getting the locations needed of the wall
-            int centerX = locX + diam / 2; // We locate the center of
-            int centerY = locY + diam / 2; // bullet
+            int centerX = locX + DIAM / 2; // We locate the center of
+            int centerY = locY + DIAM / 2; // bullet
             // And then check for points of the circle for overlapping
-            boolean top = location.isOverlap(centerX, centerY - diam / 2 - 4, 0, 0, 0);
-            boolean bottom = location.isOverlap(centerX, centerY + diam / 2 + 4, 0, 0, 0);
-            boolean left = location.isOverlap(centerX - diam / 2 - 4, centerY, 0, 0, 0);
-            boolean right = location.isOverlap(centerX + diam / 2 + 4, centerY, 0, 0, 0);
+            boolean top = location.isOverlap(centerX, centerY - DIAM / 2 - 4, 0, 0, 0);
+            boolean bottom = location.isOverlap(centerX, centerY + DIAM / 2 + 4, 0, 0, 0);
+            boolean left = location.isOverlap(centerX - DIAM / 2 - 4, centerY, 0, 0, 0);
+            boolean right = location.isOverlap(centerX + DIAM / 2 + 4, centerY, 0, 0, 0);
             if (top && !bottom || bottom && !top) {
                 direction = 360 - direction;
             }
@@ -96,18 +95,18 @@ public class Bullet implements Serializable {
             }
         }
 
-        /*
-            This method will update the movement of the
-            bullet.
-            Changing the place and the borders bouncy.
+        /**
+         * This method will update the movement of the
+         * bullet.
+         * Changing the place and the borders bouncy.
          */
         private void update() {
             // Update the location
             // The walls bouncy
-            if (locX <= GameFrame.DRAWING_START_X || locX + diam >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
+            if (locX <= GameFrame.DRAWING_START_X || locX + DIAM >= mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X) {
                 direction = 180 - direction;
             }
-            if (locY <= GameFrame.DRAWING_START_Y || locY + diam >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
+            if (locY <= GameFrame.DRAWING_START_Y || locY + DIAM >= mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y) {
                 direction = 360 - direction;
             }
             // Updating the place
@@ -117,9 +116,9 @@ public class Bullet implements Serializable {
             locY += (int) vectorFactory.y;
 
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
-            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - diam);
+            locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - DIAM);
             locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - diam);
+            locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - DIAM);
         }
 
         @Override
@@ -127,13 +126,13 @@ public class Bullet implements Serializable {
             // The time checking
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
             if (time >= 4)
-                isAlive = false; // The time limit
+                isAlive = false; // The time limit and then the bullet will die :)
             if (justShot) {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
                     justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
             }
-            // To check if the bullet is hitting any walls
-            Location location = LocationController.bulletWallCheck(locX + diam / 2, locY + diam / 2);
+            // To check if the bullet is hitting any walls with it's center
+            Location location = LocationController.bulletWallCheck(locX + DIAM / 2, locY + DIAM / 2);
             if (location != null) {
                 if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall
