@@ -101,17 +101,17 @@ public class GameState implements Serializable {
             }
         }
         // Up and down will change the direction
-        if (keyUP)
+        if (keyLEFT)
             currentDirection -= 5;
-        if (keyDOWN)
+        if (keyRIGHT)
             currentDirection += 5;
         vectorFactory.setTheta(currentDirection); // Setting the direction
         // Move 8 px on the current vector
-        if (keyLEFT)
-            vectorFactory.solveTheorem(-1);
-        if (keyRIGHT)
+        if (keyUP)
             vectorFactory.solveTheorem(1);
-        if (keyLEFT || keyRIGHT) {
+        if (keyDOWN)
+            vectorFactory.solveTheorem(-1);
+        if (keyDOWN || keyUP) {
             if (LocationController.check(locX, locY + (int) vectorFactory.y, width, height))
                 locY += (int) vectorFactory.y;
             if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
