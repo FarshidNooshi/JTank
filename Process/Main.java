@@ -27,7 +27,7 @@ public class Main {
      * This is the part where we connect the user to the
      * server game that the user chooses or creates.
      */
-    public static void startTheGame() throws InterruptedException {
+    public static void startTheGame() {
 
         GameFrame frame = new GameFrame("JTank");
         frame.setLocationRelativeTo(null); // put frame at center of screen

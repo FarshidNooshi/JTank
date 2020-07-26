@@ -16,12 +16,10 @@ import java.util.Objects;
  */
 public class GameFrame extends JFrame {
 
-    private static final int GAME_HEIGHT = 720;                  // 720p game resolution
-    private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
-
     static final int DRAWING_START_X = 40;                   // The drawing starting location
     static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
-
+    private static final int GAME_HEIGHT = 720;                  // 720p game resolution
+    private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
     private BufferedImage image = null;
     private BufferedImage bullet = null;
     private int counter = 0;
@@ -64,14 +62,14 @@ public class GameFrame extends JFrame {
             ask.setExtendedState(Frame.MAXIMIZED_BOTH);
             // Creating buttons
             for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon("src/game/IconsInGame/Farshid/Tank/" + name));
-                button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp % 5));
+                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+                button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
                 button.setSize(150, 100);
                 c.add(button);
-                tmp++;
+                File finalFile1 = file;
                 button.addActionListener(e -> {
                     try {
-                        image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/" + name));
+                        image = ImageIO.read(new File(finalFile1.getPath() + File.separator + name));
                         counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -82,18 +80,18 @@ public class GameFrame extends JFrame {
                     }
                 });
             }
-            // Reading bullet files
+            // Reading bullet files and adding them to customizer frame
             file = new File("src/game/IconsInGame/Farshid/Bullet");
             tmp = 0;
             for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon("src/game/IconsInGame/Farshid/Bullet/" + name));
-                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp % 5));
+                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
                 button.setSize(30, 45);
                 c.add(button);
-                tmp++;
+                File finalFile = file;
                 button.addActionListener(e -> {
                     try {
-                        bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/" + name));
+                        bullet = ImageIO.read(new File(finalFile.getPath() + File.separator + name));
                         counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -188,7 +186,7 @@ public class GameFrame extends JFrame {
     private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
         AffineTransform old = g2d.getTransform(); // Storing the old g2d transform
         // Draw background
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(Color.GRAY); // TODO: 26-Jul-20 from mapMaker import the background also write a mapMaker for creating creative maps.
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         // Draw Map
@@ -229,10 +227,11 @@ public class GameFrame extends JFrame {
             g2d.setTransform(old);
         }
 
-        // This is the rotation finding part
+        // This is the rotation finding part for tank.
         int rotateDegree = state.direction(); // The rotation degree
         double rotation = Math.toRadians(rotateDegree);
         // Using affine to rotate
+        //noinspection IntegerDivisionInFloatingPointContext
         g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
         // draw the rotated image
         if (!state.gameOver)

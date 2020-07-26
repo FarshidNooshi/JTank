@@ -71,7 +71,7 @@ public class GameMap implements Serializable {
                 break;
             }
         }
-//        flushTank(); // We need to empty the tank places
+        flushTank(); // We need to empty the tank places
     }
 
     /**

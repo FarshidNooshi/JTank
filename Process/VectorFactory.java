@@ -3,12 +3,11 @@ package game.Process;
 /**
  * This class will chose the next location
  * where a state or a bullet needs to go.
- *
  */
 public class VectorFactory {
 
-    private int speed, theta = 0;
     public double x, y;
+    private int speed, theta = 0;
     private double grand;
 
     /**
@@ -40,9 +39,9 @@ public class VectorFactory {
         theoremMaker();
     }
 
-    /*
-        This method will give grand a value
-        based on the theta.
+    /**
+     * This method will give grand a value
+     * based on the theta.
      */
     private void theoremMaker() {
         int holder = theta % 360;

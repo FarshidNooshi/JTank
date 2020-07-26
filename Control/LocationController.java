@@ -59,6 +59,7 @@ public class LocationController {
 
     /**
      * this method removes a specific wall(which is in a same place as point(x,y)) from the list
+     *
      * @param x is the x coordinate of the wall
      * @param y is the y coordinate of the wall
      */
