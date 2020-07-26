@@ -196,7 +196,7 @@ public class GameFrame extends JFrame {
         for (int y = 0; y < gameMap.numberOfRows; y++) {
             for (int x = 0; x < gameMap.numberOfColumns; x++) {
                 // Choosing the color of the house
-                switch (gameMap.binaryMap[y][x]) {
+                switch (gameMap.binaryMap[y][x].getState()) {
                     case 0:
                         g2d.setColor(Color.WHITE);
                         break;

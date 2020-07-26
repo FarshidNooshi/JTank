@@ -14,7 +14,7 @@ import java.util.Random;
 public class GameMap implements Serializable {
 
     public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
-    public int[][] binaryMap; // The array of the map
+    public Block[][] binaryMap; // The array of the map
     // The data of the map
     int numberOfRows;
     int numberOfColumns;
@@ -33,7 +33,7 @@ public class GameMap implements Serializable {
      * Also creates the location controller.
      */
     public void init() {
-        binaryMap = new int[numberOfRows][numberOfColumns];
+        binaryMap = new Block[numberOfRows][numberOfColumns];
         LocationController.init(); // Creating the controller
         makeGameMap();
     }
@@ -46,11 +46,11 @@ public class GameMap implements Serializable {
     private void makeGameMap() {
         for (int y = 0; y < numberOfRows; y++) {
             for (int x = 0; x < numberOfColumns; x++) {
-                binaryMap[y][x] = random.nextInt(3);
+                binaryMap[y][x] = new Block(random.nextInt(3));
                 if (random.nextInt(100) % 2 == 0)
-                    binaryMap[y][x] = 0;
-                if (binaryMap[y][x] != 0)
-                    LocationController.add(new Location(x, y, GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x]));
+                    binaryMap[y][x].setState(0);
+                if (binaryMap[y][x].getState() != 0)
+                    LocationController.add(new Location(x, y, GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
             }
         }
     }
@@ -65,9 +65,9 @@ public class GameMap implements Serializable {
             int x = random.nextInt(numberOfColumns); // A random place for the states
             int y = random.nextInt(numberOfRows);
 
-            if (binaryMap[y][x] == 0) {
+            if (binaryMap[y][x].getState() == 0) {
                 gameState.setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
-                binaryMap[y][x] = -1; // Showing the tank is in this house
+                binaryMap[y][x].setState(-1); // Showing the tank is in this house
                 break;
             }
         }
@@ -82,8 +82,8 @@ public class GameMap implements Serializable {
     private void flushTank() {
         for (int y = 0; y < numberOfRows; y++)
             for (int x = 0; x < numberOfColumns; x++)
-                if (binaryMap[y][x] == -1)
-                    binaryMap[y][x] = 0;
+                if (binaryMap[y][x].getState() == -1)
+                    binaryMap[y][x].setState(0);
     }
 
     //TODO: add a method to create a map that all the tanks are connected to each other.
