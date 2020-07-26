@@ -17,8 +17,6 @@ public class Main {
 
         // Initialize the global thread-pool
         ThreadPool.init();
-        //temporary for writing the program.
-//        Main.startTheGame();
         // After the player clicks 'PLAY' ...
         EventQueue.invokeLater(Log::run);
     }

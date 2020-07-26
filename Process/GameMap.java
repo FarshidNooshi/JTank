@@ -14,7 +14,7 @@ import java.util.Random;
 public class GameMap implements Serializable {
 
     public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
-    public Block[][] binaryMap; // The array of the map
+    Cell[][] binaryMap; // The array of the map
     // The data of the map
     int numberOfRows;
     int numberOfColumns;
@@ -33,7 +33,7 @@ public class GameMap implements Serializable {
      * Also creates the location controller.
      */
     public void init() {
-        binaryMap = new Block[numberOfRows][numberOfColumns];
+        binaryMap = new Cell[numberOfRows][numberOfColumns];
         LocationController.init(); // Creating the controller
         makeGameMap();
     }
@@ -46,7 +46,7 @@ public class GameMap implements Serializable {
     private void makeGameMap() {
         for (int y = 0; y < numberOfRows; y++) {
             for (int x = 0; x < numberOfColumns; x++) {
-                binaryMap[y][x] = new Block(random.nextInt(3));
+                binaryMap[y][x] = new Cell(random.nextInt(3), random.nextInt(2));
                 if (random.nextInt(100) % 2 == 0)
                     binaryMap[y][x].setState(0);
                 if (binaryMap[y][x].getState() != 0)

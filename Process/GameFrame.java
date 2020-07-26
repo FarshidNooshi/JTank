@@ -39,7 +39,7 @@ public class GameFrame extends JFrame {
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         // Opening the image
         try {
-            image = ImageIO.read(new File("src/game/IconsInGame/Icon.png"));
+            image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
             bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,11 +190,9 @@ public class GameFrame extends JFrame {
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         // Draw Map
-        int horizonAt = DRAWING_START_X; // To locate the starting position
-        int verticalAt = DRAWING_START_Y;
         // The loop of drawing
-        for (int y = 0; y < gameMap.numberOfRows; y++) {
-            for (int x = 0; x < gameMap.numberOfColumns; x++) {
+        for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.numberOfRows; y++, verticalAt += GameMap.CHANGING_FACTOR)
+            for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.numberOfColumns; x++, horizonAt += GameMap.CHANGING_FACTOR) {
                 // Choosing the color of the house
                 switch (gameMap.binaryMap[y][x].getState()) {
                     case 0:
@@ -209,11 +207,9 @@ public class GameFrame extends JFrame {
                 }
                 // Drawing the house
                 g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
-                horizonAt += GameMap.CHANGING_FACTOR;
+                if (gameMap.binaryMap[y][x].getState() == 0)
+                    g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
-            horizonAt = DRAWING_START_X;
-            verticalAt += GameMap.CHANGING_FACTOR;
-        }
 
         for (Bullet i : bullets) {
             int rotateDegree = i.direction; // The rotation degree
