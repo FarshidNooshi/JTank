@@ -42,7 +42,7 @@ public class GameFrame extends JFrame {
         // Opening the image
         try {
             image = ImageIO.read(new File("src/game/IconsInGame/Icon.png"));
-            bullet = ImageIO.read(new File("./src/game/IconsInGame/fireball2.png"));
+            bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
