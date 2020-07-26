@@ -161,10 +161,11 @@ public class GameState implements Serializable {
 
     /**
      * The keyboard handler.
+     * for updating the state of the keys and maybe firing a bullet.
      */
     class KeyHandler extends KeyAdapter implements Serializable {
         @Override
-        public void keyPressed(KeyEvent e) {
+        public void keyPressed(KeyEvent e) { // it could be implemented with if/else but it didn't.
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
@@ -191,10 +192,10 @@ public class GameState implements Serializable {
             }
         }
 
-        /*
-            This method will shot a bullet and
-            will set the other parameters to shot
-            the second bullet.
+        /**
+         * This method will shot a bullet and
+         * will set the other parameters to shot
+         * the second bullet.
          */
         private void takeAShot() {
             int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);

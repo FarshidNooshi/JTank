@@ -71,13 +71,13 @@ public class GameMap implements Serializable {
                 break;
             }
         }
-        flushTank(); // We need to empty the tank places
+//        flushTank(); // We need to empty the tank places
     }
 
-    /*
-    This method will clear the tank places
-    in the map so when we want to draw the map
-    we don't get any problems.
+    /**
+     * This method will clear the tank places
+     * in the map so when we want to draw the map
+     * we don't get any problems.
      */
     private void flushTank() {
         for (int y = 0; y < numberOfRows; y++)

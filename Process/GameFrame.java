@@ -16,11 +16,11 @@ import java.util.Objects;
  */
 public class GameFrame extends JFrame {
 
-    public static final int GAME_HEIGHT = 720;                  // 720p game resolution
-    public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
+    private static final int GAME_HEIGHT = 720;                  // 720p game resolution
+    private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
 
-    public static final int DRAWING_START_X = 40;                   // The drawing starting location
-    public static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
+    static final int DRAWING_START_X = 40;                   // The drawing starting location
+    static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
 
     private BufferedImage image = null;
     private BufferedImage bullet = null;
@@ -34,7 +34,7 @@ public class GameFrame extends JFrame {
      *
      * @param title the name of the game
      */
-    public GameFrame(String title) throws InterruptedException {
+    public GameFrame(String title) {
         super(title);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
