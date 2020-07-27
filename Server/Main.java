@@ -54,6 +54,10 @@ public class Main {
         ArrayList<User> arrayList = new ArrayList<>();
         Writer writer = new Writer(path); // Save all the users again
         writer.WriteToFile(arrayList);
+        path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
+        ArrayList<Pair<String, User>> arrayList2 = new ArrayList<>();
+        writer = new Writer(path); // Save all the users again
+        writer.WriteToFile(arrayList2);
     }
 }
 
@@ -82,6 +86,23 @@ class ClientHandler implements Runnable {
                 if (tmp.equals("Log in")) {
                     String userName = in.nextLine(); // Checking the users
                     String password = in.nextLine(); // username and password
+                    String remember = in.nextLine();
+                    if (check(userName, password) && remember.equalsIgnoreCase("remember")) {
+                        try {
+                            String path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
+                            ArrayList<Pair<String, User>> arrayList;
+                            //noinspection unchecked
+                            arrayList = (ArrayList<Pair<String, User>>) new Reader(path).ReadFromFile(); // Reading the old users info
+                            //noinspection SuspiciousMethodCalls
+                            if (!arrayList.contains(new Pair<>(connectionSocket.getInetAddress(), new User(userName, password)))) {
+                                Writer writer = new Writer(path); // Save all the users again
+                                arrayList.add(new Pair<>(connectionSocket.getInetAddress().toString(), new User(userName, password)));
+                                writer.WriteToFile(arrayList);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     if (check(userName, password)) {
                         out.println("user entered the game.");
                         // TODO: 21-Jul-20 authenticated user.
@@ -144,12 +165,23 @@ class ClientHandler implements Runnable {
         return false;
     }
 
-    /*
-        This method is for logging into the server.
-        This will check the equality of the username and
-        the password of the user.
+    /**
+     * This method is for logging into the server.
+     * This will check the equality of the username and
+     * the password of the user.
      */
     private boolean check(String id, String pass) {
+        try {
+            String path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
+            ArrayList<Pair<String, User>> arrayList;
+            //noinspection unchecked
+            arrayList = (ArrayList<Pair<String, User>>) new Reader(path).ReadFromFile(); // Reading the old users info
+            for (Pair<String, User> stringUserPair : arrayList)
+                if (connectionSocket.getInetAddress().toString().equals(stringUserPair.getFirst()))
+                    return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             String path = new URI("src/game/Server/info.aut").getPath();
             ArrayList<User> arrayList;
