@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 /**
  * This is the login page where the user inputs its username
  * and its password to connect to the server.
- *
  */
 public class Log {
     // The private fields
@@ -39,6 +38,7 @@ public class Log {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
+
         // Creating the login page
         Runnable r = () -> {
             JPanel c = null;
@@ -72,6 +72,7 @@ public class Log {
             frame.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
+        logIn.doClick();
     }
 
     /*
@@ -188,7 +189,8 @@ public class Log {
                         Main.startTheGame(); // Getting into the game
                         return;
                     }
-                    JOptionPane.showMessageDialog(null, get().toString());
+                    if (!userName.getText().equalsIgnoreCase("User Name"))
+                        JOptionPane.showMessageDialog(null, get().toString());
                 } catch (InterruptedException | ExecutionException | NullPointerException ex) {
                     JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -240,6 +242,10 @@ public class Log {
         out.println(s);
         out.println(name);
         out.println(pass);
+        if (remember.isSelected())
+            out.println("remember");
+        else
+            out.println("don't remember");
         String tr = in.nextLine();
         return tr;
     }
