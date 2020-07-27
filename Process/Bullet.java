@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Bullet implements Serializable {
 
     private transient final static int SPEED = 8; //Speed and time field
-    private final int DIAM = 16;//location fields&radios of the circle
+    private final int DIAM = 8;//location fields&radios of the circle
     int locX, locY;//Location fields
     transient boolean isAlive, justShot; //Status fields
     transient int direction;

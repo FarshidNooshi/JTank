@@ -2,10 +2,22 @@ package game.Process;
 
 import javax.swing.*;
 
+/**
+ * This is a single cell house in 2d array
+ * where we keep the info about a house.
+ * The type and the image to show.
+ *
+ */
 public class Cell {
+    // Privet fields
     private int state;
     private ImageIcon icon;
 
+    /**
+     * The main constructor of the cell class.
+     * @param state the type of the cell
+     * @param tt a random number to show the image
+     */
     public Cell(int state, int tt) {
         this.state = state;
         if (tt % 2 == 1)
@@ -14,6 +26,10 @@ public class Cell {
             icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
     }
 
+    /**
+     * Setter of the icon method.
+     * @param tt the random number
+     */
     public void setIcon(int tt) {
         if (tt % 2 == 1)
             icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
@@ -21,14 +37,26 @@ public class Cell {
             icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
     }
 
+    /**
+     * Getter of the icon.
+     * @return the image of the cell
+     */
     public ImageIcon getIcon() {
         return icon;
     }
 
+    /**
+     * Getter of the cell type.
+     * @return the type of the cell
+     */
     public int getState() {
         return state;
     }
 
+    /**
+     * Setter method of the type.
+     * @param state the new type
+     */
     public void setState(int state) {
         this.state = state;
     }
