@@ -31,8 +31,8 @@ public class Bullet implements Serializable {
      */
     public Bullet(int locX, int locY, GameMap gameMap) {
         // The starting point of the square
-        this.locX = locX + GameMap.CHANGING_FACTOR / 4; // This is for putting the bullet at the
-        this.locY = locY + GameMap.CHANGING_FACTOR / 4; // center of the tank
+        this.locX = locX;
+        this.locY = locY;
         // Keeping the old coordinate
         firstX = this.locX;
         firstY = this.locY;

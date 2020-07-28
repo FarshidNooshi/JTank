@@ -186,7 +186,7 @@ public class Log {
                     String ret = get().toString();
                     if (ret.equalsIgnoreCase("user entered the game.")) {
                         frame.setVisible(false);
-                        Main.startTheGame(); // Getting into the game
+                        Setting.run();
                         return;
                     }
                     if (!userName.getText().equalsIgnoreCase("User Name"))

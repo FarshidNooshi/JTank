@@ -1,7 +1,6 @@
 package game.Server;
 
 import java.io.*;
-import java.util.ArrayList;
 
 /**
  * This class is for reading an object(request) from a path.
@@ -31,18 +30,12 @@ public class Reader {
      * @throws IOException not finding class exception
      */
     Object ReadFromFile() throws IOException {
-        ArrayList<User> users = new ArrayList<>();
-        User user;
         try {
-            while ((user = (User) in.readObject()) != null) {
-                users.add(user);
-            }
-        } catch (ClassNotFoundException | EOFException e) {
-            close();
-            return users;
+            return in.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        close();
-        return users;
+        return null;
     }
 
     /**

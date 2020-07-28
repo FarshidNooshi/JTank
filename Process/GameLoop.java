@@ -66,7 +66,7 @@ public class GameLoop implements Runnable {
             try {
                 long start = System.currentTimeMillis();
                 if (state.shotFired) {
-                    Bullet bullet = new Bullet(state.locX, state.locY, canvas.getGameMap());
+                    Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, canvas.getGameMap());
                     bullet.setDirections(state.direction());
                     bullets.add(bullet);
                 }
