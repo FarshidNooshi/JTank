@@ -14,7 +14,7 @@ public class Bullet implements Serializable {
     private transient final static int SPEED = 8; //Speed and time field
     private final int DIAM = 8;//location fields&radios of the circle
     int locX, locY;//Location fields
-    transient boolean isAlive, justShot; //Status fields
+    private transient boolean isAlive, justShot; //Status fields
     transient int direction;
     transient private GameMap gameMap; //Each bullet needs the map
     transient private VectorFactory vectorFactory;
@@ -37,8 +37,8 @@ public class Bullet implements Serializable {
         firstX = this.locX;
         firstY = this.locY;
         // Setting the limits
-        this.mapRowsLimit = gameMap.numberOfRows;
-        this.mapColsLimit = gameMap.numberOfColumns;
+        this.mapRowsLimit = gameMap.getNumberOfRows();
+        this.mapColsLimit = gameMap.getNumberOfColumns();
         isAlive = true;
         justShot = true;
         this.gameMap = gameMap;
@@ -145,5 +145,9 @@ public class Bullet implements Serializable {
             // The bullet update method
             update();
         }
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 }

@@ -2,13 +2,16 @@ package game.Server;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,24 +23,25 @@ import java.util.concurrent.Executors;
  */
 public class Main {
 
+    private static ExecutorService service = Executors.newCachedThreadPool();
     private static ExecutorService pool = Executors.newCachedThreadPool();
-    private ExecutorService service = Executors.newCachedThreadPool();
+    private static HashMap<Integer, Vector<User>> queue = new HashMap<>();
 
     public static void main(String[] args) {
-        try {
-            clearData();
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            clearData();
+//        } catch (URISyntaxException | IOException e) {
+//            e.printStackTrace();
+//        }
         // The users ID
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {
             JOptionPane.showMessageDialog(null, "Server started.");
-            while (counter++ < 100000) {
+            while (counter++ < 1000) {
                 // Waiting for a client and connect them to the server
                 Socket connectionSocket = welcomingSocket.accept();
                 System.out.println("client accepted!");
-                pool.execute(new ClientHandler(connectionSocket, counter));
+                pool.execute(new ClientHandler(connectionSocket));
             }
             pool.shutdown();
             JOptionPane.showMessageDialog(null, "closing server.");
@@ -57,6 +61,22 @@ public class Main {
         writer = new Writer(path); // Save all the users again
         writer.WriteToFile(arrayList2);
     }
+
+    public static HashMap<Integer, Vector<User>> getQueue() {
+        return queue;
+    }
+
+    public static void setQueue(HashMap<Integer, Vector<User>> queue) {
+        Main.queue = queue;
+    }
+
+    public static ExecutorService getService() {
+        return service;
+    }
+
+    public static void setService(ExecutorService service) {
+        Main.service = service;
+    }
 }
 
 /**
@@ -67,11 +87,10 @@ public class Main {
 class ClientHandler implements Runnable {
 
     private Socket connectionSocket;
-    private int clientNum;
+    private User client;
 
-    ClientHandler(Socket connectionSocket, int clientNum) {
+    ClientHandler(Socket connectionSocket) {
         this.connectionSocket = connectionSocket;
-        this.clientNum = clientNum;
     }
 
     @Override
@@ -103,7 +122,20 @@ class ClientHandler implements Runnable {
                     }
                     if (check(userName, password)) {
                         out.println("user entered the game.");
-                        // TODO: 21-Jul-20 authenticated user.
+                        int numberOfPlayers = Integer.parseInt(in.nextLine());
+                        Main.getQueue().putIfAbsent(numberOfPlayers, new Vector<>());
+                        HashMap<Integer, Vector<User>> queue = Main.getQueue();
+                        queue.get(numberOfPlayers).add(client);
+                        try (ObjectOutputStream out2 = new ObjectOutputStream(connectionSocket.getOutputStream())){
+                            out2.writeObject(client);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (queue.get(numberOfPlayers).size() == numberOfPlayers) {
+                            Vector<User> temp = new Vector<>(queue.get(numberOfPlayers));
+                            queue.remove(numberOfPlayers);
+                            Main.getService().execute(new GameHandler(temp));
+                        }
                     } else {
                         out.println("user not found.");
                     }
@@ -132,19 +164,13 @@ class ClientHandler implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                connectionSocket.close();
-            } catch (IOException ex) {
-                System.err.println(ex.getMessage());
-            }
         }
     }
 
-    /*
-        This method checks if the username
-        is been used before or not. If the name is not unique
-        then it will not accept the new username.
+    /**
+     * This method checks if the username
+     * is been used before or not. If the name is not unique
+     * then it will not accept the new username.
      */
     private boolean find(String userName) {
         try {
@@ -173,8 +199,11 @@ class ClientHandler implements Runnable {
             //noinspection unchecked
             arrayList = (ArrayList<Pair<String, User>>) new Reader(path).ReadFromFile(); // Reading the old users info
             for (Pair<String, User> stringUserPair : arrayList)
-                if (connectionSocket.getInetAddress().toString().equals(stringUserPair.getFirst()))
+                if (connectionSocket.getInetAddress().toString().equals(stringUserPair.getFirst())) {
+                    client = stringUserPair.getSecond();
+                    client.setClientSocket(connectionSocket);
                     return true;
+                }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -184,8 +213,11 @@ class ClientHandler implements Runnable {
             //noinspection unchecked
             arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
             for (User user : arrayList)
-                if (user.equals(new User(id, pass)))
+                if (user.equals(new User(id, pass))) {
+                    client = new User(id, pass);
+                    client.setClientSocket(connectionSocket);
                     return true;
+                }
         } catch (Exception e) {
             e.printStackTrace();
         }

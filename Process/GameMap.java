@@ -2,9 +2,11 @@ package game.Process;
 
 import game.Control.Location;
 import game.Control.LocationController;
+import game.Server.User;
 
 import java.io.Serializable;
 import java.util.Random;
+import java.util.Vector;
 
 /**
  * This class is our map of the game.
@@ -16,8 +18,8 @@ public class GameMap implements Serializable {
     public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
     Cell[][] binaryMap; // The array of the map
     // The data of the map
-    int numberOfRows;
-    int numberOfColumns;
+    private int numberOfRows;
+    private int numberOfColumns;
     private Random random = new Random(); // The random instance
 
     /**
@@ -50,25 +52,25 @@ public class GameMap implements Serializable {
                 if (random.nextInt(100) % 2 == 0)
                     binaryMap[y][x].setState(0);
                 if (binaryMap[y][x].getState() != 0)
-                    LocationController.add(new Location(x, y, GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
+                    LocationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
             }
         }
     }
 
     /**
      * This method will place the tanks into empty spaces.
-     *
-     * @param gameState the game state or the tank
      */
-    public void setPlaces(GameState gameState) {
-        while (true) {
-            int x = random.nextInt(numberOfColumns); // A random place for the states
-            int y = random.nextInt(numberOfRows);
+    public void setPlaces(Vector<User> users) {
+        for (User u : users) {
+            while (true) {
+                int x = random.nextInt(numberOfColumns); // A random place for the states
+                int y = random.nextInt(numberOfRows);
 
-            if (binaryMap[y][x].getState() == 0) {
-                gameState.setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
-                binaryMap[y][x].setState(-1); // Showing the tank is in this house
-                break;
+                if (binaryMap[y][x].getState() == 0) {
+                    u.getState().setLocation(x * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_Y);
+                    binaryMap[y][x].setState(-1); // Showing the tank is in this house
+                    break;
+                }
             }
         }
         flushTank(); // We need to empty the tank places
@@ -84,6 +86,14 @@ public class GameMap implements Serializable {
             for (int x = 0; x < numberOfColumns; x++)
                 if (binaryMap[y][x].getState() == -1)
                     binaryMap[y][x].setState(0);
+    }
+
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
+    public int getNumberOfRows() {
+        return numberOfRows;
     }
 
     //TODO: add a method to create a map that all the tanks are connected to each other.

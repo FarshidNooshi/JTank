@@ -1,21 +1,21 @@
 package game;
 
-import game.Process.Main;
+import game.Server.User;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
 
 public class Setting {
+    private static User u = null;
+    private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "Teams Battle"};
     private static String[] tankSpeeds = {"4", "8", "12"};
     private static String[] bulletSpeeds = {"8", "16", "32"};
     private static String[] health = {"Low", "Half", "Full"};
-    protected static JFrame frame = new JFrame("J Tank Trouble - Setting");
+    private static JFrame frame = new JFrame("J Tank Trouble - Setting");
     private static JLabel gameMode = new JLabel("Game mode : ");
     private static JComboBox<String> modeInput = new JComboBox<>(gameModes);
     private static JLabel tankSpeed = new JLabel("Tanks speed : ");
@@ -26,18 +26,14 @@ public class Setting {
     private static JComboBox<String> wallDamageInput = new JComboBox<>(health);
     private static JLabel tankDamage = new JLabel("Tanks health : ");
     private static JComboBox<String> tankDamageInput = new JComboBox<>(health);
-    private static JLabel minPeople = new JLabel("Minimum players : ");
-    private static JLabel minPeopleInput = new JLabel(String.valueOf(1));
-    private static JLabel maxPeople = new JLabel("Maximum players : ");
-    private static JLabel maxPeopleInput = new JLabel(String.valueOf(10));
-    private static JButton decreaseMin = new JButton("<<");
-    private static JButton increaseMin = new JButton(">>");
-    private static JButton decreaseMax = new JButton("<<");
-    private static JButton increaseMax = new JButton(">>");
+    private static JLabel numberOfPeople = new JLabel("Number Of players : ");
+    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(1));
+    private static JButton decreaseNum = new JButton("<<");
+    private static JButton increaseNum = new JButton(">>");
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
 
-    public static void run() {
+    static void run() {
 
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(800, 500));
@@ -53,7 +49,6 @@ public class Setting {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            assert c != null;
             c.setLayout(null);
             gameMode.setLocation(250, 50);
             modeInput.setLocation(450, 50);
@@ -65,14 +60,10 @@ public class Setting {
             wallDamageInput.setLocation(450, 200);
             tankDamage.setLocation(250, 250);
             tankDamageInput.setLocation(450, 250);
-            minPeople.setLocation(250, 300);
-            decreaseMin.setLocation(450, 300);
-            minPeopleInput.setLocation(525, 300);
-            increaseMin.setLocation(575, 300);
-            maxPeople.setLocation(250, 350);
-            decreaseMax.setLocation(450, 350);
-            maxPeopleInput.setLocation(525, 350);
-            increaseMax.setLocation(575, 350);
+            numberOfPeople.setLocation(250, 300);
+            decreaseNum.setLocation(450, 300);
+            numberOfPeopleInput.setLocation(525, 300);
+            increaseNum.setLocation(575, 300);
             cancel.setLocation(250, 400);
             send.setLocation(450, 400);
             c.add(gameMode);
@@ -85,14 +76,10 @@ public class Setting {
             c.add(wallDamageInput);
             c.add(tankDamage);
             c.add(tankDamageInput);
-            c.add(minPeople);
-            c.add(decreaseMin);
-            c.add(minPeopleInput);
-            c.add(increaseMin);
-            c.add(maxPeople);
-            c.add(decreaseMax);
-            c.add(maxPeopleInput);
-            c.add(increaseMax);
+            c.add(numberOfPeople);
+            c.add(decreaseNum);
+            c.add(numberOfPeopleInput);
+            c.add(increaseNum);
             c.add(cancel);
             c.add(send);
             frame.add(c);
@@ -103,14 +90,35 @@ public class Setting {
     }
 
     private static void init() {
-        gameMode.setSize(100,25);
-        gameMode.setOpaque(true);
-        gameMode.setBackground(Color.GRAY);
-        modeInput.setSize(100, 25);
-        tankSpeed.setSize(100, 25);
-        tankSpeed.setOpaque(true);
-        tankSpeed.setBackground(Color.GRAY);
-        tankSpeedInput.setSize(100, 25);
+        initSizes(gameMode, modeInput, tankSpeed, tankSpeedInput);
+        initSizes(bulletSpeed, bulletSpeedInput, wallDamage, wallDamageInput);
+        tankDamage.setSize(100, 25);
+        tankDamage.setOpaque(true);
+        tankDamage.setBackground(Color.GRAY);
+        tankDamageInput.setSize(100, 25);
+        numberOfPeople.setSize(150, 25);
+        numberOfPeople.setOpaque(true);
+        numberOfPeople.setBackground(Color.GRAY);
+        numberOfPeopleInput.setSize(50, 25);
+        decreaseNum.setSize(new Dimension(50, 25));
+        increaseNum.setSize(new Dimension(50, 25));
+        cancel.setSize(new Dimension(100, 25));
+        cancel.setHorizontalTextPosition(SwingConstants.CENTER);
+        send.setSize(new Dimension(100, 25));
+        send.setHorizontalTextPosition(SwingConstants.CENTER);
+        decreaseNum.addActionListener(e -> {
+            int target = Integer.parseInt(numberOfPeopleInput.getText());
+            if (target != 1)
+                numberOfPeopleInput.setText(String.valueOf(--target));
+        });
+        increaseNum.addActionListener(e -> {
+            int target = Integer.parseInt(numberOfPeopleInput.getText());
+            numberOfPeopleInput.setText(String.valueOf(++target));
+        });
+        initButtons();
+    }
+
+    private static void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
         bulletSpeed.setSize(100, 25);
         bulletSpeed.setOpaque(true);
         bulletSpeed.setBackground(Color.GRAY);
@@ -119,99 +127,56 @@ public class Setting {
         wallDamage.setOpaque(true);
         wallDamage.setBackground(Color.GRAY);
         wallDamageInput.setSize(100, 25);
-        tankDamage.setSize(100, 25);
-        tankDamage.setOpaque(true);
-        tankDamage.setBackground(Color.GRAY);
-        tankDamageInput.setSize(100, 25);
-        minPeople.setSize(150, 25);
-        minPeople.setOpaque(true);
-        minPeople.setBackground(Color.GRAY);
-        minPeopleInput.setSize(50, 25);
-        maxPeople.setSize(150, 25);
-        maxPeople.setOpaque(true);
-        maxPeople.setBackground(Color.GRAY);
-        maxPeopleInput.setSize(50, 25);
-        decreaseMin.setSize(new Dimension(50, 25));
-        decreaseMax.setSize(new Dimension(50, 25));
-        increaseMin.setSize(new Dimension(50, 25));
-        increaseMax.setSize(new Dimension(50, 25));
-        cancel.setSize(new Dimension(100, 25));
-        cancel.setHorizontalTextPosition(SwingConstants.CENTER);
-        send.setSize(new Dimension(100, 25));
-        send.setHorizontalTextPosition(SwingConstants.CENTER);
-        decreaseMin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int target = Integer.parseInt(minPeopleInput.getText());
-                if (target != 0)
-                    minPeopleInput.setText(String.valueOf(--target));
-            }
-        });
-        increaseMin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int target = Integer.parseInt(minPeopleInput.getText());
-                int limit = Integer.parseInt(maxPeopleInput.getText());
-                if (target < limit)
-                    minPeopleInput.setText(String.valueOf(++target));
-                else {
-                    maxPeopleInput.setText(String.valueOf(++target));
-                    minPeopleInput.setText(String.valueOf(target));
-                }
-            }
-        });
-        decreaseMax.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int target = Integer.parseInt(maxPeopleInput.getText());
-                int limit = Integer.parseInt(minPeopleInput.getText());
-                if (target > limit)
-                    maxPeopleInput.setText(String.valueOf(--target));
-                else if (target != 0) {
-                    maxPeopleInput.setText(String.valueOf(--target));
-                    minPeopleInput.setText(String.valueOf(target));
-                }
-            }
-        });
-        increaseMax.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int target = Integer.parseInt(maxPeopleInput.getText());
-                maxPeopleInput.setText(String.valueOf(++target));
-            }
-        });
-        initButtons();
     }
 
     private static void initButtons() {
-        send.addActionListener(e -> new SwingWorker<>(){
+        send.addActionListener(e -> new SwingWorker<>() {
 
             @Override
-            protected Object doInBackground() throws Exception {
+            protected Object doInBackground() {
                 //TODO: 28-jul-2020 inja bayad setting bazi be server ersal beshe
+                try {
+                    PrintStream out = new PrintStream(connectionSocket.getOutputStream());
+                    out.println(numberOfPeopleInput.getText());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
 
             @Override
             protected void done() {
                 frame.setVisible(false);
-                Main.startTheGame(); // Getting into the game
+                try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
+                    u = (User)in.readObject();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                assert u != null;
+                u.startTheGame();
+                // TODO: 29-Jul-20 inja bayad eslah beshe.
             }
         }.execute());
-        cancel.addActionListener(e -> new SwingWorker<>(){
+        cancel.addActionListener(e -> new SwingWorker<>() {
 
             @Override
-            protected Object doInBackground() throws Exception {
-                //TODO: 28-jul-2020 baray dokmeh cancel ham bayad yek method bezamin
+            protected Object doInBackground() {
                 return null;
             }
 
             @Override
             protected void done() {
-                frame.setVisible(false);
-                Main.startTheGame();
+                System.exit(0);
             }
         }.execute());
+    }
+
+    public static Socket getConnectionSocket() {
+        return connectionSocket;
+    }
+
+    static void setConnectionSocket(Socket connectionSocket) {
+        Setting.connectionSocket = connectionSocket;
     }
 
     private static class MainPanel extends JPanel {

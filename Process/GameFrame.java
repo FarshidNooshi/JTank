@@ -1,5 +1,7 @@
 package game.Process;
 
+import game.Server.User;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 
 /**
  * The window on which the rendering is performed.
@@ -25,6 +28,7 @@ public class GameFrame extends JFrame {
     private int counter = 0;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
+    private ArrayList<Bullet> bullets;
 
     /**
      * The constructor of the Game frame class to set
@@ -152,7 +156,7 @@ public class GameFrame extends JFrame {
     /**
      * Game rendering with triple-buffering using BufferStrategy.
      */
-    public void render(GameState state, ArrayList<Bullet> bullets) {
+    public void render(Vector<User> playersVector) {
         // Render single frame
         do {
             // The following loop ensures that the contents of the drawing buffer
@@ -162,7 +166,7 @@ public class GameFrame extends JFrame {
                 // to make sure the strategy is validated
                 Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
                 try {
-                    doRendering(graphics, state, bullets);
+                    doRendering(graphics, playersVector);
                 } finally {
                     // Dispose the graphics
                     graphics.dispose();
@@ -183,7 +187,7 @@ public class GameFrame extends JFrame {
     /**
      * Rendering all game elements based on the game state.
      */
-    private void doRendering(Graphics2D g2d, GameState state, ArrayList<Bullet> bullets) {
+    private void doRendering(Graphics2D g2d, Vector<User> playersVector) {
         AffineTransform old = g2d.getTransform(); // Storing the old g2d transform
         // Draw background
         g2d.setColor(Color.GRAY); // TODO: 26-Jul-20 from mapMaker import the background also write a mapMaker for creating creative maps.
@@ -191,8 +195,8 @@ public class GameFrame extends JFrame {
 
         // Draw Map
         // The loop of drawing
-        for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.numberOfRows; y++, verticalAt += GameMap.CHANGING_FACTOR)
-            for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.numberOfColumns; x++, horizonAt += GameMap.CHANGING_FACTOR) {
+        for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.getNumberOfRows(); y++, verticalAt += GameMap.CHANGING_FACTOR)
+            for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.getNumberOfColumns(); x++, horizonAt += GameMap.CHANGING_FACTOR) {
                 // Choosing the color of the house
                 switch (gameMap.binaryMap[y][x].getState()) {
                     case 0:
@@ -223,25 +227,36 @@ public class GameFrame extends JFrame {
             g2d.setTransform(old);
         }
 
-        // This is the rotation finding part for tank.
-        int rotateDegree = state.direction(); // The rotation degree
-        double rotation = Math.toRadians(rotateDegree);
-        // Using affine to rotate
-        //noinspection IntegerDivisionInFloatingPointContext
-        g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
-        // draw the rotated image
-        if (!state.gameOver)
-            g2d.drawImage(image, state.locX, state.locY, state.width, state.height, null);
-        g2d.setTransform(old);
+        for (User u : playersVector) {
+            GameState state = u.getState();
+            // This is the rotation finding part for tank.
+            int rotateDegree = state.direction(); // The rotation degree
+            double rotation = Math.toRadians(rotateDegree);
+            // Using affine to rotate
+            //noinspection IntegerDivisionInFloatingPointContext
+            g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
+            // draw the rotated image
+            if (!state.gameOver)
+                g2d.drawImage(image, state.locX, state.locY, state.width, state.height, null);
+            g2d.setTransform(old);
 
-        // Draw GAME OVER
-        if (state.gameOver) {
-            String str = "GAME OVER";
-            g2d.setColor(new Color(100, 12, 22));
-            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
-            int strWidth = g2d.getFontMetrics().stringWidth(str);
-            g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+            // Draw GAME OVER
+            if (state.gameOver) {
+                String str = "GAME OVER";
+                g2d.setColor(new Color(100, 12, 22));
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
+                int strWidth = g2d.getFontMetrics().stringWidth(str);
+                g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+            }
         }
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public void setBullets(ArrayList<Bullet> bullets) {
+        this.bullets = bullets;
     }
 
     private static class MainPanel extends JPanel {

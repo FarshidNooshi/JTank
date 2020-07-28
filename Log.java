@@ -1,7 +1,5 @@
 package game;
 
-import game.Process.Main;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class Log {
     // The private fields
-    protected static JFrame frame = new JFrame("J Tank Trouble");
+    private static JFrame frame = new JFrame("J Tank Trouble");
     private static JTextField userName = new JTextField("User Name");
     private static JPasswordField passwordField = new JPasswordField();
     private static JCheckBox remember = new JCheckBox("Remember me");
@@ -31,7 +29,7 @@ public class Log {
     private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
 
-    public static void run() {// TODO: 21-Jul-20 local save mishe inke remember beshe
+    public static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
         frame.setLocation(250, 100);
@@ -75,9 +73,9 @@ public class Log {
         logIn.doClick();//for remember.
     }
 
-    /*
-        This method will set the styles to
-        the components.
+    /**
+     * This method will set the styles to
+     * the components.
      */
     private static void init() {
         logo.setSize(500, 150);
@@ -116,7 +114,7 @@ public class Log {
             /**
              * Invoked when a component gains the keyboard focus.
              *
-             * @param e todo
+             * @param e // TODO: 29-Jul-20
              */
             @Override
             public void focusGained(FocusEvent e) {
@@ -165,15 +163,17 @@ public class Log {
              * Note: this method is executed in a background thread.
              *
              * @return the computed result
-             * @throws Exception if unable to compute a result
              */
             @Override
             protected Object doInBackground() {
                 String ip = "127.0.0.1";//you can change it later .
                 int port = 1726;//you can change the port later too.
                 String ret = null;
-                try (Socket socket = new Socket(ip, port)) {
+                try {
+                    Socket socket = new Socket(ip, port);
                     ret = takeString(socket, "Log in");
+                    if (ret.equalsIgnoreCase("user entered the game."))
+                        Setting.setConnectionSocket(socket);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -208,7 +208,6 @@ public class Log {
              * Note: this method is executed in a background thread.
              *
              * @return the computed result
-             * @throws Exception if unable to compute a result
              */
             @Override
             protected Object doInBackground() {
@@ -246,8 +245,7 @@ public class Log {
             out.println("remember");
         else
             out.println("don't remember");
-        String tr = in.nextLine();
-        return tr;
+        return in.nextLine();
     }
 
     private static class MainPanel extends JPanel {

@@ -118,10 +118,10 @@ public class GameState implements Serializable {
                 locX += (int) vectorFactory.x;
         }
 
-        locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
-        locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - width);
-        locY = Math.max(locY, GameFrame.DRAWING_START_Y);
-        locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y - height);
+        locX = Math.max(locX, game.Process.GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
+        locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X - width);
+        locY = Math.max(locY, game.Process.GameFrame.DRAWING_START_Y);
+        locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_Y - height);
         roundCounter++; // Need to count for bullet shooting
     }
 
