@@ -20,7 +20,8 @@ import java.util.concurrent.Executors;
  */
 public class Main {
 
-    // TODO: 21-Jul-20 bayad ghesmate entezar baraye bazi dorost beshe
+    private static ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService service = Executors.newCachedThreadPool();
 
     public static void main(String[] args) {
         try {
@@ -28,9 +29,6 @@ public class Main {
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
-        // MultiClient main server
-        ExecutorService pool = Executors.newCachedThreadPool();
-        // Number of the users in the server
         // The users ID
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {
@@ -49,7 +47,7 @@ public class Main {
         System.out.println("done.");
     }
 
-    public static void clearData() throws URISyntaxException, IOException {
+    private static void clearData() throws URISyntaxException, IOException {
         String path = new URI("src/game/Server/info.aut").getPath(); // File path of users
         ArrayList<User> arrayList = new ArrayList<>();
         Writer writer = new Writer(path); // Save all the users again
@@ -130,8 +128,6 @@ class ClientHandler implements Runnable {
                     } else {
                         out.println("not accepted, user name exist.");
                     }
-                } else {
-                    // TODO: 21-Jul-20  gamePlay should be implemented here.
                 }
             }
         } catch (IOException e) {
@@ -196,5 +192,7 @@ class ClientHandler implements Runnable {
         return false;
     }
 }
+
+
 
 
