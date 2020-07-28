@@ -72,7 +72,6 @@ public class Log {
             frame.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
-        logIn.doClick();
     }
 
     /*

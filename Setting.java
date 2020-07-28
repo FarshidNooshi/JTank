@@ -2,20 +2,19 @@ package game;
 
 import game.Process.Main;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 
 public class Setting {
-
     private static String[] gameModes = {"Death Match", "Teams Battle"};
     private static String[] tankSpeeds = {"4", "8", "12"};
     private static String[] bulletSpeeds = {"8", "16", "32"};
     private static String[] health = {"Low", "Half", "Full"};
-
     protected static JFrame frame = new JFrame("J Tank Trouble - Setting");
     private static JLabel gameMode = new JLabel("Game mode : ");
     private static JComboBox<String> modeInput = new JComboBox<>(gameModes);
@@ -31,80 +30,115 @@ public class Setting {
     private static JLabel minPeopleInput = new JLabel(String.valueOf(1));
     private static JLabel maxPeople = new JLabel("Maximum players : ");
     private static JLabel maxPeopleInput = new JLabel(String.valueOf(10));
-    private static JButton decreaseMin = new JButton("<");
-    private static JButton increaseMin = new JButton(">");
-    private static JButton decreaseMax = new JButton("<");
-    private static JButton increaseMax = new JButton(">");
+    private static JButton decreaseMin = new JButton("<<");
+    private static JButton increaseMin = new JButton(">>");
+    private static JButton decreaseMax = new JButton("<<");
+    private static JButton increaseMax = new JButton(">>");
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
 
     public static void run() {
-        System.out.println("Got here");
+
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-        frame.setPreferredSize(new Dimension(750, 500));
-        frame.setLocation(300, 100);
+        frame.setPreferredSize(new Dimension(800, 500));
+        frame.setLocation(250, 100);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
-
-        JPanel c = new JPanel();
-        c.setLayout(null);
-        gameMode.setLocation(75, 10);
-        modeInput.setLocation(225, 10);
-        tankSpeed.setLocation(75, 20);
-        tankSpeedInput.setLocation(225, 20);
-        bulletSpeed.setLocation(75, 30);
-        bulletSpeedInput.setLocation(225, 30);
-        wallDamage.setLocation(75, 40);
-        wallDamageInput.setLocation(225, 40);
-        tankDamage.setLocation(75, 50);
-        tankDamageInput.setLocation(225, 50);
-        minPeople.setLocation(75, 60);
-        decreaseMin.setLocation(150 , 60);
-        minPeopleInput.setLocation(200, 60);
-        increaseMin.setLocation(250, 60);
-        maxPeople.setLocation(75, 70);
-        decreaseMax.setLocation(150, 70);
-        maxPeopleInput.setLocation(200, 70);
-        increaseMax.setLocation(250, 70);
-        cancel.setLocation(75, 80);
-        send.setLocation(225, 80);
         init();
-        c.add(gameMode);
-        c.add(modeInput);
-        c.add(tankSpeed);
-        c.add(tankSpeedInput);
-        c.add(bulletSpeed);
-        c.add(bulletSpeedInput);
-        c.add(wallDamage);
-        c.add(wallDamageInput);
-        c.add(tankDamage);
-        c.add(tankDamageInput);
-        c.add(minPeople);
-        c.add(decreaseMin);
-        c.add(minPeopleInput);
-        c.add(increaseMin);
-        c.add(maxPeople);
-        c.add(decreaseMax);
-        c.add(maxPeopleInput);
-        c.add(increaseMax);
-        c.add(cancel);
-        c.add(send);
-        frame.add(c);
-        frame.pack();
-        frame.setVisible(true);
+
+        Runnable r = () -> {
+            JPanel c = new JPanel();
+            try {
+                c = new MainPanel(ImageIO.read(new File("src/game/IconsInGame/Farshid/background.png")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            assert c != null;
+            c.setLayout(null);
+            gameMode.setLocation(250, 50);
+            modeInput.setLocation(450, 50);
+            tankSpeed.setLocation(250, 100);
+            tankSpeedInput.setLocation(450, 100);
+            bulletSpeed.setLocation(250, 150);
+            bulletSpeedInput.setLocation(450, 150);
+            wallDamage.setLocation(250, 200);
+            wallDamageInput.setLocation(450, 200);
+            tankDamage.setLocation(250, 250);
+            tankDamageInput.setLocation(450, 250);
+            minPeople.setLocation(250, 300);
+            decreaseMin.setLocation(450, 300);
+            minPeopleInput.setLocation(525, 300);
+            increaseMin.setLocation(575, 300);
+            maxPeople.setLocation(250, 350);
+            decreaseMax.setLocation(450, 350);
+            maxPeopleInput.setLocation(525, 350);
+            increaseMax.setLocation(575, 350);
+            cancel.setLocation(250, 400);
+            send.setLocation(450, 400);
+            c.add(gameMode);
+            c.add(modeInput);
+            c.add(tankSpeed);
+            c.add(tankSpeedInput);
+            c.add(bulletSpeed);
+            c.add(bulletSpeedInput);
+            c.add(wallDamage);
+            c.add(wallDamageInput);
+            c.add(tankDamage);
+            c.add(tankDamageInput);
+            c.add(minPeople);
+            c.add(decreaseMin);
+            c.add(minPeopleInput);
+            c.add(increaseMin);
+            c.add(maxPeople);
+            c.add(decreaseMax);
+            c.add(maxPeopleInput);
+            c.add(increaseMax);
+            c.add(cancel);
+            c.add(send);
+            frame.add(c);
+            frame.pack();
+            frame.setVisible(true);
+        };
+        SwingUtilities.invokeLater(r);
     }
 
     private static void init() {
-        System.out.println("Got here in init");
-        decreaseMin.setPreferredSize(new Dimension(25, 10));
-        decreaseMax.setPreferredSize(new Dimension(25, 10));
-        increaseMin.setPreferredSize(new Dimension(25, 10));
-        increaseMax.setPreferredSize(new Dimension(25, 10));
-        cancel.setPreferredSize(new Dimension(50, 10));
+        gameMode.setSize(100,25);
+        gameMode.setOpaque(true);
+        gameMode.setBackground(Color.GRAY);
+        modeInput.setSize(100, 25);
+        tankSpeed.setSize(100, 25);
+        tankSpeed.setOpaque(true);
+        tankSpeed.setBackground(Color.GRAY);
+        tankSpeedInput.setSize(100, 25);
+        bulletSpeed.setSize(100, 25);
+        bulletSpeed.setOpaque(true);
+        bulletSpeed.setBackground(Color.GRAY);
+        bulletSpeedInput.setSize(100, 25);
+        wallDamage.setSize(100, 25);
+        wallDamage.setOpaque(true);
+        wallDamage.setBackground(Color.GRAY);
+        wallDamageInput.setSize(100, 25);
+        tankDamage.setSize(100, 25);
+        tankDamage.setOpaque(true);
+        tankDamage.setBackground(Color.GRAY);
+        tankDamageInput.setSize(100, 25);
+        minPeople.setSize(150, 25);
+        minPeople.setOpaque(true);
+        minPeople.setBackground(Color.GRAY);
+        minPeopleInput.setSize(50, 25);
+        maxPeople.setSize(150, 25);
+        maxPeople.setOpaque(true);
+        maxPeople.setBackground(Color.GRAY);
+        maxPeopleInput.setSize(50, 25);
+        decreaseMin.setSize(new Dimension(50, 25));
+        decreaseMax.setSize(new Dimension(50, 25));
+        increaseMin.setSize(new Dimension(50, 25));
+        increaseMax.setSize(new Dimension(50, 25));
+        cancel.setSize(new Dimension(100, 25));
         cancel.setHorizontalTextPosition(SwingConstants.CENTER);
-        send.setPreferredSize(new Dimension(50, 10));
+        send.setSize(new Dimension(100, 25));
         send.setHorizontalTextPosition(SwingConstants.CENTER);
-
         decreaseMin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,7 +152,7 @@ public class Setting {
             public void actionPerformed(ActionEvent e) {
                 int target = Integer.parseInt(minPeopleInput.getText());
                 int limit = Integer.parseInt(maxPeopleInput.getText());
-                if (target <= limit)
+                if (target < limit)
                     minPeopleInput.setText(String.valueOf(++target));
                 else {
                     maxPeopleInput.setText(String.valueOf(++target));
@@ -131,7 +165,7 @@ public class Setting {
             public void actionPerformed(ActionEvent e) {
                 int target = Integer.parseInt(maxPeopleInput.getText());
                 int limit = Integer.parseInt(minPeopleInput.getText());
-                if (target >= limit)
+                if (target > limit)
                     maxPeopleInput.setText(String.valueOf(--target));
                 else if (target != 0) {
                     maxPeopleInput.setText(String.valueOf(--target));
@@ -150,9 +184,6 @@ public class Setting {
     }
 
     private static void initButtons() {
-
-        System.out.println("Got here in initButtons");
-
         send.addActionListener(e -> new SwingWorker<>(){
 
             @Override
@@ -163,10 +194,10 @@ public class Setting {
 
             @Override
             protected void done() {
+                frame.setVisible(false);
                 Main.startTheGame(); // Getting into the game
             }
         }.execute());
-
         cancel.addActionListener(e -> new SwingWorker<>(){
 
             @Override
@@ -177,8 +208,23 @@ public class Setting {
 
             @Override
             protected void done() {
-                EventQueue.invokeLater(Log::run);
+                frame.setVisible(false);
+                Main.startTheGame();
             }
         }.execute());
+    }
+
+    private static class MainPanel extends JPanel {
+        private Image bg;
+
+        MainPanel(Image bg) {
+            this.bg = bg;
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+        }
     }
 }
