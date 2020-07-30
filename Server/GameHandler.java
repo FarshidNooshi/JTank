@@ -5,6 +5,7 @@ import game.Process.ThreadPool;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -21,7 +22,6 @@ public class GameHandler implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("salam");
         init();
         GameMap gameMap = new GameMap();
         gameMap.init();
@@ -35,6 +35,7 @@ public class GameHandler implements Runnable {
             for (int i = 0; i < playersVector.size(); i++) {
                 Socket socket = serverSocket.accept();
                 String userName = new Scanner(socket.getInputStream()).nextLine();
+                System.out.println("WTF");
                 for (int j = 0; j < playersVector.size(); j++)
                     if (playersVector.get(i).getUserName().equals(userName)) {
                         playersVector.get(i).setClientSocket(socket);

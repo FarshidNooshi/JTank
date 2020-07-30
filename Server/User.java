@@ -7,6 +7,7 @@ import game.Process.GameState;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -101,7 +102,7 @@ public class User implements Serializable {
     private void init() {
         try {
             clientSocket = new Socket("127.0.0.1", 2726);
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+            PrintStream out = new PrintStream(clientSocket.getOutputStream());
             out.println(userName);
         } catch (IOException e) {
             e.printStackTrace();
