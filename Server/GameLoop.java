@@ -57,10 +57,6 @@ public class GameLoop implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            u.setCanvas(new GameFrame("Jtank"));
-            u.getCanvas().initBufferStrategy();
-            u.getCanvas().setGameMap(gameMap);
-            u.getCanvas().getGameMap().setPlaces(playersVector);
         }
     }
 
