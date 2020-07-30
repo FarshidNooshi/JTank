@@ -2,6 +2,7 @@ package game.Server;
 
 import game.Process.Bullet;
 import game.Process.GameFrame;
+import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.*;
@@ -22,6 +23,7 @@ public class User implements Serializable {
     private transient GameFrame canvas; // joone madaretoon be in frame dast nazanin
     private transient ArrayList<Bullet> bullets;
     private transient Vector<User> playersVector;
+    private transient GameMap gameMap;
 
     /**
      * The main constructor of the User class.
@@ -80,7 +82,7 @@ public class User implements Serializable {
         this.state = state;
     }
 
-    public void startTheGame() {
+    public void startTheGame() throws IOException {
 
         init();
 
@@ -99,23 +101,29 @@ public class User implements Serializable {
         }
     }
 
-    private void init() {
+    private void init() throws IOException {
+        clientSocket = new Socket("127.0.0.1", 2726);
         try {
-            clientSocket = new Socket("127.0.0.1", 2726);
             PrintStream out = new PrintStream(clientSocket.getOutputStream());
             out.println(userName);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try (ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
-            canvas = (GameFrame) in.readObject();
+        try {
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            gameMap = (GameMap) in.readObject();
             state = (GameState) in.readObject();
             playersVector = (Vector<User>) in.readObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        canvas = new GameFrame("Jtank");
+        canvas.setLocationRelativeTo(null);
+        canvas.setVisible(true);
+        canvas.initBufferStrategy();
+        canvas.setGameMap(gameMap);
         canvas.getGameMap().setPlaces(playersVector);
         canvas.addKeyListener(state.getKeyListener());
         canvas.addMouseListener(state.getMouseListener());
@@ -126,7 +134,8 @@ public class User implements Serializable {
     }
 
     public void write() {
-        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.writeObject(state);
         } catch (Exception e) {
             e.printStackTrace();

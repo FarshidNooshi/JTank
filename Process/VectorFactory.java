@@ -1,10 +1,12 @@
 package game.Process;
 
+import java.io.Serializable;
+
 /**
  * This class will chose the next location
  * where a state or a bullet needs to go.
  */
-public class VectorFactory {
+public class VectorFactory implements Serializable {
 
     public double x, y;
     private int speed, theta = 0;

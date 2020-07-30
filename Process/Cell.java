@@ -1,6 +1,7 @@
 package game.Process;
 
 import javax.swing.*;
+import java.io.Serializable;
 
 /**
  * This is a single cell house in 2d array
@@ -8,7 +9,7 @@ import javax.swing.*;
  * The type and the image to show.
  *
  */
-public class Cell {
+public class Cell implements Serializable {
     // Privet fields
     private int state;
     private ImageIcon icon;

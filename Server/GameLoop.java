@@ -51,17 +51,16 @@ public class GameLoop implements Runnable {
 
     private void initialize(GameMap gameMap) {
         for (User u : playersVector) {
-            GameFrame frame = new GameFrame("Jtank");
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-            frame.initBufferStrategy();
-            frame.setGameMap(gameMap);
-            try (ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream())) {
-                out.writeObject(frame);
+            try {
+                ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
+                out.writeObject(gameMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            frame.setVisible(false);
+            u.setCanvas(new GameFrame("Jtank"));
+            u.getCanvas().initBufferStrategy();
+            u.getCanvas().setGameMap(gameMap);
+            u.getCanvas().getGameMap().setPlaces(playersVector);
         }
     }
 
@@ -71,7 +70,8 @@ public class GameLoop implements Runnable {
     public void init() {
         for (User u : playersVector) {
             GameState state = new GameState();
-            try (ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream())) {
+            try {
+                ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
                 out.writeObject(state);
                 out.writeObject(playersVector);
                 u.setState(state);
@@ -117,7 +117,8 @@ public class GameLoop implements Runnable {
                 for (User u : playersVector) {
                     // updating the game
                     u.setState(read(u));
-                    try (ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream())) {
+                    try {
+                        ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
                         out.writeObject(bullets);
                         out.writeObject(playersVector);
                     } catch (Exception e) {
@@ -142,7 +143,8 @@ public class GameLoop implements Runnable {
     }
 
     private GameState read(User u) {
-        try (ObjectInputStream in = new ObjectInputStream(u.getClientSocket().getInputStream())) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(u.getClientSocket().getInputStream());
             return (GameState) in.readObject();
         } catch (Exception e) {
             e.printStackTrace();

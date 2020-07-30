@@ -153,7 +153,11 @@ public class Setting {
                     e.printStackTrace();
                 }
                 assert u != null;
-                u.startTheGame();
+                try {
+                    u.startTheGame();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 // TODO: 29-Jul-20 inja bayad eslah beshe.
             }
         }.execute());
