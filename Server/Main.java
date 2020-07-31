@@ -126,7 +126,7 @@ class ClientHandler implements Runnable {
                         Main.getQueue().putIfAbsent(numberOfPlayers, new Vector<>());
                         HashMap<Integer, Vector<User>> queue = Main.getQueue();
                         queue.get(numberOfPlayers).add(client);
-                        try (ObjectOutputStream out2 = new ObjectOutputStream(connectionSocket.getOutputStream())){
+                        try (ObjectOutputStream out2 = new ObjectOutputStream(connectionSocket.getOutputStream())) {
                             out2.writeObject(client);
                         } catch (Exception e) {
                             e.printStackTrace();

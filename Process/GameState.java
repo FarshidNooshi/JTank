@@ -165,7 +165,7 @@ public class GameState implements Serializable {
      */
     class KeyHandler extends KeyAdapter implements Serializable {
         @Override
-        public void keyPressed(KeyEvent e) { // it could be implemented with if/else but it didn't.
+        public void keyPressed(KeyEvent e) { // it could've been implemented with if/else but it didn't.
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:

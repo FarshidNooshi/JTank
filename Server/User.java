@@ -5,6 +5,7 @@ import game.Process.GameFrame;
 import game.Process.GameMap;
 import game.Process.GameState;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -85,13 +86,14 @@ public class User implements Serializable {
 
         init();
 
+
         while (!state.gameOver) {
-            write(state);
+            state.update();
+            write(state);// baraye inke bazi update shode be server dade beshe
             bullets = (ArrayList<Bullet>) read();
             playersVector = (Vector<User>) read();
             canvas.setBullets(bullets);
             canvas.render(playersVector);
-            state.update();
         }
     }
 
@@ -109,16 +111,19 @@ public class User implements Serializable {
         playersVector = (Vector<User>) read();
 
         canvas = new GameFrame("Jtank");
-        canvas.setLocationRelativeTo(null);
-        canvas.setVisible(true);
-        canvas.initBufferStrategy();
         canvas.setGameMap(gameMap);
+        if (state.getKeyListener() != null)
+            System.out.println("wow");
         canvas.addKeyListener(state.getKeyListener());
         canvas.addMouseListener(state.getMouseListener());
         canvas.addMouseMotionListener(state.getMouseMotionListener());
+        if (canvas.getKeyListeners() != null)
+            System.out.println("wwow");
+        canvas.setVisible(true);
+        canvas.initBufferStrategy();
         state.setLimits(canvas.getGameMap().getNumberOfRows(), canvas.getGameMap().getNumberOfColumns());
         state.width = canvas.getImage().getWidth() / 8; // Setting the width and the height
-        canvas.setVisible(true);
+        state.height = canvas.getImage().getHeight() / 8;
     }
 
     public GameFrame getCanvas() {

@@ -5,7 +5,10 @@ import game.Server.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 
 public class Setting {
@@ -148,7 +151,7 @@ public class Setting {
             protected void done() {
                 frame.setVisible(false);
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
-                    u = (User)in.readObject();
+                    u = (User) in.readObject();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

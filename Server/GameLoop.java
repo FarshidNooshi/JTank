@@ -1,7 +1,6 @@
 package game.Server;
 
 import game.Process.Bullet;
-import game.Process.GameFrame;
 import game.Process.GameMap;
 import game.Process.GameState;
 
@@ -32,13 +31,11 @@ public class GameLoop implements Runnable {
      * Higher is better, but any value above 24 is fine.
      */
     public static final int FPS = 30;
-
+    private final GameMap gameMap;
     private Vector<User> playersVector;
     private int numberOfPlayers;
-
     private ArrayList<Bullet> bullets;
     private ExecutorService executorService;
-    private final GameMap gameMap;
 
     /**
      * The constructor of the game loop.
@@ -59,8 +56,6 @@ public class GameLoop implements Runnable {
         gameMap.setPlaces(playersVector);
         for (User u : playersVector) {
             write(gameMap, u);
-//            u.setCanvas(new GameFrame("JTank", false));
-//            u.getCanvas().setGameMap(gameMap);
         }
     }
 
@@ -72,12 +67,6 @@ public class GameLoop implements Runnable {
             write(u.getState(), u);
             write(playersVector, u);
         }
-//        for (User u : playersVector) {
-//            GameState state = u.getState();
-//            state.setLimits(u.getCanvas().getGameMap().getNumberOfRows(), u.getCanvas().getGameMap().getNumberOfColumns());
-//            state.width = u.getCanvas().getImage().getWidth() / 8; // Setting the width and the height
-//            state.height = u.getCanvas().getImage().getHeight() / 8; // based on the user tank image
-//        }
         bullets = new ArrayList<>();
         executorService = Executors.newCachedThreadPool();
     }

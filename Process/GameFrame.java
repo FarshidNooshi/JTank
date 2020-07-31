@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -41,6 +40,9 @@ public class GameFrame extends JFrame {
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         // Opening the image
         try {
             image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
