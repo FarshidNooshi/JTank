@@ -38,18 +38,20 @@ public class GameLoop implements Runnable {
 
     private ArrayList<Bullet> bullets;
     private ExecutorService executorService;
+    private final GameMap gameMap;
 
     /**
      * The constructor of the game loop.
      * To create the frame of the game.
      */
     public GameLoop(GameMap gameMap, Vector<User> vector) {
+        this.gameMap = gameMap;
         playersVector = vector;
         this.numberOfPlayers = vector.size();
-        initialize(gameMap);
+        initialize();
     }
 
-    private void initialize(GameMap gameMap) {
+    private void initialize() {
         for (User u : playersVector) {
             GameState state = new GameState();
             u.setState(state);
@@ -57,8 +59,8 @@ public class GameLoop implements Runnable {
         gameMap.setPlaces(playersVector);
         for (User u : playersVector) {
             write(gameMap, u);
-            u.setCanvas(new GameFrame("JTank", false));
-            u.getCanvas().setGameMap(gameMap);
+//            u.setCanvas(new GameFrame("JTank", false));
+//            u.getCanvas().setGameMap(gameMap);
         }
     }
 
@@ -70,12 +72,12 @@ public class GameLoop implements Runnable {
             write(u.getState(), u);
             write(playersVector, u);
         }
-        for (User u : playersVector) {
-            GameState state = u.getState();
-            state.setLimits(u.getCanvas().getGameMap().getNumberOfRows(), u.getCanvas().getGameMap().getNumberOfColumns());
-            state.width = u.getCanvas().getImage().getWidth() / 8; // Setting the width and the height
-            state.height = u.getCanvas().getImage().getHeight() / 8; // based on the user tank image
-        }
+//        for (User u : playersVector) {
+//            GameState state = u.getState();
+//            state.setLimits(u.getCanvas().getGameMap().getNumberOfRows(), u.getCanvas().getGameMap().getNumberOfColumns());
+//            state.width = u.getCanvas().getImage().getWidth() / 8; // Setting the width and the height
+//            state.height = u.getCanvas().getImage().getHeight() / 8; // based on the user tank image
+//        }
         bullets = new ArrayList<>();
         executorService = Executors.newCachedThreadPool();
     }
@@ -90,7 +92,7 @@ public class GameLoop implements Runnable {
                     GameState state = (GameState) read(u);
                     assert state != null;
                     if (state.shotFired) {
-                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, u.getCanvas().getGameMap());
+                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
                     }
@@ -108,7 +110,6 @@ public class GameLoop implements Runnable {
                     // updating the game
                     write(bullets, u);
                     write(playersVector, u);
-                    u.getCanvas().setBullets(bullets);
                     //TODO: add a update method for the bullets
                 }
                 // calculating the delay for avoiding lags in the game

@@ -36,7 +36,7 @@ public class GameFrame extends JFrame {
      *
      * @param title the name of the game
      */
-    public GameFrame(String title, boolean get) {
+    public GameFrame(String title) {
         super(title);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -49,70 +49,68 @@ public class GameFrame extends JFrame {
             e.printStackTrace();
         }
         // The choosing tank option page
-        if (!get)
-            return;
-        int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
-        if (response == JOptionPane.YES_OPTION) {
-            this.setVisible(false);
-            JFrame ask = new JFrame("Choose tank model");
-            JPanel c = new MainPanel(new ImageIcon("src/game/IconsInGame/Farshid/background.png").getImage());
-            JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
-            c.add(logo);
-            logo.setLocation(300, 0);
-            logo.setSize(700, 150);
-            ask.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-            // Getting the tanks images
-            File file = new File("src/game/IconsInGame/Farshid/Tank");
-            c.setLayout(null);
-            int tmp = 0;
-            ask.setExtendedState(Frame.MAXIMIZED_BOTH);
-            // Creating buttons
-            for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
-                button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
-                button.setSize(150, 100);
-                c.add(button);
-                File finalFile1 = file;
-                button.addActionListener(e -> {
-                    try {
-                        image = ImageIO.read(new File(finalFile1.getPath() + File.separator + name));
-                        counter++;
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    if (counter == 2) {
-                        ask.setVisible(false);
-                        this.setVisible(true);
-                    }
-                });
-            }
-            // Reading bullet files and adding them to customizer frame
-            file = new File("src/game/IconsInGame/Farshid/Bullet");
-            tmp = 0;
-            for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
-                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
-                button.setSize(30, 45);
-                c.add(button);
-                File finalFile = file;
-                button.addActionListener(e -> {
-                    try {
-                        bullet = ImageIO.read(new File(finalFile.getPath() + File.separator + name));
-                        counter++;
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    if (counter == 2) {
-                        ask.setVisible(false);
-                        this.setVisible(true);
-                    }
-                });
-            }
-            ask.add(c);
-            ask.setAlwaysOnTop(true);
-            ask.setLocationRelativeTo(null);
-            ask.setVisible(true);
-        }
+//        int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
+//        if (response == JOptionPane.YES_OPTION) {
+//            this.setVisible(false);
+//            JFrame ask = new JFrame("Choose tank model");
+//            JPanel c = new MainPanel(new ImageIcon("src/game/IconsInGame/Farshid/background.png").getImage());
+//            JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
+//            c.add(logo);
+//            logo.setLocation(300, 0);
+//            logo.setSize(700, 150);
+//            ask.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
+//            // Getting the tanks images
+//            File file = new File("src/game/IconsInGame/Farshid/Tank");
+//            c.setLayout(null);
+//            int tmp = 0;
+//            ask.setExtendedState(Frame.MAXIMIZED_BOTH);
+//            // Creating buttons
+//            for (String name : Objects.requireNonNull(file.list())) {
+//                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+//                button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
+//                button.setSize(150, 100);
+//                c.add(button);
+//                File finalFile1 = file;
+//                button.addActionListener(e -> {
+//                    try {
+//                        image = ImageIO.read(new File(finalFile1.getPath() + File.separator + name));
+//                        counter++;
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                    if (counter == 2) {
+//                        ask.setVisible(false);
+//                        this.setVisible(true);
+//                    }
+//                });
+//            }
+//            // Reading bullet files and adding them to customizer frame
+//            file = new File("src/game/IconsInGame/Farshid/Bullet");
+//            tmp = 0;
+//            for (String name : Objects.requireNonNull(file.list())) {
+//                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+//                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
+//                button.setSize(30, 45);
+//                c.add(button);
+//                File finalFile = file;
+//                button.addActionListener(e -> {
+//                    try {
+//                        bullet = ImageIO.read(new File(finalFile.getPath() + File.separator + name));
+//                        counter++;
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                    if (counter == 2) {
+//                        ask.setVisible(false);
+//                        this.setVisible(true);
+//                    }
+//                });
+//            }
+//            ask.add(c);
+//            ask.setAlwaysOnTop(true);
+//            ask.setLocationRelativeTo(null);
+//            ask.setVisible(true);
+//        }
     }
 
     /**

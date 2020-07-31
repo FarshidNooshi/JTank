@@ -108,7 +108,7 @@ public class User implements Serializable {
         state = (GameState) read();
         playersVector = (Vector<User>) read();
 
-        canvas = new GameFrame("Jtank", true);
+        canvas = new GameFrame("Jtank");
         canvas.setLocationRelativeTo(null);
         canvas.setVisible(true);
         canvas.initBufferStrategy();
