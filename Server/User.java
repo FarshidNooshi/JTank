@@ -8,7 +8,6 @@ import game.Process.GameState;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -19,7 +18,7 @@ public class User implements Serializable {
 
     private String userName, password;
     private transient Socket clientSocket;
-    private transient GameState state;
+    private GameState state;
     private transient GameFrame canvas; // joone madaretoon be in frame dast nazanin
     private transient ArrayList<Bullet> bullets;
     private transient Vector<User> playersVector;
@@ -87,17 +86,13 @@ public class User implements Serializable {
         init();
 
         while (!state.gameOver) {
-            write();
-            bullets = new ArrayList<>();
-            write();
-            try (ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
-                bullets = (ArrayList<Bullet>) in.readObject();
-                playersVector = (Vector<User>) in.readObject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            write(state);
+            bullets = (ArrayList<Bullet>) read();
+            playersVector = (Vector<User>) read();
+            canvas.setBullets(bullets);
             canvas.render(playersVector);
             state.update();
+            write(state);
         }
     }
 
@@ -110,36 +105,22 @@ public class User implements Serializable {
             e.printStackTrace();
         }
 
-        try {
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-            gameMap = (GameMap) in.readObject();
-            state = (GameState) in.readObject();
-            playersVector = (Vector<User>) in.readObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        gameMap = (GameMap) read();
+        state = (GameState) read();
+        playersVector = (Vector<User>) read();
 
-        canvas = new GameFrame("Jtank");
+
+        canvas = new GameFrame("Jtank", true);
         canvas.setLocationRelativeTo(null);
         canvas.setVisible(true);
         canvas.initBufferStrategy();
         canvas.setGameMap(gameMap);
-        canvas.getGameMap().setPlaces(playersVector);
         canvas.addKeyListener(state.getKeyListener());
         canvas.addMouseListener(state.getMouseListener());
         canvas.addMouseMotionListener(state.getMouseMotionListener());
         state.setLimits(canvas.getGameMap().getNumberOfRows(), canvas.getGameMap().getNumberOfColumns());
         state.width = canvas.getImage().getWidth() / 8; // Setting the width and the height
         canvas.setVisible(true);
-    }
-
-    public void write() {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.writeObject(state);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public GameFrame getCanvas() {
@@ -156,5 +137,24 @@ public class User implements Serializable {
 
     public void setBullets(ArrayList<Bullet> bullets) {
         this.bullets = bullets;
+    }
+
+    private Object read() {
+        try {
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            return in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void write(Object object) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+            out.writeObject(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

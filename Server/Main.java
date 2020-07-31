@@ -28,11 +28,11 @@ public class Main {
     private static HashMap<Integer, Vector<User>> queue = new HashMap<>();
 
     public static void main(String[] args) {
-//        try {
-//            clearData();
-//        } catch (URISyntaxException | IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            clearData();
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
         // The users ID
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {

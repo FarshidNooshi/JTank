@@ -36,7 +36,7 @@ public class GameFrame extends JFrame {
      *
      * @param title the name of the game
      */
-    public GameFrame(String title) {
+    public GameFrame(String title, boolean get) {
         super(title);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -49,6 +49,8 @@ public class GameFrame extends JFrame {
             e.printStackTrace();
         }
         // The choosing tank option page
+        if(!get)
+            return;
         int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
         if (response == JOptionPane.YES_OPTION) {
             this.setVisible(false);
