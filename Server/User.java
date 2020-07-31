@@ -92,7 +92,6 @@ public class User implements Serializable {
             canvas.setBullets(bullets);
             canvas.render(playersVector);
             state.update();
-            write(state);
         }
     }
 
@@ -108,7 +107,6 @@ public class User implements Serializable {
         gameMap = (GameMap) read();
         state = (GameState) read();
         playersVector = (Vector<User>) read();
-
 
         canvas = new GameFrame("Jtank", true);
         canvas.setLocationRelativeTo(null);

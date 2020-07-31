@@ -104,12 +104,10 @@ public class GameLoop implements Runnable {
                     else
                         iterator.remove();
                 }
-                //sasa
                 for (User u : playersVector) {
                     // updating the game
                     write(bullets, u);
                     write(playersVector, u);
-                    u.setState((GameState) read(u));
                     u.getCanvas().setBullets(bullets);
                     //TODO: add a update method for the bullets
                 }

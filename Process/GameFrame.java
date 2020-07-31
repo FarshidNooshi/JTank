@@ -49,7 +49,7 @@ public class GameFrame extends JFrame {
             e.printStackTrace();
         }
         // The choosing tank option page
-        if(!get)
+        if (!get)
             return;
         int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
         if (response == JOptionPane.YES_OPTION) {
@@ -225,7 +225,7 @@ public class GameFrame extends JFrame {
             int h = bullet.getHeight();
             //noinspection IntegerDivisionInFloatingPointContext
             g2d.rotate(rotation, i.locX + w / 6, i.locY + h / 6);
-            g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, null);
+            g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, this);
             g2d.setTransform(old);
         }
 
@@ -234,12 +234,12 @@ public class GameFrame extends JFrame {
             // This is the rotation finding part for tank.
             int rotateDegree = state.direction(); // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
-            // Using affine to rotate
             //noinspection IntegerDivisionInFloatingPointContext
             g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
             // draw the rotated image
-            if (!state.gameOver)
-                g2d.drawImage(image, state.locX, state.locY, state.width, state.height, null);
+            if (!state.gameOver) {
+                g2d.drawImage(image, state.locX, state.locY, state.width, state.height, this);
+            }
             g2d.setTransform(old);
 
             // Draw GAME OVER
