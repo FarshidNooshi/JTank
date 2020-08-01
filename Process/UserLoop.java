@@ -9,6 +9,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Vector;
 
+/**
+ * This class is for the user game loop
+ * where we send the current user state
+ * and we will get the other users
+ * and will show the output.
+ */
 public class UserLoop extends Thread{
 
     private User thisPlayerUser;
@@ -16,18 +22,19 @@ public class UserLoop extends Thread{
     private Vector<User> users;
     private Socket clientSocket;
 
+    /**
+     * The main constructor of the UserLoop class.
+     * @param user the current user
+     */
     public UserLoop(User user) {
-
         thisPlayerUser = user;
-
         try {
             user.init();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         clientSocket = user.getClientSocket();
-
+        // The output frame
         canvas = new GameFrame("Jtank");
         canvas.setGameMap(user.getGameMap());
         canvas.setVisible(true);
@@ -39,8 +46,8 @@ public class UserLoop extends Thread{
 
     @Override
     public void run() {
+        // The game loop
         while (!thisPlayerUser.getState().gameOver) {
-            thisPlayerUser.getState().update();
             write(thisPlayerUser.getState());
             canvas.setBullets((ArrayList<Bullet>) read());
             users = (Vector<User>) read();
@@ -57,7 +64,7 @@ public class UserLoop extends Thread{
     public Object read() {
         try {
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-            return in.readUnshared();
+            return in.readObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +74,7 @@ public class UserLoop extends Thread{
     public void write(Object object) {
         try {
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.writeUnshared(object);
+            out.writeObject(object);
         } catch (Exception e) {
             e.printStackTrace();
         }

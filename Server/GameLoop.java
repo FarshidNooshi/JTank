@@ -74,6 +74,7 @@ public class GameLoop implements Runnable {
                 for (User u : playersVector) {
                     GameState state = (GameState) read(u);
                     assert state != null;
+                    state.update();
                     if (state.shotFired) {
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
                         bullet.setDirections(state.direction());

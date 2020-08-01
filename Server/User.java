@@ -28,12 +28,16 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Socket getClientSocket() {
-        return clientSocket;
-    }
-
-    public void setClientSocket(Socket clientSocket) {
-        this.clientSocket = clientSocket;
+    public void init() throws IOException {
+        clientSocket = new Socket("127.0.0.1", 2726);
+        try {
+            PrintStream out = new PrintStream(clientSocket.getOutputStream());
+            out.println(userName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        gameMap = (GameMap) read();
+        state = new GameState();
     }
 
     @Override
@@ -49,7 +53,6 @@ public class User implements Serializable {
 
     /**
      * A getter method for getting the user name.
-     *
      * @return the username
      */
     public String getUserName() {
@@ -58,7 +61,6 @@ public class User implements Serializable {
 
     /**
      * A getter method for getting the user password.
-     *
      * @return the user password
      */
     public String getPassword() {
@@ -81,16 +83,12 @@ public class User implements Serializable {
         this.state = state;
     }
 
-    public void init() throws IOException {
-        clientSocket = new Socket("127.0.0.1", 2726);
-        try {
-            PrintStream out = new PrintStream(clientSocket.getOutputStream());
-            out.println(userName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        gameMap = (GameMap) read();
-        state = new GameState();
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
+    public void setClientSocket(Socket clientSocket) {
+        this.clientSocket = clientSocket;
     }
 
     public Object read() {
