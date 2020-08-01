@@ -16,10 +16,9 @@ import java.util.Vector;
  * and will show the output.
  */
 public class UserLoop extends Thread{
-
+    // private fields
     private User thisPlayerUser;
     private GameFrame canvas;
-    private Vector<User> users;
     private Socket clientSocket;
 
     /**
@@ -29,12 +28,12 @@ public class UserLoop extends Thread{
     public UserLoop(User user) {
         thisPlayerUser = user;
         try {
-            user.init();
+            user.init(); // To open the user connection to the game
         } catch (IOException e) {
             e.printStackTrace();
         }
         clientSocket = user.getClientSocket();
-        // The output frame
+        // creating the output frame
         canvas = new GameFrame("Jtank");
         canvas.setGameMap(user.getGameMap());
         canvas.setVisible(true);
@@ -48,16 +47,16 @@ public class UserLoop extends Thread{
     public void run() {
         // The game loop
         while (!thisPlayerUser.getState().gameOver) {
-            write(thisPlayerUser.getState());
-            canvas.setBullets((ArrayList<Bullet>) read());
-            users = (Vector<User>) read();
+            write(thisPlayerUser.getState()); // Giving the status
+            canvas.setBullets((ArrayList<Bullet>) read()); // Get the bullets and the users
+            Vector<User> users = (Vector<User>) read();
             for (User u : users)
                 if (u.getUserName().equals(thisPlayerUser.getUserName()))
-                    thisPlayerUser.setState(u.getState());
-            canvas.addKeyListener(thisPlayerUser.getState().getKeyListener());
+                    thisPlayerUser.setState(u.getState()); // Finding this user
+            canvas.addKeyListener(thisPlayerUser.getState().getKeyListener()); // Updating the listeners
             canvas.addMouseListener(thisPlayerUser.getState().getMouseListener());
             canvas.addMouseMotionListener(thisPlayerUser.getState().getMouseMotionListener());
-            canvas.render(users);
+            canvas.render(users); // do the rendering
         }
     }
 

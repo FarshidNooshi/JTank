@@ -11,9 +11,9 @@ import java.net.Socket;
  * to store and restore the users information.
  */
 public class User implements Serializable {
-
+    // Private fields
     private String userName, password;
-    private transient Socket clientSocket;
+    private transient Socket clientSocket; // This socket is different in server
     private GameState state;
     private GameMap gameMap;
 
@@ -28,8 +28,15 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    /**
+     * This method will get the user ready for the
+     * game.
+     * @throws IOException write into stream exception
+     */
     public void init() throws IOException {
-        clientSocket = new Socket("127.0.0.1", 2726);
+        // Creating the user socket
+        // init is called in UserLoop constructor
+        clientSocket = new Socket("127.0.0.1", 2726); // The other hand sets in game handler
         try {
             PrintStream out = new PrintStream(clientSocket.getOutputStream());
             out.println(userName);
@@ -37,7 +44,7 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         gameMap = (GameMap) read();
-        state = new GameState();
+        state = (GameState) read(); // We need this for the first canvas creation
     }
 
     @Override
@@ -51,18 +58,11 @@ public class User implements Serializable {
                 user.userName.equals(userName);
     }
 
-    /**
-     * A getter method for getting the user name.
-     * @return the username
-     */
+    // Setters and getters
     public String getUserName() {
         return userName;
     }
 
-    /**
-     * A getter method for getting the user password.
-     * @return the user password
-     */
     public String getPassword() {
         return password;
     }
@@ -94,6 +94,7 @@ public class User implements Serializable {
     public Object read() {
         try {
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            // In case of not working right we can use in.reset() and in.readUnshared()
             return in.readObject();
         } catch (Exception e) {
             e.printStackTrace();

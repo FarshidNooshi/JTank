@@ -33,7 +33,7 @@ public class GameHandler implements Runnable {
                 String userName = new Scanner(socket.getInputStream()).nextLine();
                 for (int j = 0; j < playersVector.size(); j++)
                     if (playersVector.get(i).getUserName().equals(userName)) {
-                        playersVector.get(i).setClientSocket(socket);
+                        playersVector.get(i).setClientSocket(socket); // The client hand side sets in User init
                         break;
                     }
             }

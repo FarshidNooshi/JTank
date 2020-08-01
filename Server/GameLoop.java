@@ -48,13 +48,16 @@ public class GameLoop implements Runnable {
     }
 
     private void initialize() {
+        // Creating the states in here
         for (User u : playersVector) {
             GameState state = new GameState();
             u.setState(state);
         }
         gameMap.setPlaces(playersVector);
+        // Giving the users their map and state
         for (User u : playersVector) {
             write(gameMap, u);
+            write(u.getState(), u);
         }
     }
 
@@ -62,6 +65,7 @@ public class GameLoop implements Runnable {
      * This must be called before the game loop starts.
      */
     public void init() {
+        // TODO: 01-Agt-2020 need a loop for sending others status
         bullets = new ArrayList<>();
         executorService = Executors.newCachedThreadPool();
     }
@@ -71,17 +75,21 @@ public class GameLoop implements Runnable {
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
             try {
                 long start = System.currentTimeMillis();
+                // TODO: 01-Agt-2020 we need this loop inside a executor services
                 for (User u : playersVector) {
                     GameState state = (GameState) read(u);
                     assert state != null;
-                    state.update();
+                    state.update(); // No difference in both ways this does not work
                     if (state.shotFired) {
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
                     }
                     u.setState(state);
+                    if (state.gameOver)
+                        playersVector.remove(u); // Removing the looser ones
                 }
+                // TODO: 01-Agt-2020 use copy on write array list for bullets
                 Iterator<Bullet> iterator = bullets.iterator();
                 while (iterator.hasNext()) {
                     Bullet bullet = iterator.next();
