@@ -16,6 +16,8 @@ public class User implements Serializable {
     private transient Socket clientSocket; // This socket is different in server
     private GameState state;
     private GameMap gameMap;
+    transient ObjectOutputStream out;
+    transient ObjectInputStream in;
 
     /**
      * The main constructor of the User class.
@@ -37,12 +39,17 @@ public class User implements Serializable {
         // Creating the user socket
         // init is called in UserLoop constructor
         clientSocket = new Socket("127.0.0.1", 2726); // The other hand sets in game handler
+        // ##############################
+        // This block is not responding , can you find out why !
         try {
-            PrintStream out = new PrintStream(clientSocket.getOutputStream());
-            out.println(userName);
+            System.out.println("The end"); // It stops here without any reason
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new ObjectInputStream(clientSocket.getInputStream());
+            out.writeBytes(userName);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // ##############################
         gameMap = (GameMap) read();
         state = (GameState) read(); // We need this for the first canvas creation
     }
@@ -93,8 +100,6 @@ public class User implements Serializable {
 
     public Object read() {
         try {
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-            // In case of not working right we can use in.reset() and in.readUnshared()
             return in.readObject();
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,7 +109,6 @@ public class User implements Serializable {
 
     public void write(Object object) {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.writeObject(object);
         } catch (Exception e) {
             e.printStackTrace();
