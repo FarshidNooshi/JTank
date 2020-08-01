@@ -253,10 +253,6 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public ArrayList<Bullet> getBullets() {
-        return bullets;
-    }
-
     public void setBullets(ArrayList<Bullet> bullets) {
         this.bullets = bullets;
     }

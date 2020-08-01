@@ -1,9 +1,7 @@
 package game.Server;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
@@ -28,11 +26,11 @@ public class Main {
     private static HashMap<Integer, Vector<User>> queue = new HashMap<>();
 
     public static void main(String[] args) {
-//        try {
-//            clearData();
-//        } catch (URISyntaxException | IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            clearData();
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
         // The users ID
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {

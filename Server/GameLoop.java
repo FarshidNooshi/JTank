@@ -3,7 +3,6 @@ package game.Server;
 import game.Process.Bullet;
 import game.Process.GameMap;
 import game.Process.GameState;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -63,17 +62,12 @@ public class GameLoop implements Runnable {
      * This must be called before the game loop starts.
      */
     public void init() {
-        for (User u : playersVector) {
-            write(u.getState(), u);
-            write(playersVector, u);
-        }
         bullets = new ArrayList<>();
         executorService = Executors.newCachedThreadPool();
     }
 
     @Override
     public void run() {
-
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
             try {
                 long start = System.currentTimeMillis();
@@ -99,7 +93,6 @@ public class GameLoop implements Runnable {
                     // updating the game
                     write(bullets, u);
                     write(playersVector, u);
-                    //TODO: add a update method for the bullets
                 }
                 // calculating the delay for avoiding lags in the game
                 long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
@@ -109,11 +102,6 @@ public class GameLoop implements Runnable {
                 ex.printStackTrace();
             }
         }
-        // in tike bayad check beshe
-//        for (User u : playersVector) {
-//            u.getCanvas().setBullets(bullets);
-//            u.getCanvas().render(playersVector);
-//        }
     }
 
     private Object read(User u) {

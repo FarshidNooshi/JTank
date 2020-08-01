@@ -11,12 +11,10 @@ import java.awt.*;
  * to enter the user into the game server.
  */
 public class Main {
-
     public static void main(String[] args) {
-
         // Initialize the global thread-pool
         ThreadPool.init();
-        // After the player clicks 'PLAY' ...
+        // Start from login page
         EventQueue.invokeLater(Log::run);
     }
 }

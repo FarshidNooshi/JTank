@@ -19,7 +19,7 @@ public class GameState implements Serializable {
     private KeyHandler keyHandler; // for handling key events.
     private MouseHandler mouseHandler;// for handling mouse events.
     private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
-    private int roundCounter;// idk what is this for ! // TODO: 25-Jul-20 write a good comment for this.
+    private int roundCounter; // For second bullet shooting
     private VectorFactory vectorFactory; // Each state has its own vector factory
 
     /**
@@ -165,7 +165,7 @@ public class GameState implements Serializable {
      */
     class KeyHandler extends KeyAdapter implements Serializable {
         @Override
-        public void keyPressed(KeyEvent e) { // it could've been implemented with if/else but it didn't.
+        public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:

@@ -12,7 +12,6 @@ public class GameHandler implements Runnable {
 
     private Vector<User> playersVector;
 
-
     public GameHandler(Vector<User> vector) {
         this.playersVector = vector;
     }
@@ -43,24 +42,3 @@ public class GameHandler implements Runnable {
         }
     }
 }
-
-
-
-/*
-    public static void startTheGame(int numberOfPlayers) {
-
-        GameFrame frame = new GameFrame("JTank");
-        frame.setLocationRelativeTo(null); // put frame at center of screen
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.initBufferStrategy();
-        GameMap gameMap = new GameMap();
-        gameMap.init();
-        frame.setGameMap(gameMap);
-        // Create and execute the game-loop
-        GameLoop game = new GameLoop(frame, numberOfPlayers);
-        game.init();
-        ThreadPool.execute(game);
-        // and the game starts ...
-    }
-*/

@@ -1,5 +1,6 @@
 package game;
 
+import game.Process.UserLoop;
 import game.Server.User;
 
 import javax.imageio.ImageIO;
@@ -11,7 +12,12 @@ import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 
+/**
+ * This is the setting menu where user
+ * creates a game and will send it to the server.
+ */
 public class Setting {
+    // Private fields
     private static User u = null;
     private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "Teams Battle"};
@@ -36,15 +42,18 @@ public class Setting {
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
 
+    /**
+     * This method will build the setting frame
+     * and will display it to the user.
+     */
     static void run() {
-
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(800, 500));
         frame.setLocation(250, 100);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
-
+        // Creating the setting frame
         Runnable r = () -> {
             JPanel c = new JPanel();
             try {
@@ -150,17 +159,16 @@ public class Setting {
             @Override
             protected void done() {
                 frame.setVisible(false);
+
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
                     u = (User) in.readObject();
+                    assert u != null;
+                    UserLoop userLoop = new UserLoop(u);
+                    userLoop.start();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                assert u != null;
-                try {
-                    u.startTheGame();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+
                 // TODO: 29-Jul-20 inja bayad eslah beshe.
             }
         }.execute());

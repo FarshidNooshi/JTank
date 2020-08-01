@@ -29,6 +29,10 @@ public class Log {
     private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
 
+    /**
+     * This method will build the login frame and will
+     * display it to the user.
+     */
     public static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
@@ -36,7 +40,6 @@ public class Log {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
-
         // Creating the login page
         Runnable r = () -> {
             JPanel c = null;
@@ -70,7 +73,7 @@ public class Log {
             frame.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
-        logIn.doClick();//for remember.
+//        logIn.doClick(); //for remember.
     }
 
     /**
@@ -128,7 +131,6 @@ public class Log {
                     userName.setText("User Name");
             }
         });
-
         passwordField.addFocusListener(new FocusAdapter() {
             /**
              * Invoked when a component gains the keyboard focus.
@@ -147,7 +149,6 @@ public class Log {
                     passwordField.setText("Password");
             }
         });
-
         initButtons();
     }
 
@@ -185,14 +186,16 @@ public class Log {
                 try {
                     String ret = get().toString();
                     if (ret.equalsIgnoreCase("user entered the game.")) {
+                        // Done with the login
                         frame.setVisible(false);
+                        // Enter into the game setting
                         Setting.run();
                         return;
                     }
                     if (!userName.getText().equalsIgnoreCase("User Name"))
                         JOptionPane.showMessageDialog(null, get().toString());
                 } catch (InterruptedException | ExecutionException | NullPointerException ex) {
-                    JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute());
