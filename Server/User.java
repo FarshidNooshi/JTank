@@ -11,13 +11,13 @@ import java.net.Socket;
  * to store and restore the users information.
  */
 public class User implements Serializable {
+    transient ObjectOutputStream out;
+    transient ObjectInputStream in;
     // Private fields
     private String userName, password;
     private transient Socket clientSocket; // This socket is different in server
     private GameState state;
     private GameMap gameMap;
-    transient ObjectOutputStream out;
-    transient ObjectInputStream in;
 
     /**
      * The main constructor of the User class.
@@ -33,25 +33,25 @@ public class User implements Serializable {
     /**
      * This method will get the user ready for the
      * game.
+     *
      * @throws IOException write into stream exception
      */
     public void init() throws IOException {
         // Creating the user socket
         // init is called in UserLoop constructor
         clientSocket = new Socket("127.0.0.1", 2726); // The other hand sets in game handler
-        // ##############################
-        // This block is not responding , can you find out why !
         try {
-            System.out.println("The end"); // It stops here without any reason
+            PrintStream stream = new PrintStream(clientSocket.getOutputStream());
+            stream.println(userName);
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             in = new ObjectInputStream(clientSocket.getInputStream());
-            out.writeBytes(userName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // ##############################
         gameMap = (GameMap) read();
+//        ######## in ja gir mikone !
         state = (GameState) read(); // We need this for the first canvas creation
+//        ###########
     }
 
     @Override
