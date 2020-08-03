@@ -58,6 +58,7 @@ public class GameLoop implements Runnable {
         // Creating the states in here
         for (User u : playersVector) {
             GameState state = new GameState();
+            state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
             u.setState(state);
         }
         gameMap.setPlaces(playersVector);
@@ -128,6 +129,7 @@ public class GameLoop implements Runnable {
                 state.mousePress = (boolean) u.read();
                 state.mouseX = (int) u.read();
                 state.mouseY = (int) u.read();
+                state.shotFired = (boolean) u.read();
 
                 // Updating while the player is on the game
                 if (!state.gameOver) {

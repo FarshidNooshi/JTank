@@ -17,6 +17,7 @@ public class UserLoop extends Thread {
     public static final int FPS = 30;
     private User thisPlayerUser;
     private GameFrame canvas;
+    private Tank tank;
 
     /**
      * The main constructor of the UserLoop class.
@@ -40,9 +41,10 @@ public class UserLoop extends Thread {
         thisPlayerUser.getState().setLimits(canvas.getGameMap().getNumberOfRows(), canvas.getGameMap().getNumberOfColumns());
         thisPlayerUser.getState().width = canvas.getImage().getWidth() / 8; // Setting the width and the height
         thisPlayerUser.getState().height = canvas.getImage().getHeight() / 8;
-        canvas.addKeyListener(thisPlayerUser.getState().getKeyListener()); // Updating the listeners
-        canvas.addMouseListener(thisPlayerUser.getState().getMouseListener());
-        canvas.addMouseMotionListener(thisPlayerUser.getState().getMouseMotionListener());
+        tank = new Tank(thisPlayerUser.getState().width, thisPlayerUser.getState().height);
+        canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
+        canvas.addMouseListener(tank.getMouseListener());
+        canvas.addMouseMotionListener(tank.getMouseMotionListener());
     }
 
     @Override
@@ -56,13 +58,14 @@ public class UserLoop extends Thread {
 
             long start = System.currentTimeMillis(); // This is for delay between server and client
 
-            thisPlayerUser.write(thisPlayerUser.getState().keyUP); // Giving the data
-            thisPlayerUser.write(thisPlayerUser.getState().keyDOWN);
-            thisPlayerUser.write(thisPlayerUser.getState().keyLEFT);
-            thisPlayerUser.write(thisPlayerUser.getState().keyRIGHT);
-            thisPlayerUser.write(thisPlayerUser.getState().mousePress);
-            thisPlayerUser.write(thisPlayerUser.getState().mouseX);
-            thisPlayerUser.write(thisPlayerUser.getState().mouseY);
+            thisPlayerUser.write(tank.keyUP); // Giving the data
+            thisPlayerUser.write(tank.keyDOWN);
+            thisPlayerUser.write(tank.keyLEFT);
+            thisPlayerUser.write(tank.keyRIGHT);
+            thisPlayerUser.write(tank.mousePress);
+            thisPlayerUser.write(tank.mouseX);
+            thisPlayerUser.write(tank.mouseY);
+            thisPlayerUser.write(tank.shotFired);
 
             canvas.setBullets((CopyOnWriteArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
             Vector<User> users = (Vector<User>) thisPlayerUser.read();

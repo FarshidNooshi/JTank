@@ -15,13 +15,11 @@ public class GameState implements Serializable {
     public boolean gameOver, shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits
     private int currentDirection; // This is the last rotation degree
-    public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;// true if the appropriate arrow key is pressed.
+    public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
     public int mouseX, mouseY; // the positions of the mouse clicked pos.
-    private KeyHandler keyHandler; // for handling key events.
-    private MouseHandler mouseHandler;// for handling mouse events.
     private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
     private int roundCounter; // For second bullet shooting
-    private VectorFactory vectorFactory; // Each state has its own vector factory
+    private transient VectorFactory vectorFactory; // Each state has its own vector factory
 
     /**
      * The game state constructor.
@@ -39,9 +37,6 @@ public class GameState implements Serializable {
         mousePress = false;
         mouseX = 0;
         mouseY = 0;
-        //
-        keyHandler = new KeyHandler();
-        mouseHandler = new MouseHandler();
         //
         vectorFactory = new VectorFactory(speed);
     }
@@ -74,7 +69,10 @@ public class GameState implements Serializable {
      */
     public void update() {
         // The shooting statements
-        shotFired = false;
+        if (shotFired && !waitForSecondShot) {
+            takeAShot();
+            shotFired = false;
+        }
         if (waitForSecondShot && roundCounter > 3) {
             shotFired = true;
             waitForSecondShot = false;
@@ -118,7 +116,6 @@ public class GameState implements Serializable {
             if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
                 locX += (int) vectorFactory.x;
         }
-
         locX = Math.max(locX, game.Process.GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
         locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X - width);
         locY = Math.max(locY, game.Process.GameFrame.DRAWING_START_Y);
@@ -147,107 +144,18 @@ public class GameState implements Serializable {
             currentDirection = mouseY > locY ? 90 : 270;
     }
 
-
-    public KeyListener getKeyListener() {
-        return keyHandler;
-    }
-
-    public MouseListener getMouseListener() {
-        return mouseHandler;
-    }
-
-    public MouseMotionListener getMouseMotionListener() {
-        return mouseHandler;
-    }
-
     /**
-     * The keyboard handler.
-     * for updating the state of the keys and maybe firing a bullet.
+     * This method will shot a bullet and
+     * will set the other parameters to shot
+     * the second bullet.
      */
-    class KeyHandler extends KeyAdapter implements Serializable {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_W:
-                    keyUP = true;
-                    break;
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_S:
-                    keyDOWN = true;
-                    break;
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
-                    keyLEFT = true;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
-                    keyRIGHT = true;
-                    break;
-                case KeyEvent.VK_SPACE:
-                    takeAShot();
-                    break;
-            }
-        }
-
-        /**
-         * This method will shot a bullet and
-         * will set the other parameters to shot
-         * the second bullet.
-         */
-        private void takeAShot() {
-            int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);
-            if (time > 1) {
-                shotTimeLimit = System.currentTimeMillis();
-                shotFired = true;
-                waitForSecondShot = true;
-                roundCounter = 0;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_W:
-                    keyUP = false;
-                    break;
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_S:
-                    keyDOWN = false;
-                    break;
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
-                    keyLEFT = false;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
-                    keyRIGHT = false;
-                    break;
-            }
-        }
-    }
-
-    /**
-     * The mouse handler.
-     */
-    class MouseHandler extends MouseAdapter implements Serializable {
-        @Override
-        public void mousePressed(MouseEvent e) {
-            mouseX = e.getX() - width / 4; // This is for placing the mouse
-            mouseY = e.getY() - height / 4; // at the center of the shape
-            mousePress = true;
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            mousePress = false;
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            mouseX = e.getX() - width / 4;
-            mouseY = e.getY() - height / 4;
+    private void takeAShot() {
+        int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);
+        if (time > 1) {
+            shotTimeLimit = System.currentTimeMillis();
+            shotFired = true;
+            waitForSecondShot = true;
+            roundCounter = 0;
         }
     }
 }
