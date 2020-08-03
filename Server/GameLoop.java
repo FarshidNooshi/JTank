@@ -31,7 +31,6 @@ public class GameLoop implements Runnable {
      * Frame Per Second.
      * Higher is better, but any value above 24 is fine.
      */
-    public static final int FPS = 30;
     private final GameMap gameMap;
     private Vector<User> playersVector;
     private int numberOfPlayers;
@@ -87,49 +86,41 @@ public class GameLoop implements Runnable {
     @Override
     public void run() {
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
-            try {
-                long start = System.currentTimeMillis();
-                // TODO: 01-Agt-2020 we need this loop inside a executor services
-                for (User u : playersVector) {
-                    GameState state = (GameState) read(u);
-                    assert state != null;
-                    state.update();
-                    System.out.println(state.locX + " " + state.locY);
-                    if (state.shotFired) {
-                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
-                        bullet.setDirections(state.direction());
-                        bullets.add(bullet);
-                    }
-                    u.setState(state);
-                    if (state.gameOver)
-                        playersVector.remove(u); // Removing the looser ones
+            // TODO: 01-Agt-2020 we need this loop inside a executor services
+            for (User u : playersVector) {
+                GameState state = (GameState) read(u);
+                assert state != null;
+                state.update();
+                System.out.println(state.locX + " " + state.locY);
+                if (state.shotFired) {
+                    Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
+                    bullet.setDirections(state.direction());
+                    bullets.add(bullet);
                 }
-                // TODO: 01-Agt-2020 use copy on write array list for bullets
-                Iterator<Bullet> iterator = bullets.iterator();
-                while (iterator.hasNext()) {
-                    Bullet bullet = iterator.next();
-                    if (bullet.isAlive())
-                        executorService.execute(bullet.getMover());
-                    else
-                        iterator.remove();
-                }
-                for (User u : playersVector) {
-                    // updating the game
-                    try {
-                        u.out.reset();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    write(bullets, u);
-                    write(playersVector, u);
-                }
-                // calculating the delay for avoiding lags in the game
-                long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
-                if (delay > 0)
-                    Thread.sleep(delay);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                u.setState(state);
+                if (state.gameOver)
+                    playersVector.remove(u); // Removing the looser ones
             }
+            // TODO: 01-Agt-2020 use copy on write array list for bullets
+            Iterator<Bullet> iterator = bullets.iterator();
+            while (iterator.hasNext()) {
+                Bullet bullet = iterator.next();
+                if (bullet.isAlive())
+                    executorService.execute(bullet.getMover());
+                else
+                    iterator.remove();
+            }
+            for (User u : playersVector) {
+                // updating the game
+                try {
+                    u.out.reset();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                write(bullets, u);
+                write(playersVector, u);
+            }
+            // calculating the delay for avoiding lags in the game
         }
     }
 

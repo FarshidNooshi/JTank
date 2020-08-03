@@ -14,6 +14,7 @@ import java.util.Vector;
  */
 public class UserLoop extends Thread {
     // private fields
+    public static final int FPS = 30;
     private User thisPlayerUser;
     private GameFrame canvas;
 
@@ -42,6 +43,7 @@ public class UserLoop extends Thread {
     public void run() {
         // The game loop
         while (!thisPlayerUser.getState().gameOver) {
+            long start = System.currentTimeMillis();
             System.out.println(thisPlayerUser.getState().locX + " " + thisPlayerUser.getState().locY);
             thisPlayerUser.write(thisPlayerUser.getState());
             canvas.setBullets((ArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
@@ -53,6 +55,14 @@ public class UserLoop extends Thread {
             canvas.addMouseListener(thisPlayerUser.getState().getMouseListener());
             canvas.addMouseMotionListener(thisPlayerUser.getState().getMouseMotionListener());
             canvas.render(users); // do the rendering
+            long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
