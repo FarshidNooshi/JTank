@@ -12,13 +12,11 @@ import java.io.Serializable;
 public class GameState implements Serializable {
     // Private fields
     public int locX, locY, width, height, speed = 4;
-    public boolean gameOver, shotFired, waitForSecondShot;
-    private int mapRowsLimit, mapColsLimit; // This is the map limits
-    private int currentDirection; // This is the last rotation degree
+    public boolean gameOver, shotFired;
+    private int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
     public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
     public int mouseX, mouseY; // the positions of the mouse clicked pos.
     private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
-    private int roundCounter; // For second bullet shooting
     private transient VectorFactory vectorFactory; // Each state has its own vector factory
 
     /**
@@ -28,6 +26,7 @@ public class GameState implements Serializable {
         gameOver = false;
         shotFired = false;
         currentDirection = 0;
+        shotTimeLimit = 0;
         //
         keyUP = false;
         keyDOWN = false;
@@ -68,15 +67,8 @@ public class GameState implements Serializable {
      * The method which updates the game state.
      */
     public void update() {
-        // The shooting statements
-        if (shotFired && !waitForSecondShot) {
+        if (shotFired)
             takeAShot();
-            shotFired = false;
-        }
-        if (waitForSecondShot && roundCounter > 3) {
-            shotFired = true;
-            waitForSecondShot = false;
-        }
         // Mouse using
         if (mousePress) {
             mouseDirection(); // Setting the mouse direction
@@ -120,7 +112,6 @@ public class GameState implements Serializable {
         locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X - width);
         locY = Math.max(locY, game.Process.GameFrame.DRAWING_START_Y);
         locY = Math.min(locY, mapRowsLimit * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_Y - height);
-        roundCounter++; // Need to count for bullet shooting
     }
 
     /**
@@ -133,10 +124,6 @@ public class GameState implements Serializable {
         return currentDirection;
     }
 
-    /*
-        This method will calculate the direction between the
-        mouse location and the state location.
-     */
     private void mouseDirection() {
         if (locX != mouseX)
             currentDirection = 180 + (int) Math.toDegrees(Math.atan2((locY - mouseY), (locX - mouseX)));
@@ -154,8 +141,7 @@ public class GameState implements Serializable {
         if (time > 1) {
             shotTimeLimit = System.currentTimeMillis();
             shotFired = true;
-            waitForSecondShot = true;
-            roundCounter = 0;
-        }
+        } else
+            shotFired = false;
     }
 }

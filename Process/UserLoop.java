@@ -36,14 +36,12 @@ public class UserLoop extends Thread {
         gameOver = false;
         // creating the output frame
         canvas = new GameFrame("Jtank");
-        canvas.setGameMap(thisPlayerUser.getGameMap());
         canvas.setVisible(true);
         canvas.initBufferStrategy();
         tank = new Tank(canvas.getImage().getWidth() / 8, canvas.getImage().getHeight() / 8); // Creating the user input
         canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
         canvas.addMouseListener(tank.getMouseListener());
         canvas.addMouseMotionListener(tank.getMouseMotionListener());
-        //
     }
 
     @Override
@@ -54,6 +52,7 @@ public class UserLoop extends Thread {
         // The game loop
         while (!gameOver) {
             long start = System.currentTimeMillis(); // This is for delay between server and client
+            //
             thisPlayerUser.write(tank.keyUP); // Giving the data
             thisPlayerUser.write(tank.keyDOWN);
             thisPlayerUser.write(tank.keyLEFT);
@@ -65,7 +64,10 @@ public class UserLoop extends Thread {
             // receiving the data
             canvas.setBullets((CopyOnWriteArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
             Vector<User> users = (Vector<User>) thisPlayerUser.read();
+            canvas.setGameMap((GameMap) thisPlayerUser.read());
+            //
             canvas.render(users); // do the rendering
+            //
             long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
             if (delay > 0) {
                 try {

@@ -18,13 +18,13 @@ import java.util.concurrent.Executors;
  */
 public class GameLoop implements Runnable {
     // Private fields
-    private final GameMap gameMap;
-    private Vector<User> playersVector;
+    public static final int FPS = 25; // Bullet delay handler
     private boolean gameOver;
     private int numberOfPlayers;
+    private final GameMap gameMap;
+    private Vector<User> playersVector;
     private CopyOnWriteArrayList<Bullet> bullets;
-    private ExecutorService executorService;
-    private ExecutorService clientsService;
+    private ExecutorService executorService, clientsService;
 
     /**
      * The constructor of the game loop.
@@ -65,9 +65,6 @@ public class GameLoop implements Runnable {
             u.setState(state);
         }
         gameMap.setPlaces(playersVector);
-        // Giving the users their map
-        for (User u : playersVector)
-            write(gameMap, u);
     }
 
     /**
@@ -86,17 +83,24 @@ public class GameLoop implements Runnable {
             clientsService.execute(new ClientHandler(u)); // Executing the clients
         //
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
+            long start = System.currentTimeMillis(); // Delay handling
+            //
             Iterator<Bullet> iterator = bullets.iterator();
-            //TODO: 03-08-2020 this is the problem of the bullets I think
-            // We send the bullets that are still in the middle of updating
-            // Try to use the box data just like the users to send the data.
-            // We send the bullets to the users in the end of the run method in ClientHandler.
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
                 if (bullet.isAlive())
                     executorService.execute(bullet.getMover());
                 else
-                    iterator.remove();
+                    bullets.remove(bullet);
+            }
+            //
+            long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         //
@@ -156,6 +160,7 @@ public class GameLoop implements Runnable {
                 // giving the data
                 write(bullets, u);
                 write(playersVector, u);
+                write(gameMap, u);
             }
         }
     }

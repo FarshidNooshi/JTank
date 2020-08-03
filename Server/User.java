@@ -13,7 +13,7 @@ import java.net.Socket;
 public class User implements Serializable {
     // Private fields
     private String userName, password;
-    public String imagePath, bulletPath;
+    public String imagePath, bulletPath; // I think you might need them zeus
     private transient GameState state;
     private transient GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server
@@ -54,7 +54,22 @@ public class User implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        gameMap = (GameMap) read(); // Reading the game map
+    }
+
+    /**
+     * This method will set the data box data
+     * up to date.
+     */
+    public void updateDataBox() {
+        //
+        dataBox.locX = state.locX;
+        dataBox.locY = state.locY;
+        //
+        dataBox.width = state.width;
+        dataBox.height = state.height;
+        //
+        dataBox.direction = state.direction();
+        dataBox.gameOver = state.gameOver;
     }
 
     // Setters and getters
@@ -97,22 +112,6 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * This method will set the data box data
-     * up to date.
-     */
-    public void updateDataBox() {
-        //
-        dataBox.locX = state.locX;
-        dataBox.locY = state.locY;
-        //
-        dataBox.width = state.width;
-        dataBox.height = state.height;
-        //
-        dataBox.direction = state.direction();
-        dataBox.gameOver = state.gameOver;
     }
 
     public void write(Object object) {

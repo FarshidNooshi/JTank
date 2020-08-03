@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The window on which the rendering is performed.
  */
 public class GameFrame extends JFrame {
-
+    // fields
     static final int DRAWING_START_X = 40;                   // The drawing starting location
     static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
     private static final int GAME_HEIGHT = 720;                  // 720p game resolution
@@ -43,7 +43,6 @@ public class GameFrame extends JFrame {
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         // Opening the image
         try {
             image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
@@ -155,7 +154,6 @@ public class GameFrame extends JFrame {
                     g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
 
-        //TODO: 03-08-2020 We need to use data boxes just like users
         for (Bullet i : bullets) {
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
@@ -170,7 +168,7 @@ public class GameFrame extends JFrame {
 
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
-            //TODO: 03-08-2020 fix the image part ("I will fix it" says KingRicochet)
+            //TODO: 03-08-2020 fix the image part
             try {
                 image = ImageIO.read(new File(u.imagePath));
                 bullet = ImageIO.read(new File(u.bulletPath));

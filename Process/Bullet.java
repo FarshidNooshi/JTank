@@ -8,19 +8,17 @@ import java.io.Serializable;
 /**
  * this class probably represents an implementation for the behaviour of a bullet in the game.
  */
-
 public class Bullet implements Serializable {
-
+    // Fields
     private transient final static int SPEED = 8; //Speed and time field
-    private final int DIAM = 8;//location fields&radios of the circle
-    int locX, locY;//Location fields
+    private final int DIAM = 8; //location fields&radios of the circle
+    public int locX, locY; //Location fields
     private transient boolean isAlive, justShot; //Status fields
-    transient int direction;
-    transient private GameMap gameMap; //Each bullet needs the map
-    transient private VectorFactory vectorFactory;
-    transient private int firstX, firstY;
-    transient private long start;
-    transient private int mapRowsLimit, mapColsLimit; //The limits fields
+    public int direction;
+    private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
+    private transient long start;
+    private transient GameMap gameMap; //Each bullet needs the map
+    private transient VectorFactory vectorFactory;
 
     /**
      * The constructor of the bullet class.
@@ -39,8 +37,10 @@ public class Bullet implements Serializable {
         // Setting the limits
         this.mapRowsLimit = gameMap.getNumberOfRows();
         this.mapColsLimit = gameMap.getNumberOfColumns();
+        //
         isAlive = true;
         justShot = true;
+        //
         this.gameMap = gameMap;
         vectorFactory = new VectorFactory(SPEED);
         start = System.currentTimeMillis(); // Keeping the start time
@@ -65,6 +65,13 @@ public class Bullet implements Serializable {
     public BulletMove getMover() {
         return new BulletMove();
     }
+
+    /**
+     * A getter method for getting the bullet
+     * status.
+     * @return dead or not
+     */
+    public boolean isAlive() { return isAlive; }
 
     /**
      * This class is an inner class which will
@@ -114,7 +121,7 @@ public class Bullet implements Serializable {
             vectorFactory.solveTheorem(1);
             locX += (int) vectorFactory.x;
             locY += (int) vectorFactory.y;
-
+            //
             locX = Math.max(locX, GameFrame.DRAWING_START_X); // Setting the new locations based on the limits
             locX = Math.min(locX, mapColsLimit * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X - DIAM);
             locY = Math.max(locY, GameFrame.DRAWING_START_Y);
@@ -145,9 +152,5 @@ public class Bullet implements Serializable {
             // The bullet update method
             update();
         }
-    }
-
-    public boolean isAlive() {
-        return isAlive;
     }
 }

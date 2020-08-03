@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class TankHandler extends Thread {
@@ -27,10 +26,12 @@ public class TankHandler extends Thread {
         while (serverOn) {
             try {
                 Socket socket = serverSocket.accept();
+                // Dude the problem is here
                 String userName = new Scanner(socket.getInputStream()).nextLine();
                 String imagePath = new Scanner(socket.getInputStream()).nextLine();
                 String bulletPath = new Scanner(socket.getInputStream()).nextLine();
                 System.out.println(userName);
+                //
                 String path = new URI("src/game/Server/info.aut").getPath();
                 ArrayList<User> arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
                 System.out.println(arrayList.size());
@@ -39,6 +40,7 @@ public class TankHandler extends Thread {
                         user.imagePath = imagePath;
                         user.bulletPath = bulletPath;
                     }
+                //
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
