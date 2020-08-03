@@ -15,10 +15,10 @@ public class User implements Serializable {
     private String userName, password;
     public String imagePath, bulletPath;
     private GameState state;
-    private GameMap gameMap;
+    private transient GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server
-    transient public ObjectOutputStream out; // and the input and output streams
-    transient public ObjectInputStream in; // are different in server side and client side.
+    public transient ObjectOutputStream out; // and the input and output streams
+    public transient ObjectInputStream in; // are different in server side and client side.
 
     /**
      * The main constructor of the User class.
