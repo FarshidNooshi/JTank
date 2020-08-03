@@ -109,7 +109,6 @@ public class TankChooser extends JFrame{
                     printWriter.println(username);
                     printWriter.println(finalImage.getPath());
                     printWriter.println(finalBullet.getPath());
-                    System.out.println(username + " " + finalImage.getPath() + " " + finalBullet.getPath());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

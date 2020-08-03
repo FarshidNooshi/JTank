@@ -114,9 +114,21 @@ public class GameLoop implements Runnable {
 
         @Override
         public void run() {
+
+            GameState state = u.getState();
+            state.width = (int) u.read();
+            state.height = (int) u.read();
+
             while (!gameOver) {
-                GameState state = (GameState) read(u); // Reading the state
-                assert state != null;
+
+                state.keyUP = (boolean) u.read();
+                state.keyDOWN = (boolean) u.read();
+                state.keyLEFT = (boolean) u.read();
+                state.keyRIGHT = (boolean) u.read();
+                state.mousePress = (boolean) u.read();
+                state.mouseX = (int) u.read();
+                state.mouseY = (int) u.read();
+
                 // Updating while the player is on the game
                 if (!state.gameOver) {
                     state.update();

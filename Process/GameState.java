@@ -15,8 +15,8 @@ public class GameState implements Serializable {
     public boolean gameOver, shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits
     private int currentDirection; // This is the last rotation degree
-    private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;// true if the appropriate arrow key is pressed.
-    private int mouseX, mouseY; // the positions of the mouse clicked pos.
+    public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress;// true if the appropriate arrow key is pressed.
+    public int mouseX, mouseY; // the positions of the mouse clicked pos.
     private KeyHandler keyHandler; // for handling key events.
     private MouseHandler mouseHandler;// for handling mouse events.
     private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
@@ -186,9 +186,6 @@ public class GameState implements Serializable {
                     break;
                 case KeyEvent.VK_SPACE:
                     takeAShot();
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    gameOver = true;
                     break;
             }
         }
