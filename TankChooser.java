@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class TankChooser extends JFrame{
 
@@ -47,10 +48,10 @@ public class TankChooser extends JFrame{
                 button.setSize(150, 100);
                 c.add(button);
                 File finalFile1 = file;
-                finalImage = finalFile1;
                 button.addActionListener(e -> {
                     try {
-                        image = ImageIO.read(new File(finalFile1.getPath() + File.separator + name));
+                        finalImage = new File(finalFile1.getPath() + File.separator + name);
+                        image = ImageIO.read(finalImage);
                         counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -70,10 +71,10 @@ public class TankChooser extends JFrame{
                 button.setSize(30, 45);
                 c.add(button);
                 File finalFile = file;
-                finalBullet = finalFile;
                 button.addActionListener(e -> {
                     try {
-                        bullet = ImageIO.read(new File(finalFile.getPath() + File.separator + name));
+                        finalBullet = new File(finalFile.getPath() + File.separator + name);
+                        bullet = ImageIO.read(finalBullet);
                         counter++;
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -95,12 +96,23 @@ public class TankChooser extends JFrame{
         send.addActionListener(e -> new SwingWorker<>(){
 
             @Override
-            protected Object doInBackground() throws Exception {
-                Socket socket = new Socket("127.0.0.1", 1725);
-                PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-                printWriter.println(username);
-                printWriter.println(finalImage.getPath());
-                printWriter.println(finalBullet.getPath());
+            protected Object doInBackground() {
+                Socket socket = null;
+                try {
+                    socket = new Socket("127.0.0.1", 1725);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    assert socket != null;
+                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+                    printWriter.println(username);
+                    printWriter.println(finalImage.getPath());
+                    printWriter.println(finalBullet.getPath());
+                    System.out.println(username + " " + finalImage.getPath() + " " + finalBullet.getPath());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 return null;
             }
 

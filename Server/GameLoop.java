@@ -85,12 +85,12 @@ public class GameLoop implements Runnable {
 
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
             Iterator<Bullet> iterator = bullets.iterator();
+            //TODO: 03-08-2020 this is the problem of the bullets I think
+            // We send the bullets that are still in the middle of updating
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
-                if (bullet.isAlive()) {
-                    System.out.println(bullets.size());
+                if (bullet.isAlive())
                     executorService.execute(bullet.getMover());
-                }
                 else
                     iterator.remove();
             }

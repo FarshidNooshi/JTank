@@ -168,6 +168,17 @@ public class GameFrame extends JFrame {
 
         for (User u : playersVector) {
             GameState state = u.getState();
+            try {
+                image = ImageIO.read(new File(u.imagePath));
+                bullet = ImageIO.read(new File(u.bulletPath));
+            } catch (IOException | NullPointerException e) {
+                try {
+                    image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
+                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
+                } catch (IOException ex) {
+                    e.printStackTrace();
+                }
+            }
             // This is the rotation finding part for tank.
             int rotateDegree = state.direction(); // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
