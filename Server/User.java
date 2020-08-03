@@ -11,8 +11,8 @@ import java.net.Socket;
  * to store and restore the users information.
  */
 public class User implements Serializable {
-    transient ObjectOutputStream out;
-    transient ObjectInputStream in;
+    transient public ObjectOutputStream out;
+    transient public ObjectInputStream in;
     // Private fields
     private String userName, password;
     private transient Socket clientSocket; // This socket is different in server

@@ -42,6 +42,7 @@ public class UserLoop extends Thread {
     public void run() {
         // The game loop
         while (!thisPlayerUser.getState().gameOver) {
+            System.out.println(thisPlayerUser.getState().locX + " " + thisPlayerUser.getState().locY);
             thisPlayerUser.write(thisPlayerUser.getState());
             canvas.setBullets((ArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
             Vector<User> users = (Vector<User>) thisPlayerUser.read();

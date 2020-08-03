@@ -93,7 +93,8 @@ public class GameLoop implements Runnable {
                 for (User u : playersVector) {
                     GameState state = (GameState) read(u);
                     assert state != null;
-                    state.update(); // No difference in both ways this does not work
+                    state.update();
+                    System.out.println(state.locX + " " + state.locY);
                     if (state.shotFired) {
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
                         bullet.setDirections(state.direction());
@@ -114,6 +115,11 @@ public class GameLoop implements Runnable {
                 }
                 for (User u : playersVector) {
                     // updating the game
+                    try {
+                        u.out.reset();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     write(bullets, u);
                     write(playersVector, u);
                 }
