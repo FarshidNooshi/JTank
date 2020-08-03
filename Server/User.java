@@ -13,6 +13,7 @@ import java.net.Socket;
 public class User implements Serializable {
     // Private fields
     private String userName, password;
+    public String imagePath, bulletPath;
     private GameState state;
     private GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server

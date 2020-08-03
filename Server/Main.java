@@ -31,6 +31,8 @@ public class Main {
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
+        TankHandler tankHandler = new TankHandler(); // to handle the users tanks choose
+        tankHandler.start(); // is a single thread
         // The users ID
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {
@@ -42,6 +44,7 @@ public class Main {
                 pool.execute(new ClientHandler(connectionSocket));
             }
             pool.shutdown();
+            tankHandler.serverOn = false;
             JOptionPane.showMessageDialog(null, "closing server.");
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -222,7 +225,3 @@ class ClientHandler implements Runnable {
         return false;
     }
 }
-
-
-
-

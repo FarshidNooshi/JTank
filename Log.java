@@ -189,7 +189,7 @@ public class Log {
                         // Done with the login
                         frame.setVisible(false);
                         // Enter into the game setting
-                        Setting.run();
+                        TankChooser tankChooser = new TankChooser(userName.getText());
                         return;
                     }
                     if (!userName.getText().equalsIgnoreCase("User Name"))
