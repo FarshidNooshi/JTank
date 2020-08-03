@@ -30,7 +30,7 @@ public class Writer {
      * @param obj the list to store
      * @throws IOException class not found exception
      */
-    void WriteToFile(Object obj) throws IOException {
+    void writeToFile(Object obj) throws IOException {
         out.writeObject(obj);
         out.close();
     }

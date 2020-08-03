@@ -22,11 +22,15 @@ public class UserLoop extends Thread {
 
     /**
      * The main constructor of the UserLoop class.
+     *
      * @param user the current user
      */
     public UserLoop(User user) {
         //
         thisPlayerUser = user;
+    }
+
+    public void initialize() {
         try {
             thisPlayerUser.init(); // To open the user connection to the game
         } catch (IOException e) {

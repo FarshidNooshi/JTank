@@ -190,11 +190,12 @@ public class Log {
                         frame.setVisible(false);
                         // Enter into the game setting
                         TankChooser tankChooser = new TankChooser(userName.getText());
+                        tankChooser.run();
                         return;
                     }
                     if (!userName.getText().equalsIgnoreCase("User Name"))
                         JOptionPane.showMessageDialog(null, get().toString());
-                } catch (InterruptedException | ExecutionException | NullPointerException ex) {
+                } catch (InterruptedException | ExecutionException | NullPointerException | IOException ex) {
                     JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }

@@ -6,24 +6,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
 
-public class TankChooser extends JFrame{
+public class TankChooser extends JFrame {
 
-    private File finalImage = null;
-    private File finalBullet = null;
-    private BufferedImage image = null;
-    private BufferedImage bullet = null;
+    private File finalImage = new File("src/game/IconsInGame/Farshid/Tank/Icon.png");
+    private File finalBullet = new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png");
+    private BufferedImage image = ImageIO.read(finalImage);
+    private BufferedImage bullet = ImageIO.read(finalBullet);
     private String username;
     private JButton send;
-    private int counter = 0;
 
-    public TankChooser(String username) {
+    public TankChooser(String username) throws IOException {
 
         send = new JButton();
         this.username = username;
+    }
+
+    public void run() {
         initButtons();
 
         int response = JOptionPane.showConfirmDialog(this, "Do you want to customize your tank ?");
@@ -40,59 +43,76 @@ public class TankChooser extends JFrame{
             c.setLayout(null);
             int tmp = 0;
             ask.setExtendedState(Frame.MAXIMIZED_BOTH);
+            ask.setResizable(false);
             // Creating buttons
-            for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
-                button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
-                button.setSize(150, 100);
-                c.add(button);
-                File finalFile1 = file;
-                button.addActionListener(e -> {
-                    try {
-                        finalImage = new File(finalFile1.getPath() + File.separator + name);
-                        image = ImageIO.read(finalImage);
-                        counter++;
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    if (counter == 2) {
-                        ask.setVisible(false);
-                        send.doClick();
-                    }
-                });
-            }
-            // Reading bullet files and adding them to customizer frame
-            file = new File("src/game/IconsInGame/Farshid/Bullet");
-            tmp = 0;
-            for (String name : Objects.requireNonNull(file.list())) {
-                JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
-                button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
-                button.setSize(30, 45);
-                c.add(button);
-                File finalFile = file;
-                button.addActionListener(e -> {
-                    try {
-                        finalBullet = new File(finalFile.getPath() + File.separator + name);
-                        bullet = ImageIO.read(finalBullet);
-                        counter++;
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    if (counter == 2) {
-                        ask.setVisible(false);
-                        send.doClick();
-                    }
-                });
-            }
+            CreatingButtons(ask, c, file, tmp);
             ask.add(c);
             ask.setAlwaysOnTop(true);
             ask.setLocationRelativeTo(null);
             ask.setVisible(true);
+        } else {
+            send.doClick();
+        }
+    }
+
+    private void CreatingButtons(JFrame ask, JPanel c, File file, int tmp) {
+        boolean[] flag = {false, false};
+        addTanks(ask, c, file, tmp, flag);
+        addBullet(ask, c, flag);
+    }
+
+    private void addTanks(JFrame ask, JPanel c, File file, int tmp, boolean[] flag) {
+        for (String name : Objects.requireNonNull(file.list())) {
+            JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+            button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
+            button.setSize(150, 100);
+            c.add(button);
+            File finalFile1 = file;
+            button.addActionListener(e -> {
+                try {
+                    finalImage = new File(finalFile1.getPath() + File.separator + name);
+                    image = ImageIO.read(finalImage);
+                    flag[0] = true;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (flag[0] && flag[1]) {
+                    ask.setVisible(false);
+                    send.doClick();
+                }
+            });
+        }
+    }
+
+    private void addBullet(JFrame ask, JPanel c, boolean[] flag) {
+        File file;
+        int tmp;// Reading bullet files and adding them to customizer frame
+        file = new File("src/game/IconsInGame/Farshid/Bullet");
+        tmp = 0;
+        for (String name : Objects.requireNonNull(file.list())) {
+            JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
+            button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
+            button.setSize(30, 45);
+            c.add(button);
+            File finalFile = file;
+            button.addActionListener(e -> {
+                try {
+                    finalBullet = new File(finalFile.getPath() + File.separator + name);
+                    bullet = ImageIO.read(finalBullet);
+                    flag[1] = true;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (flag[1] && flag[0]) {
+                    ask.setVisible(false);
+                    send.doClick();
+                }
+            });
         }
     }
 
     private void initButtons() {
-        send.addActionListener(e -> new SwingWorker<>(){
+        send.addActionListener(e -> new SwingWorker<>() {
 
             @Override
             protected Object doInBackground() {
@@ -104,10 +124,9 @@ public class TankChooser extends JFrame{
                 }
                 try {
                     assert socket != null;
-                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-                    printWriter.println(username);
-                    printWriter.println(finalImage.getPath());
-                    printWriter.println(finalBullet.getPath());
+                    PrintStream printStream = new PrintStream(socket.getOutputStream());
+                    printStream.println(finalImage.getPath());
+                    printStream.println(finalBullet.getPath());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

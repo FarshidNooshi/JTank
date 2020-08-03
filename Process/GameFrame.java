@@ -170,8 +170,8 @@ public class GameFrame extends JFrame {
             DataBox dataBox = u.dataBox; // Using data box
             //TODO: 03-08-2020 fix the image part
             try {
-                image = ImageIO.read(new File(u.imagePath));
-                bullet = ImageIO.read(new File(u.bulletPath));
+                image = ImageIO.read(new File(u.getImagePath()));
+                bullet = ImageIO.read(new File(u.getBulletPath()));
             } catch (IOException | NullPointerException e) {
                 try {
                     image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));

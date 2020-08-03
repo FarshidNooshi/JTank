@@ -13,7 +13,7 @@ import java.net.Socket;
 public class User implements Serializable {
     // Private fields
     private String userName, password;
-    public String imagePath, bulletPath; // I think you might need them zeus
+    private String imagePath, bulletPath;
     private transient GameState state;
     private transient GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server
@@ -131,5 +131,21 @@ public class User implements Serializable {
         User user = (User) obj;
         return user.password.equals(password) &&
                 user.userName.equals(userName);
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getBulletPath() {
+        return bulletPath;
+    }
+
+    public void setBulletPath(String bulletPath) {
+        this.bulletPath = bulletPath;
     }
 }

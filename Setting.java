@@ -164,6 +164,7 @@ public class Setting {
                     u = (User) in.readObject();
                     assert u != null;
                     UserLoop userLoop = new UserLoop(u);
+                    userLoop.initialize();
                     userLoop.start();
                 } catch (Exception e) {
                     e.printStackTrace();
