@@ -1,5 +1,6 @@
 package game.Process;
 
+import game.Server.DataBox;
 import game.Server.User;
 
 import javax.imageio.ImageIO;
@@ -154,6 +155,7 @@ public class GameFrame extends JFrame {
                     g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
 
+        //TODO: 03-08-2020 We need to use data boxes just like users
         for (Bullet i : bullets) {
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
@@ -167,7 +169,8 @@ public class GameFrame extends JFrame {
         }
 
         for (User u : playersVector) {
-            GameState state = u.getState();
+            DataBox dataBox = u.dataBox; // Using data box
+            //TODO: 03-08-2020 fix the image part ("I will fix it" says KingRicochet)
             try {
                 image = ImageIO.read(new File(u.imagePath));
                 bullet = ImageIO.read(new File(u.bulletPath));
@@ -180,18 +183,17 @@ public class GameFrame extends JFrame {
                 }
             }
             // This is the rotation finding part for tank.
-            int rotateDegree = state.direction(); // The rotation degree
+            int rotateDegree = dataBox.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
             //noinspection IntegerDivisionInFloatingPointContext
-            g2d.rotate(rotation, state.locX + state.width / 2, state.locY + state.height / 2);
+            g2d.rotate(rotation, dataBox.locX + dataBox.width / 2, dataBox.locY + dataBox.height / 2);
             // draw the rotated image
-            if (!state.gameOver) {
-                g2d.drawImage(image, state.locX, state.locY, state.width, state.height, this);
+            if (!dataBox.gameOver) {
+                g2d.drawImage(image, dataBox.locX, dataBox.locY, dataBox.width, dataBox.height, this);
             }
             g2d.setTransform(old);
-
             // Draw GAME OVER
-            if (state.gameOver) {
+            if (dataBox.gameOver) {
                 String str = "GAME OVER";
                 g2d.setColor(new Color(100, 12, 22));
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));

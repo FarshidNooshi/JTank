@@ -3,29 +3,49 @@ package game.Process;
 import java.awt.event.*;
 import java.io.Serializable;
 
+/**
+ * This class is just takes inputs from user.
+ *
+ */
 public class Tank {
 
-    private int width, height;
+    /*
+        The key handlers and mouse motions are removed
+        from the state and putted in here.
+        So basically we don't need state at client side.
+
+     */
+
+    // fields
+    int width, height;
     boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress, shotFired; // true if the appropriate arrow key is pressed.
     public int mouseX, mouseY; // the positions of the mouse clicked pos.
     private KeyHandler keyHandler; // for handling key events.
     private MouseHandler mouseHandler; // for handling mouse events.
 
+    /**
+     * The Tank class controller where we get the
+     * users inputs.
+     *
+     * @param width the tank width
+     * @param height the tank height
+     */
     public Tank(int width, int height) {
+        //
         this.width = width;
         this.height = height;
+        //
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler();
     }
 
+    // Getter methods
     public KeyListener getKeyListener() {
         return keyHandler;
     }
-
     public MouseListener getMouseListener() {
         return mouseHandler;
     }
-
     public MouseMotionListener getMouseMotionListener() {
         return mouseHandler;
     }

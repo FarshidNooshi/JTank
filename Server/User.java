@@ -14,11 +14,12 @@ public class User implements Serializable {
     // Private fields
     private String userName, password;
     public String imagePath, bulletPath;
-    private GameState state;
+    private transient GameState state;
     private transient GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server
     public transient ObjectOutputStream out; // and the input and output streams
     public transient ObjectInputStream in; // are different in server side and client side.
+    public DataBox dataBox;
 
     /**
      * The main constructor of the User class.
@@ -27,8 +28,12 @@ public class User implements Serializable {
      * @param password the password
      */
     public User(String userName, String password) {
+        //
         this.userName = userName;
         this.password = password;
+        //
+        dataBox = new DataBox(); // We just use data box to send the data we need
+        dataBox.userName = userName;
     }
 
     /**
@@ -50,8 +55,6 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         gameMap = (GameMap) read(); // Reading the game map
-        state = (GameState) read(); // We need this for the first canvas creation
-        //TODO: 03-08-2020 we need to get all of the other players states
     }
 
     // Setters and getters
@@ -94,6 +97,22 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * This method will set the data box data
+     * up to date.
+     */
+    public void updateDataBox() {
+        //
+        dataBox.locX = state.locX;
+        dataBox.locY = state.locY;
+        //
+        dataBox.width = state.width;
+        dataBox.height = state.height;
+        //
+        dataBox.direction = state.direction();
+        dataBox.gameOver = state.gameOver;
     }
 
     public void write(Object object) {

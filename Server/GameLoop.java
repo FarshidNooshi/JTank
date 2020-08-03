@@ -31,10 +31,13 @@ public class GameLoop implements Runnable {
      * To create the frame of the game.
      */
     public GameLoop(GameMap gameMap, Vector<User> vector) {
+        //
         this.gameMap = gameMap;
         playersVector = vector;
+        //
         this.numberOfPlayers = vector.size();
-        createStreams();
+        //
+        createStreams(); // Create the server side streams
         initialize();
     }
 
@@ -62,18 +65,15 @@ public class GameLoop implements Runnable {
             u.setState(state);
         }
         gameMap.setPlaces(playersVector);
-        // Giving the users their map and state
-        for (User u : playersVector) {
+        // Giving the users their map
+        for (User u : playersVector)
             write(gameMap, u);
-            write(u.getState(), u);
-        }
     }
 
     /**
      * This must be called before the game loop starts.
      */
     public void init() {
-        // TODO: 01-Agt-2020 need a loop for sending others status
         bullets = new CopyOnWriteArrayList<>();
         executorService = Executors.newCachedThreadPool();
         clientsService = Executors.newCachedThreadPool();
@@ -81,13 +81,16 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run() {
+        //
         for (User u : playersVector)
             clientsService.execute(new ClientHandler(u)); // Executing the clients
-
+        //
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
             Iterator<Bullet> iterator = bullets.iterator();
             //TODO: 03-08-2020 this is the problem of the bullets I think
             // We send the bullets that are still in the middle of updating
+            // Try to use the box data just like the users to send the data.
+            // We send the bullets to the users in the end of the run method in ClientHandler.
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
                 if (bullet.isAlive())
@@ -96,6 +99,7 @@ public class GameLoop implements Runnable {
                     iterator.remove();
             }
         }
+        //
         gameOver = true;
         clientsService.shutdownNow();
     }
@@ -115,13 +119,13 @@ public class GameLoop implements Runnable {
 
         @Override
         public void run() {
-
             GameState state = u.getState();
+            // Receiving the width and height
             state.width = (int) u.read();
             state.height = (int) u.read();
-
+            // Server client game loop
             while (!gameOver) {
-
+                // Getting the updated data
                 state.keyUP = (boolean) u.read();
                 state.keyDOWN = (boolean) u.read();
                 state.keyLEFT = (boolean) u.read();
@@ -130,11 +134,12 @@ public class GameLoop implements Runnable {
                 state.mouseX = (int) u.read();
                 state.mouseY = (int) u.read();
                 state.shotFired = (boolean) u.read();
-
                 // Updating while the player is on the game
                 if (!state.gameOver) {
                     state.update();
+                    u.updateDataBox();
                     if (state.shotFired) {
+                        //TODO 03-08-2020: need to dedicate the image of the bullets
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
