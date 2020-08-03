@@ -18,7 +18,7 @@ public class GameHandler implements Runnable {
 
     @Override
     public void run() {
-        init(); // The program stops in this method
+        init();
         GameMap gameMap = new GameMap();
         gameMap.init();
         GameLoop gameLoop = new GameLoop(gameMap, playersVector);
@@ -30,7 +30,7 @@ public class GameHandler implements Runnable {
         try (ServerSocket serverSocket = new ServerSocket(2726)) {
             for (int i = 0; i < playersVector.size(); i++) {
                 Socket socket = serverSocket.accept();
-                String userName = new Scanner(socket.getInputStream()).nextLine(); // This is where it all stops
+                String userName = new Scanner(socket.getInputStream()).nextLine();
                 for (int j = 0; j < playersVector.size(); j++)
                     if (playersVector.get(i).getUserName().equals(userName)) {
                         playersVector.get(i).setClientSocket(socket); // The client hand side sets in User init

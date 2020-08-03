@@ -49,9 +49,7 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         gameMap = (GameMap) read();
-//        ######## in ja gir mikone !
         state = (GameState) read(); // We need this for the first canvas creation
-//        ###########
     }
 
     @Override

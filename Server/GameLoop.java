@@ -3,6 +3,8 @@ package game.Server;
 import game.Process.Bullet;
 import game.Process.GameMap;
 import game.Process.GameState;
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -44,7 +46,19 @@ public class GameLoop implements Runnable {
         this.gameMap = gameMap;
         playersVector = vector;
         this.numberOfPlayers = vector.size();
+        createStreams();
         initialize();
+    }
+
+    public void createStreams() {
+        for (User u : playersVector) {
+            try {
+                u.out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
+                u.in = new ObjectInputStream(u.getClientSocket().getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initialize() {
@@ -115,8 +129,7 @@ public class GameLoop implements Runnable {
 
     private Object read(User u) {
         try {
-            ObjectInputStream in = new ObjectInputStream(u.getClientSocket().getInputStream());
-            return in.readObject();
+            return u.read();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,8 +138,7 @@ public class GameLoop implements Runnable {
 
     private void write(Object object, User u) {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
-            out.writeObject(object);
+            u.write(object);
         } catch (Exception e) {
             e.printStackTrace();
         }
