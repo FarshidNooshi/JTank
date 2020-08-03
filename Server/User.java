@@ -11,13 +11,13 @@ import java.net.Socket;
  * to store and restore the users information.
  */
 public class User implements Serializable {
-    transient public ObjectOutputStream out;
-    transient public ObjectInputStream in;
     // Private fields
     private String userName, password;
-    private transient Socket clientSocket; // This socket is different in server
     private GameState state;
     private GameMap gameMap;
+    private transient Socket clientSocket; // This socket is different in server
+    transient public ObjectOutputStream out; // and the input and output streams
+    transient public ObjectInputStream in; // are different in server side and client side.
 
     /**
      * The main constructor of the User class.
@@ -41,26 +41,16 @@ public class User implements Serializable {
         // init is called in UserLoop constructor
         clientSocket = new Socket("127.0.0.1", 2726); // The other hand sets in game handler
         try {
-            PrintStream stream = new PrintStream(clientSocket.getOutputStream());
+            PrintStream stream = new PrintStream(clientSocket.getOutputStream()); // Sending the user name
             stream.println(userName);
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            out = new ObjectOutputStream(clientSocket.getOutputStream()); // Opening the streams
             in = new ObjectInputStream(clientSocket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        gameMap = (GameMap) read();
+        gameMap = (GameMap) read(); // Reading the game map
         state = (GameState) read(); // We need this for the first canvas creation
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-        User user = (User) obj;
-        return user.password.equals(password) &&
-                user.userName.equals(userName);
+        //TODO: 03-08-2020 we need to get all of the other players states
     }
 
     // Setters and getters
@@ -111,5 +101,16 @@ public class User implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        User user = (User) obj;
+        return user.password.equals(password) &&
+                user.userName.equals(userName);
     }
 }

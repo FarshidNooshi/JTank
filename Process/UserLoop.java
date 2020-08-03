@@ -5,6 +5,7 @@ import game.Server.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class is for the user game loop
@@ -43,11 +44,12 @@ public class UserLoop extends Thread {
     public void run() {
         // The game loop
         while (!thisPlayerUser.getState().gameOver) {
-            long start = System.currentTimeMillis();
-            System.out.println(thisPlayerUser.getState().locX + " " + thisPlayerUser.getState().locY);
-            thisPlayerUser.write(thisPlayerUser.getState());
-            canvas.setBullets((ArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
+            long start = System.currentTimeMillis(); // This is for delay between server and client
+
+            thisPlayerUser.write(thisPlayerUser.getState()); // Giving the data
+            canvas.setBullets((CopyOnWriteArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
             Vector<User> users = (Vector<User>) thisPlayerUser.read();
+
             for (User u : users)
                 if (u.getUserName().equals(thisPlayerUser.getUserName()))
                     thisPlayerUser.setState(u.getState()); // Finding this user
@@ -55,7 +57,8 @@ public class UserLoop extends Thread {
             canvas.addMouseListener(thisPlayerUser.getState().getMouseListener());
             canvas.addMouseMotionListener(thisPlayerUser.getState().getMouseMotionListener());
             canvas.render(users); // do the rendering
-            long delay = (1000 / FPS) - (System.currentTimeMillis() - start);
+
+            long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
             if (delay > 0) {
                 try {
                     Thread.sleep(delay);

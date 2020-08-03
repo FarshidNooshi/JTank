@@ -7,35 +7,24 @@ import game.Process.GameState;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * A very simple structure for the main game loop.
- * THIS IS NOT PERFECT, but works for most situations.
- * Note that to make this work, none of the 2 methods
- * in the while loop (update() and render()) should be
- * long running! Both must execute very quickly, without
- * any waiting and blocking!
- * <p>
- * Detailed discussion on different game loop design
- * patterns is available in the following link:
- * http://gameprogrammingpatterns.com/game-loop.html
  */
 public class GameLoop implements Runnable {
-
-    /**
-     * Frame Per Second.
-     * Higher is better, but any value above 24 is fine.
-     */
+    // Private fields
     private final GameMap gameMap;
     private Vector<User> playersVector;
+    private boolean gameOver;
     private int numberOfPlayers;
-    private ArrayList<Bullet> bullets;
+    private CopyOnWriteArrayList<Bullet> bullets;
     private ExecutorService executorService;
+    private ExecutorService clientsService;
 
     /**
      * The constructor of the game loop.
@@ -49,7 +38,12 @@ public class GameLoop implements Runnable {
         initialize();
     }
 
-    public void createStreams() {
+    /**
+     * This method will open the server side
+     * streams.
+     *
+     */
+    private void createStreams() {
         for (User u : playersVector) {
             try {
                 u.out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
@@ -79,48 +73,71 @@ public class GameLoop implements Runnable {
      */
     public void init() {
         // TODO: 01-Agt-2020 need a loop for sending others status
-        bullets = new ArrayList<>();
+        bullets = new CopyOnWriteArrayList<>();
         executorService = Executors.newCachedThreadPool();
+        clientsService = Executors.newCachedThreadPool();
     }
 
     @Override
     public void run() {
+        for (User u : playersVector)
+            clientsService.execute(new ClientHandler(u)); // Executing the clients
+
         while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
-            // TODO: 01-Agt-2020 we need this loop inside a executor services
-            for (User u : playersVector) {
-                GameState state = (GameState) read(u);
-                assert state != null;
-                state.update();
-                System.out.println(state.locX + " " + state.locY);
-                if (state.shotFired) {
-                    Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
-                    bullet.setDirections(state.direction());
-                    bullets.add(bullet);
-                }
-                u.setState(state);
-                if (state.gameOver)
-                    playersVector.remove(u); // Removing the looser ones
-            }
-            // TODO: 01-Agt-2020 use copy on write array list for bullets
             Iterator<Bullet> iterator = bullets.iterator();
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
-                if (bullet.isAlive())
+                if (bullet.isAlive()) {
+                    System.out.println(bullets.size());
                     executorService.execute(bullet.getMover());
+                }
                 else
                     iterator.remove();
             }
-            for (User u : playersVector) {
-                // updating the game
+        }
+        gameOver = true;
+        clientsService.shutdownNow();
+    }
+
+    // The client runnable
+    private class ClientHandler implements Runnable {
+        // The user
+        private User u;
+
+        /**
+         * The class constructor
+         * @param u each user uses its own client handler in server
+         */
+        public ClientHandler(User u) {
+            this.u = u;
+        }
+
+        @Override
+        public void run() {
+            while (!gameOver) {
+                GameState state = (GameState) read(u); // Reading the state
+                assert state != null;
+                // Updating while the player is on the game
+                if (!state.gameOver) {
+                    state.update();
+                    if (state.shotFired) {
+                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
+                        bullet.setDirections(state.direction());
+                        bullets.add(bullet);
+                    }
+                    u.setState(state);
+                    if (state.gameOver)
+                        playersVector.remove(u); // Removing the looser ones
+                }
                 try {
-                    u.out.reset();
+                    u.out.reset(); // This is for sending the new state, it helps the syncing between client and server
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                // giving the data
                 write(bullets, u);
                 write(playersVector, u);
             }
-            // calculating the delay for avoiding lags in the game
         }
     }
 

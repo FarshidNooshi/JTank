@@ -10,6 +10,7 @@ import java.io.Serializable;
  * This class also handles user inputs, which affect the game state.
  */
 public class GameState implements Serializable {
+    // Private fields
     public int locX, locY, width, height, speed = 4;
     public boolean gameOver, shotFired, waitForSecondShot;
     private int mapRowsLimit, mapColsLimit; // This is the map limits

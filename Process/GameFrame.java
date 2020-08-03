@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The window on which the rendering is performed.
@@ -27,7 +28,7 @@ public class GameFrame extends JFrame {
     private int counter = 0;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
-    private ArrayList<Bullet> bullets;
+    private CopyOnWriteArrayList<Bullet> bullets;
 
     /**
      * The constructor of the Game frame class to set
@@ -253,7 +254,7 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public void setBullets(ArrayList<Bullet> bullets) {
+    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
         this.bullets = bullets;
     }
 

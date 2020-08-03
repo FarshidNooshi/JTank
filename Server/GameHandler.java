@@ -31,6 +31,7 @@ public class GameHandler implements Runnable {
             for (int i = 0; i < playersVector.size(); i++) {
                 Socket socket = serverSocket.accept();
                 String userName = new Scanner(socket.getInputStream()).nextLine();
+                //TODO: 03-08-2020 need to hold the players wait for everyone to join
                 for (int j = 0; j < playersVector.size(); j++)
                     if (playersVector.get(i).getUserName().equals(userName)) {
                         playersVector.get(i).setClientSocket(socket); // The client hand side sets in User init
