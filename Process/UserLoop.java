@@ -2,6 +2,8 @@ package game.Process;
 
 import game.Server.User;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -35,6 +37,7 @@ public class UserLoop extends Thread {
         }
         //
         gameOver = false;
+        JOptionPane.showMessageDialog(canvas, "Please wait for the other " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
         //
         String in = String.valueOf(thisPlayerUser.read()); // for waiting
         // creating the output frame
