@@ -146,7 +146,6 @@ public class Bullet implements Serializable {
                 if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
-                    System.out.println(gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health);
                     if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0)
                         gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);
                     return;

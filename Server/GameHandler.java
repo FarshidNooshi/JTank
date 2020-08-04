@@ -16,21 +16,33 @@ public class GameHandler implements Runnable {
     private Vector<User> playersVector;
     private int numberOfPlayers;
     private GameData data;
+    private int rounds;
 
     public GameHandler(Vector<User> vector, GameData data, int numberOfPlayers) {
         this.playersVector = vector;
         this.numberOfPlayers = numberOfPlayers;
         this.data = data;
+        rounds = data.numberOfRounds;
     }
 
     @Override
     public void run() {
         init();
-        GameMap gameMap = new GameMap(new LocationController(), data);
-        gameMap.init();
-        GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
-        gameLoop.init();
-        ThreadPool.execute(gameLoop);
+        while (rounds > 0) {
+            GameMap gameMap = new GameMap(new LocationController(), data);
+            gameMap.init();
+            GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
+            gameLoop.init();
+            Thread thread = new Thread(gameLoop);
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rounds--;
+            }
+        }
     }
 
     private void init() {

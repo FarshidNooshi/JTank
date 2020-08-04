@@ -68,7 +68,7 @@ public class ClientHandler implements Runnable {
                         int tankSpeed = Integer.parseInt(in.nextLine());
                         int wallHealth = Integer.parseInt(in.nextLine());
                         int tankHealth = Integer.parseInt(in.nextLine());
-                        System.out.println(bulletSpeed + " " + tankSpeed + " " + tankHealth + " " + wallHealth);
+                        int rounds = Integer.parseInt(in.nextLine());
                         //
                         GameData gameData = new GameData();
                         gameData.matchType = mathType;
@@ -77,6 +77,7 @@ public class ClientHandler implements Runnable {
                         gameData.tankSpeed = tankSpeed;
                         gameData.wallHealth = wallHealth;
                         gameData.tankHealth = tankHealth;
+                        gameData.numberOfRounds = rounds;
                         gameData.ip = "127.0.0.1";
                         gameData.port = Main.gamePort;
                         //

@@ -34,7 +34,7 @@ public class GameLoop implements Runnable {
         this.gameMap = gameMap;
         playersVector = vector;
         //
-        this.numberOfPlayers = vector.size();
+        this.numberOfPlayers = gameData.numberOfPeople;
         this.gameData = gameData;
         //
         initialize();
@@ -71,8 +71,9 @@ public class GameLoop implements Runnable {
         //
         for (User u : playersVector)
             clientsService.execute(new ClientHandler(u)); // Executing the clients
+        clientsService.execute(new TankBullet());
         //
-        while ((numberOfPlayers == 1 && !playersVector.get(0).getState().gameOver) || (playersVector.size() > 1)) { // onio ke gameOver shod az vector bendazim biroon
+        while (!gameOver) {
             long start = System.currentTimeMillis(); // Delay handling
             //
             Iterator<Bullet> iterator = bullets.iterator();
@@ -95,8 +96,40 @@ public class GameLoop implements Runnable {
             }
         }
         //
-        gameOver = true;
+        executorService.shutdownNow();
         clientsService.shutdownNow();
+    }
+
+    // This is for bullet and players handling
+    private class TankBullet implements Runnable {
+        @Override
+        public void run() {
+            while (!gameOver) {
+                for (User u : playersVector) {
+                    //
+                    GameState state = u.getState();
+                    //
+                    Iterator<Bullet> iterator = bullets.iterator();
+                    while (iterator.hasNext()) {
+                        //
+                        Bullet b = iterator.next();
+                        //
+                        if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
+                            //
+                            b.isAlive = false;
+                            state.gameOver = true;
+                            //
+                            numberOfPlayers--;
+                            if (numberOfPlayers <= 1)
+                                gameOver = true;
+                            //
+                            u.updateDataBox();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // The client runnable
@@ -140,8 +173,6 @@ public class GameLoop implements Runnable {
                         bullets.add(bullet);
                     }
                     u.setState(state);
-                    if (state.gameOver)
-                        playersVector.remove(u); // Removing the looser ones
                 }
                 try {
                     u.out.reset(); // This is for sending the new state, it helps the syncing between client and server

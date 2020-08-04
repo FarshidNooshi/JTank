@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class GameData implements Serializable {
     public int bulletSpeed, tankSpeed, wallHealth, tankHealth;
-    public int numberOfPeople, port;
+    public int numberOfPeople, port, numberOfRounds;
     public String matchType, ip;
     @Override
     public String toString() {

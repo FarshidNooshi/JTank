@@ -21,6 +21,7 @@ public class Setting {
     private static User u = null;
     private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "League"};
+    private static String[] numberOfRounds = {"1", "3", "5", "8", "10"};
     private static String[] tankSpeeds = {"4", "8", "12"};
     private static String[] bulletSpeeds = {"8", "16", "32"};
     private static String[] health = {"Low", "Half", "Full"};
@@ -39,6 +40,8 @@ public class Setting {
     private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(1));
     private static JButton decreaseNum = new JButton("<<");
     private static JButton increaseNum = new JButton(">>");
+    private static JLabel rounds = new JLabel("Rounds : ");
+    private static JComboBox<String> roundsInput = new JComboBox<>(numberOfRounds);
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
 
@@ -76,6 +79,8 @@ public class Setting {
             decreaseNum.setLocation(450, 300);
             numberOfPeopleInput.setLocation(525, 300);
             increaseNum.setLocation(575, 300);
+            rounds.setLocation(250, 350);
+            roundsInput.setLocation(450, 350);
             cancel.setLocation(250, 400);
             send.setLocation(450, 400);
             c.add(gameMode);
@@ -92,6 +97,8 @@ public class Setting {
             c.add(decreaseNum);
             c.add(numberOfPeopleInput);
             c.add(increaseNum);
+            c.add(rounds);
+            c.add(roundsInput);
             c.add(cancel);
             c.add(send);
             frame.add(c);
@@ -114,6 +121,10 @@ public class Setting {
         numberOfPeopleInput.setSize(50, 25);
         decreaseNum.setSize(new Dimension(50, 25));
         increaseNum.setSize(new Dimension(50, 25));
+        rounds.setSize(new Dimension(100,25));
+        rounds.setOpaque(true);
+        rounds.setBackground(Color.GRAY);
+        roundsInput.setSize(100, 25);
         cancel.setSize(new Dimension(100, 25));
         cancel.setHorizontalTextPosition(SwingConstants.CENTER);
         send.setSize(new Dimension(100, 25));
@@ -154,6 +165,10 @@ public class Setting {
                     out.println(tankSpeedInput.getSelectedItem());
                     out.println(wallDamageInput.getSelectedIndex() + 1);
                     out.println(tankDamageInput.getSelectedIndex() + 1);
+                    if ("League".equals(modeInput.getSelectedItem()))
+                        out.println(roundsInput.getSelectedItem());
+                    else
+                        out.println(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
