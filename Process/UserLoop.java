@@ -25,10 +25,7 @@ public class UserLoop extends Thread {
      *
      * @param user the current user
      */
-    public UserLoop(User user) {
-        //
-        thisPlayerUser = user;
-    }
+    public UserLoop(User user) { thisPlayerUser = user; }
 
     public void initialize() {
         try {
@@ -38,6 +35,8 @@ public class UserLoop extends Thread {
         }
         //
         gameOver = false;
+        //
+        String in = String.valueOf(thisPlayerUser.read()); // for waiting
         // creating the output frame
         canvas = new GameFrame("Jtank");
         canvas.setVisible(true);

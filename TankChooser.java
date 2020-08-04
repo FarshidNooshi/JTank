@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
 
@@ -135,7 +134,7 @@ public class TankChooser extends JFrame {
             @Override
             protected void done() {
                 setVisible(false);
-                OnServerGames onServerGames = new OnServerGames();
+                JoinGame joinGame = new JoinGame();
             }
         }.execute());
     }

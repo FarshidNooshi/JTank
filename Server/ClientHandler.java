@@ -1,5 +1,6 @@
 package game.Server;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
@@ -55,7 +56,7 @@ public class ClientHandler implements Runnable {
                     if (check(userName, password)) {
                         out.println("user entered the game.");
                         //
-                        openChooser();
+                        tankServer();
                         //
                         int result = gameChooser();
                         if (result == 1)
@@ -63,9 +64,6 @@ public class ClientHandler implements Runnable {
                         //
                         int numberOfPlayers = Integer.parseInt(in.nextLine());
                         String mathType = in.nextLine();
-                        Main.getQueue().putIfAbsent(numberOfPlayers, new Vector<>());
-                        HashMap<Integer, Vector<User>> queue = Main.getQueue();
-                        queue.get(numberOfPlayers).add(client);
                         //
                         GameData gameData = new GameData();
                         gameData.matchType = mathType;
@@ -79,14 +77,14 @@ public class ClientHandler implements Runnable {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        if (queue.get(numberOfPlayers).size() == numberOfPlayers) {
-                            Vector<User> temp = new Vector<>(queue.get(numberOfPlayers));
-                            queue.remove(numberOfPlayers);
-                            Main.data.add(gameData);
-                            Main.gamePort++;
-                            //
-                            Main.getService().execute(new GameHandler(temp, gameData));
-                        }
+                        //
+                        Vector<User> temp = new Vector<>();
+                        temp.add(client);
+                        Main.data.add(gameData);
+                        Main.getQueue().put(gameData.port, temp);
+                        Main.gamePort++;
+                        //
+                        Main.getService().execute(new GameHandler(temp, gameData, numberOfPlayers));
                     } else {
                         out.println("user not found.");
                     }
@@ -118,7 +116,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void openChooser() {
+    private void tankServer() {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(1725);
@@ -132,25 +130,48 @@ public class ClientHandler implements Runnable {
             String s2 = scanner.nextLine();
             client.setImagePath(s1);
             client.setBulletPath(s2);
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     private int gameChooser() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(1724);
+        try (ServerSocket serverSocket = new ServerSocket(1724)) {
+            //
             Socket socket = serverSocket.accept();
+            //
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(Main.data);
+            //
             int result = socket.getInputStream().read();
             if (result == 1)
-                objectOutputStream.writeObject(client);
+                connectToGame();
+            //
             return result;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void connectToGame() {
+        try(ServerSocket serverSocket = new ServerSocket(1723)) {
+            Socket socket = serverSocket.accept();
+            //
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(client);
+            //
+            int port = new DataInputStream(socket.getInputStream()).readInt();
+            //
+            for (Integer i : Main.getQueue().keySet())
+                if (i == port) {
+                    Main.getQueue().get(i).add(client);
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -163,7 +184,6 @@ public class ClientHandler implements Runnable {
             String path = new URI("src/game/Server/info.aut").getPath();
             //noinspection unchecked
             ArrayList<User> arrayList = (ArrayList<User>) new Reader(path).ReadFromFile();
-            System.out.println(arrayList.size());
             for (User user : arrayList)
                 if (user.getUserName().equals(userName))
                     return true;

@@ -18,11 +18,12 @@ public class GameState implements Serializable {
     public int mouseX, mouseY; // the positions of the mouse clicked pos.
     private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
     private transient VectorFactory vectorFactory; // Each state has its own vector factory
+    private transient LocationController locationController;
 
     /**
      * The game state constructor.
      */
-    public GameState() {
+    public GameState(LocationController locationController) {
         gameOver = false;
         shotFired = false;
         currentDirection = 0;
@@ -38,6 +39,7 @@ public class GameState implements Serializable {
         mouseY = 0;
         //
         vectorFactory = new VectorFactory(speed);
+        this.locationController = locationController;
     }
 
     /**
@@ -84,9 +86,9 @@ public class GameState implements Serializable {
                 locY = mouseY;
             } else {
                 vectorFactory.solveTheorem(1);
-                if (LocationController.check(locX, locY + (int) vectorFactory.y, width, height))
+                if (locationController.check(locX, locY + (int) vectorFactory.y, width, height))
                     locY += (int) vectorFactory.y;
-                if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
+                if (locationController.check(locX + (int) vectorFactory.x, locY, width, height))
                     locX += (int) vectorFactory.x;
                 speed = speedHolder; // Resetting the game speed
             }
@@ -103,9 +105,9 @@ public class GameState implements Serializable {
         if (keyDOWN)
             vectorFactory.solveTheorem(-1);
         if (keyDOWN || keyUP) {
-            if (LocationController.check(locX, locY + (int) vectorFactory.y, width, height))
+            if (locationController.check(locX, locY + (int) vectorFactory.y, width, height))
                 locY += (int) vectorFactory.y;
-            if (LocationController.check(locX + (int) vectorFactory.x, locY, width, height))
+            if (locationController.check(locX + (int) vectorFactory.x, locY, width, height))
                 locX += (int) vectorFactory.x;
         }
         locX = Math.max(locX, game.Process.GameFrame.DRAWING_START_X); // Setting the new locations based on the limits

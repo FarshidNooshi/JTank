@@ -7,8 +7,8 @@ import java.io.Serializable;
  * save the game information.
  */
 public class GameData implements Serializable {
-    int numberOfPeople, port;
-    String matchType, ip;
+    public int numberOfPeople, port;
+    public String matchType, ip;
     @Override
     public String toString() {
         return  "Capacity = " + numberOfPeople +

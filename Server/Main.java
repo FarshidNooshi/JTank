@@ -40,7 +40,6 @@ public class Main {
             while (counter++ < 1000) {
                 // Waiting for a client and connect them to the server
                 Socket connectionSocket = welcomingSocket.accept();
-                System.out.println("client accepted!");
                 ClientHandler clientHandler = new ClientHandler(connectionSocket);
                 pool.execute(clientHandler);
             }

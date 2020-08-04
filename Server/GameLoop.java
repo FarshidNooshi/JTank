@@ -5,8 +5,6 @@ import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,30 +35,19 @@ public class GameLoop implements Runnable {
         //
         this.numberOfPlayers = vector.size();
         //
-        createStreams(); // Create the server side streams
         initialize();
+        start();
     }
 
-    /**
-     * This method will open the server side
-     * streams.
-     *
-     */
-    private void createStreams() {
-        for (User u : playersVector) {
-            try {
-                u.out = new ObjectOutputStream(u.getClientSocket().getOutputStream());
-                u.in = new ObjectInputStream(u.getClientSocket().getInputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private void start() {
+        for (User u : playersVector)
+            u.write("start");
     }
 
     private void initialize() {
         // Creating the states in here
         for (User u : playersVector) {
-            GameState state = new GameState();
+            GameState state = new GameState(gameMap.locationController);
             state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
             u.setState(state);
         }

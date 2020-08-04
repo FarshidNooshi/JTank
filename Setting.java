@@ -149,9 +149,7 @@ public class Setting {
                 try {
                     PrintStream out = new PrintStream(connectionSocket.getOutputStream());
                     out.println(numberOfPeopleInput.getText());
-                    //
                     out.println(modeInput.getSelectedItem());
-                    //
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -160,8 +158,12 @@ public class Setting {
 
             @Override
             protected void done() {
+                try {
+                    Thread.sleep(2000); // Need this wait
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 frame.setVisible(false);
-
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
                     u = (User) in.readObject();
                     assert u != null;
@@ -171,7 +173,6 @@ public class Setting {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 // TODO: 29-Jul-20 inja bayad eslah beshe.
             }
         }.execute());

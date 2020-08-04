@@ -21,13 +21,15 @@ public class GameMap implements Serializable {
     private int numberOfRows;
     private int numberOfColumns;
     private Random random = new Random(); // The random instance
+    public transient LocationController locationController;
 
     /**
      * The constructor of the map class.
      */
-    public GameMap() {
+    public GameMap(LocationController locationController) {
         numberOfRows = random.nextInt(4) + 4;
         numberOfColumns = random.nextInt(12) + 4;
+        this.locationController = locationController;
     }
 
     /**
@@ -36,7 +38,7 @@ public class GameMap implements Serializable {
      */
     public void init() {
         binaryMap = new Cell[numberOfRows][numberOfColumns];
-        LocationController.init(); // Creating the controller
+        locationController.init(); // Creating the controller
         makeGameMap();
     }
 
@@ -52,7 +54,7 @@ public class GameMap implements Serializable {
                 if (random.nextInt(100) % 2 == 0)
                     binaryMap[y][x].setState(0);
                 if (binaryMap[y][x].getState() != 0)
-                    LocationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
+                    locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
             }
         }
     }

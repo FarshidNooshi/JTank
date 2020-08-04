@@ -9,19 +9,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This class gets the current games on the
  * server that are available and show them to the
  * client to choose a game or create on.
  */
-public class OnServerGames extends JFrame {
+public class JoinGame extends JFrame {
     // Private fields
     private JButton send;
     private JButton create;
@@ -33,9 +30,9 @@ public class OnServerGames extends JFrame {
     /**
      * The constructor of the on server games.
      */
-    public OnServerGames() {
+    public JoinGame() {
         //
-        setSize(new Dimension(500,500));
+        setSize(new Dimension(600,500));
         setLocation(250,100);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -56,13 +53,16 @@ public class OnServerGames extends JFrame {
     }
 
     private void init() {
+        //
         send = new JButton("Send");
         create = new JButton("Create");
+        //
         try {
             connectionSocket = new Socket("127.0.0.1", 1724);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //
         try {
             data = (ArrayList<GameData>) new ObjectInputStream(connectionSocket.getInputStream()).readObject(); // Receiving the data
         } catch (IOException | ClassNotFoundException e) {
@@ -75,9 +75,9 @@ public class OnServerGames extends JFrame {
         int counter = 1;
         for (GameData d : data) {
             JButton jButton = new JButton();
-            jButton.setSize(new Dimension(200, 20));
+            jButton.setSize(new Dimension(500, 20));
             jButton.setText(d.toString());
-            jButton.setLocation(150, counter * 20);
+            jButton.setLocation(50, counter * 20);
             jButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -90,13 +90,14 @@ public class OnServerGames extends JFrame {
         //
         create.setSize(new Dimension(100, 20));
         send.setSize(new Dimension(100,20));
-        create.setLocation(150, counter * 20);
-        send.setLocation(250, counter * 20);
+        create.setLocation(200, counter * 20);
+        send.setLocation(300, counter * 20);
         c.add(send);
         c.add(create);
     }
 
     private void initButtons() {
+        //
         send.addActionListener(e -> new SwingWorker<>(){
 
             @Override
@@ -112,21 +113,32 @@ public class OnServerGames extends JFrame {
             protected void done() {
                 setVisible(false);
                 try {
-                    User user = (User) new ObjectInputStream(connectionSocket.getInputStream()).readObject();
+                    //
+                    User u;
+                    Socket gameSocket = new Socket("127.0.0.1", 1723);
+                    u = (User) new ObjectInputStream(gameSocket.getInputStream()).readObject();
+                    //
                     int result = (int) get();
                     if (result == -1)
                         System.exit(-1);
                     else {
-                        user.gameData = finalChose;
-                        UserLoop userLoop = new UserLoop(user);
+                        // need this wait
+                        Thread.sleep(2000);
+                        //
+                        new DataOutputStream(gameSocket.getOutputStream()).writeInt(finalChose.port);
+                        //
+                        u.gameData = finalChose;
+                        //
+                        UserLoop userLoop = new UserLoop(u);
                         userLoop.initialize();
                         userLoop.start();
                     }
-                } catch (InterruptedException | ExecutionException | IOException | ClassNotFoundException ex) {
-                    System.exit(-1);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }.execute());
+        //
         create.addActionListener(e -> new SwingWorker<>(){
 
             @Override

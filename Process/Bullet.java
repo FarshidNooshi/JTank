@@ -19,6 +19,7 @@ public class Bullet implements Serializable {
     private transient long start;
     private transient GameMap gameMap; //Each bullet needs the map
     private transient VectorFactory vectorFactory;
+    private transient LocationController locationController;
 
     /**
      * The constructor of the bullet class.
@@ -43,6 +44,7 @@ public class Bullet implements Serializable {
         //
         this.gameMap = gameMap;
         vectorFactory = new VectorFactory(SPEED);
+        this.locationController = gameMap.locationController;
         start = System.currentTimeMillis(); // Keeping the start time
     }
 
@@ -139,7 +141,7 @@ public class Bullet implements Serializable {
                     justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
             }
             // To check if the bullet is hitting any walls with it's center
-            Location location = LocationController.bulletWallCheck(locX + DIAM / 2, locY + DIAM / 2);
+            Location location = locationController.bulletWallCheck(locX + DIAM / 2, locY + DIAM / 2);
             if (location != null) {
                 if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall

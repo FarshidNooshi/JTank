@@ -1,8 +1,11 @@
 package game.Server;
 
+import game.Control.LocationController;
 import game.Process.GameMap;
 import game.Process.ThreadPool;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -11,17 +14,19 @@ import java.util.Vector;
 public class GameHandler implements Runnable {
 
     private Vector<User> playersVector;
+    private int numberOfPlayers;
     private GameData data;
 
-    public GameHandler(Vector<User> vector, GameData data) {
+    public GameHandler(Vector<User> vector, GameData data, int numberOfPlayers) {
         this.playersVector = vector;
+        this.numberOfPlayers = numberOfPlayers;
         this.data = data;
     }
 
     @Override
     public void run() {
         init();
-        GameMap gameMap = new GameMap();
+        GameMap gameMap = new GameMap(new LocationController());
         gameMap.init();
         GameLoop gameLoop = new GameLoop(gameMap, playersVector);
         gameLoop.init();
@@ -29,16 +34,23 @@ public class GameHandler implements Runnable {
     }
 
     private void init() {
+        int join = 0;
         try (ServerSocket serverSocket = new ServerSocket(data.port)) {
-            for (int i = 0; i < playersVector.size(); i++) {
+            for (int i = 0; i < numberOfPlayers; i++) {
                 Socket socket = serverSocket.accept();
+                join++;
+                //
                 String userName = new Scanner(socket.getInputStream()).nextLine();
-                //TODO: 03-08-2020 need to hold the players wait for everyone to join
-                for (int j = 0; j < playersVector.size(); j++)
-                    if (playersVector.get(i).getUserName().equals(userName)) {
-                        playersVector.get(i).setClientSocket(socket); // The client hand side sets in User init
-                        break;
-                    }
+                //
+                for (int j = 0; j < join; j++)
+                        if (playersVector.get(j).getUserName().equals(userName)) {
+                            playersVector.get(j).setClientSocket(socket);
+                            //
+                            playersVector.get(j).out = new ObjectOutputStream(playersVector.get(j).getClientSocket().getOutputStream());
+                            playersVector.get(j).in = new ObjectInputStream(playersVector.get(j).getClientSocket().getInputStream());// The client hand side sets in User init
+                            //
+                            break;
+                        }
             }
             //
             removeGame();
@@ -47,6 +59,7 @@ public class GameHandler implements Runnable {
         }
     }
 
+    // This method will remove the current game from the list of data games
     private void removeGame() {
         Main.data.remove(data);
     }
