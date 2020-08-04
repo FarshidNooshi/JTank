@@ -54,11 +54,26 @@ public class ClientHandler implements Runnable {
                     }
                     if (check(userName, password)) {
                         out.println("user entered the game.");
-                        runnnn(); // ino avazesh kon esmesho baadan
+                        //
+                        openChooser();
+                        //
+                        int result = gameChooser();
+                        if (result == 1)
+                            return;
+                        //
                         int numberOfPlayers = Integer.parseInt(in.nextLine());
+                        String mathType = in.nextLine();
                         Main.getQueue().putIfAbsent(numberOfPlayers, new Vector<>());
                         HashMap<Integer, Vector<User>> queue = Main.getQueue();
                         queue.get(numberOfPlayers).add(client);
+                        //
+                        GameData gameData = new GameData();
+                        gameData.matchType = mathType;
+                        gameData.numberOfPeople = numberOfPlayers;
+                        gameData.ip = "127.0.0.1";
+                        gameData.port = Main.gamePort;
+                        //
+                        client.gameData = gameData;
                         try (ObjectOutputStream out2 = new ObjectOutputStream(connectionSocket.getOutputStream())) {
                             out2.writeObject(client);
                         } catch (Exception e) {
@@ -67,7 +82,10 @@ public class ClientHandler implements Runnable {
                         if (queue.get(numberOfPlayers).size() == numberOfPlayers) {
                             Vector<User> temp = new Vector<>(queue.get(numberOfPlayers));
                             queue.remove(numberOfPlayers);
-                            Main.getService().execute(new GameHandler(temp));
+                            Main.data.add(gameData);
+                            Main.gamePort++;
+                            //
+                            Main.getService().execute(new GameHandler(temp, gameData));
                         }
                     } else {
                         out.println("user not found.");
@@ -100,7 +118,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void runnnn() {
+    private void openChooser() {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(1725);
@@ -114,10 +132,25 @@ public class ClientHandler implements Runnable {
             String s2 = scanner.nextLine();
             client.setImagePath(s1);
             client.setBulletPath(s2);
-            System.out.println(client.getBulletPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private int gameChooser() {
+        try {
+            ServerSocket serverSocket = new ServerSocket(1724);
+            Socket socket = serverSocket.accept();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(Main.data);
+            int result = socket.getInputStream().read();
+            if (result == 1)
+                objectOutputStream.writeObject(client);
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**

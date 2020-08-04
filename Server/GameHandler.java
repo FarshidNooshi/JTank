@@ -11,9 +11,11 @@ import java.util.Vector;
 public class GameHandler implements Runnable {
 
     private Vector<User> playersVector;
+    private GameData data;
 
-    public GameHandler(Vector<User> vector) {
+    public GameHandler(Vector<User> vector, GameData data) {
         this.playersVector = vector;
+        this.data = data;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class GameHandler implements Runnable {
     }
 
     private void init() {
-        try (ServerSocket serverSocket = new ServerSocket(2726)) {
+        try (ServerSocket serverSocket = new ServerSocket(data.port)) {
             for (int i = 0; i < playersVector.size(); i++) {
                 Socket socket = serverSocket.accept();
                 String userName = new Scanner(socket.getInputStream()).nextLine();
@@ -38,8 +40,14 @@ public class GameHandler implements Runnable {
                         break;
                     }
             }
+            //
+            removeGame();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void removeGame() {
+        Main.data.remove(data);
     }
 }

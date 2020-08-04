@@ -23,13 +23,17 @@ public class Main {
     private static ExecutorService service = Executors.newCachedThreadPool();
     private static ExecutorService pool = Executors.newCachedThreadPool();
     private static HashMap<Integer, Vector<User>> queue = new HashMap<>();
+    //
+    public static int gamePort = 2000;
+    public static ArrayList<GameData> data = new ArrayList<>();
+    //
 
     public static void main(String[] args) {
-//        try {
-//            clearData();
-//        } catch (URISyntaxException | IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            clearData();
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
         int counter = 0;
         try (ServerSocket welcomingSocket = new ServerSocket(1726)) {
             JOptionPane.showMessageDialog(null, "Server started.");

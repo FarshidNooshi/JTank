@@ -154,6 +154,9 @@ public class Log {
 
     private static void initButtons() {
         logIn.addActionListener(e -> new SwingWorker<>() {
+
+            Setting setting = new Setting();
+
             /**
              * Computes a result, or throws an exception if unable to do so.
              *
@@ -174,7 +177,7 @@ public class Log {
                     Socket socket = new Socket(ip, port);
                     ret = takeString(socket, "Log in");
                     if (ret.equalsIgnoreCase("user entered the game."))
-                        Setting.setConnectionSocket(socket);
+                        setting.setConnectionSocket(socket);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }

@@ -21,7 +21,6 @@ public class TankChooser extends JFrame {
     private JButton send;
 
     public TankChooser(String username) throws IOException {
-
         send = new JButton();
         this.username = username;
     }
@@ -135,7 +134,8 @@ public class TankChooser extends JFrame {
 
             @Override
             protected void done() {
-                Setting.run();
+                setVisible(false);
+                OnServerGames onServerGames = new OnServerGames();
             }
         }.execute());
     }

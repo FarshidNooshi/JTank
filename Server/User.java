@@ -20,6 +20,7 @@ public class User implements Serializable {
     public transient ObjectOutputStream out; // and the input and output streams
     public transient ObjectInputStream in; // are different in server side and client side.
     public DataBox dataBox;
+    public GameData gameData;
 
     /**
      * The main constructor of the User class.
@@ -45,7 +46,7 @@ public class User implements Serializable {
     public void init() throws IOException {
         // Creating the user socket
         // init is called in UserLoop constructor
-        clientSocket = new Socket("127.0.0.1", 2726); // The other hand sets in game handler
+        clientSocket = new Socket(gameData.ip, gameData.port); // The other hand sets in game handler
         try {
             PrintStream stream = new PrintStream(clientSocket.getOutputStream()); // Sending the user name
             stream.println(userName);

@@ -20,7 +20,7 @@ public class Setting {
     // Private fields
     private static User u = null;
     private static Socket connectionSocket;
-    private static String[] gameModes = {"Death Match", "Teams Battle"};
+    private static String[] gameModes = {"Death Match", "League"};
     private static String[] tankSpeeds = {"4", "8", "12"};
     private static String[] bulletSpeeds = {"8", "16", "32"};
     private static String[] health = {"Low", "Half", "Full"};
@@ -146,10 +146,12 @@ public class Setting {
 
             @Override
             protected Object doInBackground() {
-                //TODO: 28-jul-2020 inja bayad setting bazi be server ersal beshe
                 try {
                     PrintStream out = new PrintStream(connectionSocket.getOutputStream());
                     out.println(numberOfPeopleInput.getText());
+                    //
+                    out.println(modeInput.getSelectedItem());
+                    //
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -191,7 +193,7 @@ public class Setting {
         return connectionSocket;
     }
 
-    static void setConnectionSocket(Socket connectionSocket) {
+    public static void setConnectionSocket(Socket connectionSocket) {
         Setting.connectionSocket = connectionSocket;
     }
 
