@@ -64,10 +64,19 @@ public class ClientHandler implements Runnable {
                         //
                         int numberOfPlayers = Integer.parseInt(in.nextLine());
                         String mathType = in.nextLine();
+                        int bulletSpeed = Integer.parseInt(in.nextLine());
+                        int tankSpeed = Integer.parseInt(in.nextLine());
+                        int wallHealth = Integer.parseInt(in.nextLine());
+                        int tankHealth = Integer.parseInt(in.nextLine());
+                        System.out.println(bulletSpeed + " " + tankSpeed + " " + tankHealth + " " + wallHealth);
                         //
                         GameData gameData = new GameData();
                         gameData.matchType = mathType;
                         gameData.numberOfPeople = numberOfPlayers;
+                        gameData.bulletSpeed = bulletSpeed;
+                        gameData.tankSpeed = tankSpeed;
+                        gameData.wallHealth = wallHealth;
+                        gameData.tankHealth = tankHealth;
                         gameData.ip = "127.0.0.1";
                         gameData.port = Main.gamePort;
                         //

@@ -26,6 +26,8 @@ public class GameFrame extends JFrame {
     private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
     private BufferedImage image = null;
     private BufferedImage bullet = null;
+    private BufferedImage brakeWall;
+    private BufferedImage unBrakeWall;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
     private CopyOnWriteArrayList<Bullet> bullets;
@@ -47,6 +49,8 @@ public class GameFrame extends JFrame {
         try {
             image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
             bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
+            brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
+            unBrakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateMetal.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,22 +140,14 @@ public class GameFrame extends JFrame {
         // The loop of drawing
         for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.getNumberOfRows(); y++, verticalAt += GameMap.CHANGING_FACTOR)
             for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.getNumberOfColumns(); x++, horizonAt += GameMap.CHANGING_FACTOR) {
-                // Choosing the color of the house
-                switch (gameMap.binaryMap[y][x].getState()) {
-                    case 0:
-                        g2d.setColor(Color.WHITE);
-                        break;
-                    case 1:
-                        g2d.setColor(Color.DARK_GRAY);
-                        break;
-                    case 2:
-                        g2d.setColor(Color.BLACK);
-                        break;
-                }
                 // Drawing the house
                 g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
                 if (gameMap.binaryMap[y][x].getState() == 0)
                     g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                else if (gameMap.binaryMap[y][x].getState() == 1)
+                    g2d.drawImage(brakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                else if (gameMap.binaryMap[y][x].getState() == 2)
+                    g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
 
         for (Bullet i : bullets) {
@@ -166,6 +162,7 @@ public class GameFrame extends JFrame {
             g2d.setTransform(old);
         }
 
+        int counter = 2;
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
             //TODO: 03-08-2020 fix the image part
@@ -180,9 +177,15 @@ public class GameFrame extends JFrame {
                     e.printStackTrace();
                 }
             }
+            g2d.setColor(Color.BLACK);
+            g2d.drawImage(image, GAME_WIDTH - 80, counter * 50, dataBox.width, dataBox.height, this);
+            g2d.drawString(dataBox.userName, GAME_WIDTH - 80, counter * 50 + 20 + dataBox.height);
+            counter++;
             // This is the rotation finding part for tank.
             int rotateDegree = dataBox.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
+            if (!dataBox.gameOver)
+                g2d.drawString(dataBox.userName, dataBox.locX, dataBox.locY - 10);
             //noinspection IntegerDivisionInFloatingPointContext
             g2d.rotate(rotation, dataBox.locX + dataBox.width / 2, dataBox.locY + dataBox.height / 2);
             // draw the rotated image

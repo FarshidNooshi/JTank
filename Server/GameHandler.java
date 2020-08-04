@@ -26,9 +26,9 @@ public class GameHandler implements Runnable {
     @Override
     public void run() {
         init();
-        GameMap gameMap = new GameMap(new LocationController());
+        GameMap gameMap = new GameMap(new LocationController(), data);
         gameMap.init();
-        GameLoop gameLoop = new GameLoop(gameMap, playersVector);
+        GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
         gameLoop.init();
         ThreadPool.execute(gameLoop);
     }

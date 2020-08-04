@@ -10,10 +10,10 @@ import java.io.Serializable;
  */
 public class Bullet implements Serializable {
     // Fields
-    private transient final static int SPEED = 8; //Speed and time field
+    public transient int SPEED; //Speed and time field
     private final int DIAM = 8; //location fields&radios of the circle
     public int locX, locY; //Location fields
-    private transient boolean isAlive, justShot; //Status fields
+    public transient boolean isAlive, justShot; //Status fields
     public int direction;
     private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
     private transient long start;
@@ -28,7 +28,7 @@ public class Bullet implements Serializable {
      * @param locY    the first y coordinate
      * @param gameMap the game map instance
      */
-    public Bullet(int locX, int locY, GameMap gameMap) {
+    public Bullet(int locX, int locY, GameMap gameMap, int SPEED) {
         // The starting point of the square
         this.locX = locX;
         this.locY = locY;
@@ -145,7 +145,10 @@ public class Bullet implements Serializable {
             if (location != null) {
                 if (location.type == 1) {
                     isAlive = false; // This means that the bullet has hit a breakable wall
-                    gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);
+                    gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
+                    System.out.println(gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health);
+                    if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0)
+                        gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);
                     return;
                 } else {
                     wallChangingWay(location);
@@ -154,5 +157,9 @@ public class Bullet implements Serializable {
             // The bullet update method
             update();
         }
+    }
+
+    public boolean hitTheTank(int tankX, int tankY, int width, int height) {
+        return tankX < locX && locX < tankX + width && tankY < locY && locY < tankY + height;
     }
 }

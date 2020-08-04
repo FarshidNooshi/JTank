@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class Cell implements Serializable {
     // Privet fields
     private int state;
+    public int health;
     private ImageIcon icon;
 
     /**
@@ -19,8 +20,9 @@ public class Cell implements Serializable {
      * @param state the type of the cell
      * @param tt a random number to show the image
      */
-    public Cell(int state, int tt) {
+    public Cell(int state, int tt, int health) {
         this.state = state;
+        this.health = health;
         if (tt % 2 == 1)
             icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
         else

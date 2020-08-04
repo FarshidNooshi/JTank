@@ -150,6 +150,10 @@ public class Setting {
                     PrintStream out = new PrintStream(connectionSocket.getOutputStream());
                     out.println(numberOfPeopleInput.getText());
                     out.println(modeInput.getSelectedItem());
+                    out.println(bulletSpeedInput.getSelectedItem());
+                    out.println(tankSpeedInput.getSelectedItem());
+                    out.println(wallDamageInput.getSelectedIndex() + 1);
+                    out.println(tankDamageInput.getSelectedIndex() + 1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

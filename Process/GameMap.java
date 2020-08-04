@@ -2,6 +2,7 @@ package game.Process;
 
 import game.Control.Location;
 import game.Control.LocationController;
+import game.Server.GameData;
 import game.Server.User;
 
 import java.io.Serializable;
@@ -22,14 +23,16 @@ public class GameMap implements Serializable {
     private int numberOfColumns;
     private Random random = new Random(); // The random instance
     public transient LocationController locationController;
+    private GameData gameData;
 
     /**
      * The constructor of the map class.
      */
-    public GameMap(LocationController locationController) {
+    public GameMap(LocationController locationController, GameData gameData) {
         numberOfRows = random.nextInt(4) + 4;
         numberOfColumns = random.nextInt(12) + 4;
         this.locationController = locationController;
+        this.gameData = gameData;
     }
 
     /**
@@ -50,11 +53,11 @@ public class GameMap implements Serializable {
     private void makeGameMap() {
         for (int y = 0; y < numberOfRows; y++) {
             for (int x = 0; x < numberOfColumns; x++) {
-                binaryMap[y][x] = new Cell(random.nextInt(3), random.nextInt(2));
+                binaryMap[y][x] = new Cell(random.nextInt(3), random.nextInt(2), gameData.wallHealth);
                 if (random.nextInt(100) % 2 == 0)
                     binaryMap[y][x].setState(0);
                 if (binaryMap[y][x].getState() != 0)
-                    locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState()));
+                    locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState(), gameData.wallHealth));
             }
         }
     }

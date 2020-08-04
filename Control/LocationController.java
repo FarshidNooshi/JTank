@@ -112,7 +112,9 @@ public class LocationController {
         for (Location l : locations) {
             if (l.isOverlap(x, y, 0, 2, 2)) {
                 if (l.type == 1) {
-                    locations.remove(l);
+                    l.health--;
+                    if (l.health < 0)
+                        locations.remove(l);
                 }
                 return l;
             }
@@ -130,7 +132,7 @@ public class LocationController {
      * @param tankY the tank y coordinate
      * @return true or false
      */
-    public boolean tankGotShot(int bullX, int bullY, int tankX, int tankY) {
-        return tankX < bullX && bullX < tankX + GameMap.CHANGING_FACTOR / 2 && tankY < bullY && bullY < tankY + GameMap.CHANGING_FACTOR / 2;
+    public boolean tankGotShot(int bullX, int bullY, int tankX, int tankY, int width, int height) {
+        return tankX < bullX && bullX < tankX + width && tankY < bullY && bullY < tankY + height;
     }
 }

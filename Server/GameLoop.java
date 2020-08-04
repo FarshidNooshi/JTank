@@ -20,6 +20,7 @@ public class GameLoop implements Runnable {
     private boolean gameOver;
     private int numberOfPlayers;
     private final GameMap gameMap;
+    private GameData gameData;
     private Vector<User> playersVector;
     private CopyOnWriteArrayList<Bullet> bullets;
     private ExecutorService executorService, clientsService;
@@ -28,12 +29,13 @@ public class GameLoop implements Runnable {
      * The constructor of the game loop.
      * To create the frame of the game.
      */
-    public GameLoop(GameMap gameMap, Vector<User> vector) {
+    public GameLoop(GameMap gameMap, Vector<User> vector, GameData gameData) {
         //
         this.gameMap = gameMap;
         playersVector = vector;
         //
         this.numberOfPlayers = vector.size();
+        this.gameData = gameData;
         //
         initialize();
         start();
@@ -48,6 +50,7 @@ public class GameLoop implements Runnable {
         // Creating the states in here
         for (User u : playersVector) {
             GameState state = new GameState(gameMap.locationController);
+            state.speed = gameData.tankSpeed;
             state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
             u.setState(state);
         }
@@ -80,6 +83,7 @@ public class GameLoop implements Runnable {
                 else
                     bullets.remove(bullet);
             }
+            // TODO: 04-08-2020 handle bullets hit tanks
             //
             long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
             if (delay > 0) {
@@ -131,7 +135,7 @@ public class GameLoop implements Runnable {
                     u.updateDataBox();
                     if (state.shotFired) {
                         //TODO 03-08-2020: need to dedicate the image of the bullets
-                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap);
+                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap, gameData.bulletSpeed);
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
                     }

@@ -7,6 +7,7 @@ import java.io.Serializable;
  * save the game information.
  */
 public class GameData implements Serializable {
+    public int bulletSpeed, tankSpeed, wallHealth, tankHealth;
     public int numberOfPeople, port;
     public String matchType, ip;
     @Override
