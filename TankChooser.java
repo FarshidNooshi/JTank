@@ -14,8 +14,6 @@ public class TankChooser extends JFrame {
 
     private File finalImage = new File("src/game/IconsInGame/Farshid/Tank/Icon.png");
     private File finalBullet = new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png");
-    private BufferedImage image = ImageIO.read(finalImage);
-    private BufferedImage bullet = ImageIO.read(finalBullet);
     private String username;
     private JButton send;
 
@@ -67,13 +65,8 @@ public class TankChooser extends JFrame {
             c.add(button);
             File finalFile1 = file;
             button.addActionListener(e -> {
-                try {
-                    finalImage = new File(finalFile1.getPath() + File.separator + name);
-                    image = ImageIO.read(finalImage);
-                    flag[0] = true;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                finalImage = new File(finalFile1.getPath() + File.separator + name);
+                flag[0] = true;
                 if (flag[0] && flag[1]) {
                     ask.setVisible(false);
                     send.doClick();
@@ -94,13 +87,8 @@ public class TankChooser extends JFrame {
             c.add(button);
             File finalFile = file;
             button.addActionListener(e -> {
-                try {
-                    finalBullet = new File(finalFile.getPath() + File.separator + name);
-                    bullet = ImageIO.read(finalBullet);
-                    flag[1] = true;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                finalBullet = new File(finalFile.getPath() + File.separator + name);
+                flag[1] = true;
                 if (flag[1] && flag[0]) {
                     ask.setVisible(false);
                     send.doClick();
@@ -135,6 +123,7 @@ public class TankChooser extends JFrame {
             protected void done() {
                 setVisible(false);
                 JoinGame joinGame = new JoinGame();
+                joinGame.run();
             }
         }.execute());
     }

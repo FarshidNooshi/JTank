@@ -239,12 +239,4 @@ public class ClientHandler implements Runnable {
         }
         return false;
     }
-
-    public User getClient() {
-        return client;
-    }
-
-    public void setClient(User client) {
-        this.client = client;
-    }
 }

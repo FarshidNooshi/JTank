@@ -45,6 +45,9 @@ public class JoinGame extends JFrame {
         }
         c.setLayout(null);
         //
+    }
+
+    public void run() {
         init();
         frameCreate();
         initButtons();
