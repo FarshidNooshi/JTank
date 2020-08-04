@@ -16,7 +16,7 @@ public class Bullet implements Serializable {
     public transient boolean isAlive, justShot; //Status fields
     public int direction;
     private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
-    private transient long start;
+    private transient final long start;
     private transient GameMap gameMap; //Each bullet needs the map
     private transient VectorFactory vectorFactory;
     private transient LocationController locationController;
@@ -159,6 +159,6 @@ public class Bullet implements Serializable {
     }
 
     public boolean hitTheTank(int tankX, int tankY, int width, int height) {
-        return tankX < locX && locX < tankX + width && tankY < locY && locY < tankY + height;
+        return Math.abs(System.currentTimeMillis() - start) > 100 && tankX < locX && locX < tankX + width && tankY < locY && locY < tankY + height;
     }
 }

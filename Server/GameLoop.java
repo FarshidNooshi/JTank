@@ -109,10 +109,8 @@ public class GameLoop implements Runnable {
                     //
                     GameState state = u.getState();
                     //
-                    Iterator<Bullet> iterator = bullets.iterator();
-                    while (iterator.hasNext()) {
+                    for (Bullet b : bullets) {
                         //
-                        Bullet b = iterator.next();
                         //
                         if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
                             //
