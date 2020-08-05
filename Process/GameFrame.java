@@ -21,8 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class GameFrame extends JFrame {
     // fields
-    public static final int DRAWING_START_X = 40, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
-    private static final int GAME_HEIGHT = 720, GAME_WIDTH = 16 * GAME_HEIGHT / 9; // 720p game resolution
+    public static final int DRAWING_START_X = 50, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
+    private static final int GAME_HEIGHT = 1000, GAME_WIDTH = 1400; // 720p game resolution
     private String username;
     private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall;
     private BufferedImage oneWayUp, oneWayDown, twoWayUp, twoWayDown, twoWayLeft, twoWayRight, threeWayUp, threeWayDown, threeWayLeft, threeWayRight, fourWay;
@@ -42,6 +42,7 @@ public class GameFrame extends JFrame {
     public GameFrame(String title, String username, String tankPath) {
         //
         super(title);
+        setLocation(50,50);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
@@ -125,7 +126,7 @@ public class GameFrame extends JFrame {
      * Game rendering with triple-buffering using BufferStrategy.
      * @param playersVector this is the list of the players in game
      */
-    public void render(Vector<User> playersVector) {
+    public void render(CopyOnWriteArrayList<User> playersVector) {
         do {
             do {
                 Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
@@ -140,7 +141,7 @@ public class GameFrame extends JFrame {
         } while (bufferStrategy.contentsLost());
     }
 
-    private void doRendering(Graphics2D g2d, Vector<User> playersVector) {
+    private void doRendering(Graphics2D g2d, CopyOnWriteArrayList<User> playersVector) {
         AffineTransform old = g2d.getTransform(); // Storing the old g2d transform
         // Draw background
         g2d.setColor(Color.GRAY);
@@ -226,7 +227,7 @@ public class GameFrame extends JFrame {
             BufferedImage bullet = null;
             try {
                 if (i.isRPG)
-                    bullet = RPG;
+                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
                 else
                     bullet = ImageIO.read(new File(i.imagePath));
             } catch (IOException | NullPointerException e) {
@@ -245,6 +246,8 @@ public class GameFrame extends JFrame {
         // Drawing the players
         int counter = 2;
         boolean flag = false;
+        g2d.setColor(Color.BLACK);
+        g2d.drawString("Players in game : ", 40, 60);
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
             if (!dataBox.gameOver) {
@@ -259,13 +262,16 @@ public class GameFrame extends JFrame {
                     }
                 }
                 g2d.setColor(Color.BLACK);
-                g2d.drawImage(image, GAME_WIDTH - 80, counter * 50, dataBox.width, dataBox.height, this);
-                g2d.drawString(dataBox.userName + " : " + dataBox.score, GAME_WIDTH - 80, counter * 50 + 20 + dataBox.height);
-                counter++;
+                g2d.drawImage(image, counter * 50 + 50, 40, dataBox.width, dataBox.height, this);
+                g2d.drawString(dataBox.userName + " : " + dataBox.score, counter * 50 + 50,50 + dataBox.height);
+                counter+=2;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
                 double rotation = Math.toRadians(rotateDegree);
-                g2d.drawString(dataBox.userName + " " + dataBox.health * 25, dataBox.locX, dataBox.locY - 10);
+                g2d.setColor(Color.GREEN);
+                g2d.fillRect(dataBox.locX, dataBox.locY - 3, dataBox.health * 10, 3);
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(dataBox.userName + " " + dataBox.health * 25, dataBox.locX, dataBox.locY - 8);
                 //noinspection IntegerDivisionInFloatingPointContext
                 g2d.rotate(rotation, dataBox.locX + dataBox.width / 2, dataBox.locY + dataBox.height / 2);
                 // draw the rotated image

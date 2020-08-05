@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is the in-server handler to get the client socket
@@ -88,7 +89,7 @@ public class ClientHandler implements Runnable {
                             e.printStackTrace();
                         }
                         //
-                        Vector<User> temp = new Vector<>();
+                        CopyOnWriteArrayList<User> temp = new CopyOnWriteArrayList<>();
                         temp.add(client);
                         Main.data.add(gameData);
                         Main.getQueue().put(gameData.port, temp);

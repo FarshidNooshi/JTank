@@ -37,7 +37,7 @@ public class Setting {
     private static JLabel tankDamage = new JLabel("Tanks health : ");
     private static JComboBox<String> tankDamageInput = new JComboBox<>(health);
     private static JLabel numberOfPeople = new JLabel("Number Of players : ");
-    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(2));
+    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(1));
     private static JButton decreaseNum = new JButton("<<");
     private static JButton increaseNum = new JButton(">>");
     private static JLabel rounds = new JLabel("Rounds : ");
@@ -52,7 +52,7 @@ public class Setting {
     static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(800, 500));
-        frame.setLocation(250, 100);
+        frame.setLocation(350, 130);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();

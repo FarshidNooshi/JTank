@@ -11,14 +11,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameHandler implements Runnable {
 
-    private Vector<User> playersVector;
+    private CopyOnWriteArrayList<User> playersVector;
     private GameData data;
     private int rounds, numberOfPlayers;
 
-    public GameHandler(Vector<User> vector, GameData data, int numberOfPlayers) {
+    public GameHandler(CopyOnWriteArrayList<User> vector, GameData data, int numberOfPlayers) {
         //
         this.playersVector = vector;
         this.data = data;

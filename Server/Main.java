@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +23,7 @@ public class Main {
 
     private static ExecutorService service = Executors.newCachedThreadPool();
     private static ExecutorService pool = Executors.newCachedThreadPool();
-    private static HashMap<Integer, Vector<User>> queue = new HashMap<>();
+    private static HashMap<Integer, CopyOnWriteArrayList<User>> queue = new HashMap<Integer, CopyOnWriteArrayList<User>>();
     //
     public static int gamePort = 2000;
     public static ArrayList<GameData> data = new ArrayList<>();
@@ -62,11 +63,11 @@ public class Main {
         writer.writeToFile(arrayList2);
     }
 
-    public static HashMap<Integer, Vector<User>> getQueue() {
+    public static HashMap<Integer, CopyOnWriteArrayList<User>> getQueue() {
         return queue;
     }
 
-    public static void setQueue(HashMap<Integer, Vector<User>> queue) {
+    public static void setQueue(HashMap<Integer, CopyOnWriteArrayList<User>> queue) {
         Main.queue = queue;
     }
 

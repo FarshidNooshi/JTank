@@ -8,6 +8,7 @@ import game.Server.User;
 import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class is our map of the game.
@@ -30,8 +31,8 @@ public class GameMap implements Serializable {
      * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
-        numberOfRows = random.nextInt(4) + 4;
-        numberOfColumns = random.nextInt(10) + 4;
+        numberOfRows = random.nextInt(5) + 6;
+        numberOfColumns = random.nextInt(10) + 7;
         this.locationController = locationController;
         this.gameData = gameData;
     }
@@ -67,7 +68,7 @@ public class GameMap implements Serializable {
     /**
      * This method will place the tanks into empty spaces.
      */
-    public void setPlaces(Vector<User> users) {
+    public void setPlaces(CopyOnWriteArrayList<User> users) {
         for (User u : users) {
             while (true) {
                 int x = random.nextInt(numberOfColumns); // A random place for the states

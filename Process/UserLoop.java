@@ -1,10 +1,11 @@
 package game.Process;
 
+import game.Log;
 import game.Server.MysteryBox;
 import game.Server.User;
-import game.TankChooser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,19 +39,16 @@ public class UserLoop extends Thread {
             e.printStackTrace();
         }
         rounds = thisPlayerUser.gameData.numberOfRounds;
-        // creating the output frame
-        canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
     }
 
     @Override
     public void run() {
         while (rounds > 0) {
             // for waiting
-            JOptionPane.showMessageDialog(canvas, "Please wait for the other " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(canvas, "Please wait for the others " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
             String in = String.valueOf(thisPlayerUser.read());
             //
-            boolean gameOver = false;
-            //
+            canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
             canvas.setVisible(true);
             canvas.initBufferStrategy();
             //
@@ -62,7 +60,14 @@ public class UserLoop extends Thread {
             thisPlayerUser.write(tank.width);
             thisPlayerUser.write(tank.height);
             // The game loop
-            while (!gameOver) {
+            while (true) {
+                try {
+                    int inRoundStatus = (int) thisPlayerUser.read(); // We use this to check if we are getting inputs or not
+                    if (inRoundStatus == -1)
+                        break;
+                } catch (NullPointerException | ClassCastException e) {
+                    break;
+                }
                 long start = System.currentTimeMillis(); // This is for delay between server and client
                 //
                 thisPlayerUser.write(tank.keyUP); // Giving the data
@@ -78,15 +83,12 @@ public class UserLoop extends Thread {
                 canvas.setBullets(bullets); // Get the bullets and the users
                 CopyOnWriteArrayList<MysteryBox> boxes = (CopyOnWriteArrayList<MysteryBox>) thisPlayerUser.read();
                 canvas.setBoxes(boxes);
-                Vector<User> users = (Vector<User>) thisPlayerUser.read();
+                CopyOnWriteArrayList<User> users = (CopyOnWriteArrayList<User>) thisPlayerUser.read();
                 GameMap gameMap = (GameMap) thisPlayerUser.read();
                 canvas.setGameMap(gameMap);
-                if (canvas.getGameMap() != null)
-                    gameOver = canvas.getGameMap().gameOver;
-                else
-                    break;
                 //
-                canvas.render(users); // do the rendering
+                if (gameMap != null)
+                    canvas.render(users); // do the rendering
                 //
                 long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
                 if (delay > 0) {
@@ -97,22 +99,15 @@ public class UserLoop extends Thread {
                     }
                 }
             }
+            canvas.setVisible(false);
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("Round finished");
             rounds--;
-            canvas.setVisible(false);
         }
         // Enter into the game setting again
-        try {
-            TankChooser tankChooser;
-            tankChooser = new TankChooser(thisPlayerUser.getUserName());
-            tankChooser.run();
-        } catch (IOException e) {
-            System.exit(0);
-        }
+        System.exit(-1);
     }
 }

@@ -6,7 +6,6 @@ import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
@@ -24,7 +23,7 @@ public class GameLoop {
     private int numberOfPlayers;
     private final GameMap gameMap;
     private GameData gameData;
-    private Vector<User> playersVector;
+    private CopyOnWriteArrayList<User> playersVector, finalList;
     private CopyOnWriteArrayList<MysteryBox> boxes;
     private static String[] boxTypes = {"boost", "health", "RPG"};
     private CopyOnWriteArrayList<Bullet> bullets;
@@ -34,10 +33,11 @@ public class GameLoop {
      * The constructor of the game loop.
      * To create the frame of the game.
      */
-    public GameLoop(GameMap gameMap, Vector<User> vector, GameData gameData) {
+    public GameLoop(GameMap gameMap, CopyOnWriteArrayList<User> vector, GameData gameData) {
         //
         this.gameMap = gameMap;
         playersVector = vector;
+        finalList = (CopyOnWriteArrayList<User>) playersVector.clone(); // We use this to tell everyone the game is over
         //
         this.numberOfPlayers = gameData.numberOfPeople;
         this.gameData = gameData;
@@ -55,9 +55,11 @@ public class GameLoop {
         // Creating the states in here
         for (User u : playersVector) {
             GameState state = new GameState(gameMap.locationController, gameData.tankSpeed);
+            //
             state.speed = gameData.tankSpeed;
             state.health = gameData.tankHealth;
             state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
+            //
             u.setState(state);
         }
         gameMap.setPlaces(playersVector);
@@ -68,9 +70,9 @@ public class GameLoop {
      */
     public void init() {
         bullets = new CopyOnWriteArrayList<>();
+        boxes = new CopyOnWriteArrayList<>();
         executorService = Executors.newCachedThreadPool();
         clientsService = Executors.newCachedThreadPool();
-        boxes = new CopyOnWriteArrayList<>();
     }
 
     public void runTheGame() throws IOException{
@@ -80,7 +82,6 @@ public class GameLoop {
         clientsService.execute(new TankBullet());
         clientsService.execute(new MysteryMaker());
         //
-        System.out.println("This game started");
         while (numberOfPlayers > 1) {
             long start = System.currentTimeMillis(); // Delay handling
             //
@@ -92,7 +93,6 @@ public class GameLoop {
                 else
                     bullets.remove(bullet);
             }
-            // TODO: 04-08-2020 handle bullets hit tanks
             //
             long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
             if (delay > 0) {
@@ -103,9 +103,8 @@ public class GameLoop {
                 }
             }
         }
-        System.out.println("This game finished");
         gameOver = true;
-        gameMap.gameOver = true;
+        invokeAll();
         if (playersVector.size() == 1)
             playersVector.get(0).dataBox.score++;
         //
@@ -118,7 +117,10 @@ public class GameLoop {
         @Override
         public void run() {
             while (!gameOver) {
-                for (User u : playersVector) {
+                Iterator<User> userIterator = playersVector.iterator();
+                while (userIterator.hasNext()) {
+                    // TODO: Fix it ConcurrentModificationException
+                    User u = userIterator.next();
                     //
                     GameState state = u.getState();
                     //
@@ -173,6 +175,12 @@ public class GameLoop {
         }
     }
 
+    // This method will tell the sockets to close
+    private void invokeAll() {
+        for (User u : finalList)
+            write(-1, u);
+    }
+
     // The client runnable
     private class ClientHandler implements Runnable {
         // The user
@@ -194,6 +202,7 @@ public class GameLoop {
             state.height = (int) u.read();
             // Server client game loop
             while (!gameOver) {
+                write(1, u);
                 // Getting the updated data
                 state.keyUP = (boolean) u.read();
                 state.keyDOWN = (boolean) u.read();
@@ -233,12 +242,8 @@ public class GameLoop {
                 write(bullets, u);
                 write(boxes, u);
                 write(playersVector, u);
-                write(gameMap, u);
+                write(gameMap, u); // I get some image exceptions in here
             }
-            write(bullets, u);
-            write(boxes, u);
-            write(playersVector, u);
-            write(gameMap, u);
         }
     }
 

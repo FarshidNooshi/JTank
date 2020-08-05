@@ -32,8 +32,8 @@ public class JoinGame extends JFrame {
      */
     public JoinGame() {
         //
-        setSize(new Dimension(600,500));
-        setLocation(250,100);
+        setSize(new Dimension(750,500));
+        setLocation(390,130);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
         //
@@ -80,7 +80,7 @@ public class JoinGame extends JFrame {
             JButton jButton = new JButton();
             jButton.setSize(new Dimension(500, 20));
             jButton.setText(d.toString());
-            jButton.setLocation(50, counter * 20);
+            jButton.setLocation(125, counter * 20);
             jButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -93,8 +93,8 @@ public class JoinGame extends JFrame {
         //
         create.setSize(new Dimension(100, 20));
         send.setSize(new Dimension(100,20));
-        create.setLocation(200, counter * 20);
-        send.setLocation(300, counter * 20);
+        create.setLocation(225, ++counter * 20);
+        send.setLocation(425, counter * 20);
         c.add(send);
         c.add(create);
     }

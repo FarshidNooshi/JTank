@@ -36,7 +36,7 @@ public class Log {
     public static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
-        frame.setLocation(250, 100);
+        frame.setLocation(390, 130);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         init();
