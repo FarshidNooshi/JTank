@@ -18,6 +18,7 @@ public class GameMap implements Serializable {
 
     public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
     Cell[][] binaryMap; // The array of the map
+    public boolean gameOver = false;
     // The data of the map
     private int numberOfRows;
     private int numberOfColumns;
@@ -30,7 +31,7 @@ public class GameMap implements Serializable {
      */
     public GameMap(LocationController locationController, GameData gameData) {
         numberOfRows = random.nextInt(4) + 4;
-        numberOfColumns = random.nextInt(12) + 4;
+        numberOfColumns = random.nextInt(10) + 4;
         this.locationController = locationController;
         this.gameData = gameData;
     }

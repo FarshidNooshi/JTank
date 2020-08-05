@@ -3,7 +3,6 @@ package game.Process;
 import game.Server.User;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,6 +20,7 @@ public class UserLoop extends Thread {
     private GameFrame canvas;
     private Tank tank;
     private boolean gameOver;
+    private int rounds;
 
     /**
      * The main constructor of the UserLoop class.
@@ -36,23 +36,25 @@ public class UserLoop extends Thread {
             e.printStackTrace();
         }
         //
-        gameOver = false;
-        JOptionPane.showMessageDialog(canvas, "Please wait for the other " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
-        //
-        String in = String.valueOf(thisPlayerUser.read()); // for waiting
+        rounds = thisPlayerUser.gameData.numberOfRounds;
         // creating the output frame
-        canvas = new GameFrame("Jtank", thisPlayerUser.getUserName());
-        canvas.setVisible(true);
-        canvas.initBufferStrategy();
-        tank = new Tank(canvas.getImage().getWidth() / 8, canvas.getImage().getHeight() / 8); // Creating the user input
-        canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
-        canvas.addMouseListener(tank.getMouseListener());
-        canvas.addMouseMotionListener(tank.getMouseMotionListener());
+        canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
     }
 
     @Override
     public void run() {
-        while (thisPlayerUser.gameData.numberOfRounds > 0) {
+        while (rounds > 0) {
+            JOptionPane.showMessageDialog(canvas, "Please wait for the other " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
+            //
+            String in = String.valueOf(thisPlayerUser.read()); // for waiting
+            System.out.println("Round start :: " + rounds);
+            gameOver = false;
+            canvas.setVisible(true);
+            canvas.initBufferStrategy();
+            tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
+            canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
+            canvas.addMouseListener(tank.getMouseListener());
+            canvas.addMouseMotionListener(tank.getMouseMotionListener());
             // Send the sizes
             thisPlayerUser.write(tank.width);
             thisPlayerUser.write(tank.height);
@@ -69,9 +71,15 @@ public class UserLoop extends Thread {
                 thisPlayerUser.write(tank.mouseY);
                 thisPlayerUser.write(tank.shotFired);
                 // receiving the data
-                canvas.setBullets((CopyOnWriteArrayList<Bullet>) thisPlayerUser.read()); // Get the bullets and the users
+                CopyOnWriteArrayList<Bullet> bullets = (CopyOnWriteArrayList<Bullet>) thisPlayerUser.read();
+                canvas.setBullets(bullets); // Get the bullets and the users
                 Vector<User> users = (Vector<User>) thisPlayerUser.read();
-                canvas.setGameMap((GameMap) thisPlayerUser.read());
+                GameMap gameMap = (GameMap) thisPlayerUser.read();
+                canvas.setGameMap(gameMap);
+                if (canvas.getGameMap() != null)
+                    gameOver = canvas.getGameMap().gameOver;
+                else
+                    break;
                 //
                 canvas.render(users); // do the rendering
                 //
@@ -84,12 +92,14 @@ public class UserLoop extends Thread {
                     }
                 }
             }
-            thisPlayerUser.gameData.numberOfRounds--;
-            tank = new Tank(canvas.getImage().getWidth() / 8, canvas.getImage().getHeight() / 8); // Creating the user input
-            canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
-            canvas.addMouseListener(tank.getMouseListener());
-            canvas.addMouseMotionListener(tank.getMouseMotionListener());
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Round finished");
+            rounds--;
+            canvas.setVisible(false);
         }
-        canvas.setVisible(false);
     }
 }

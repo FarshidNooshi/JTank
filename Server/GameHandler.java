@@ -4,6 +4,7 @@ import game.Control.LocationController;
 import game.Process.GameMap;
 import game.Process.ThreadPool;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -29,19 +30,16 @@ public class GameHandler implements Runnable {
     public void run() {
         init();
         while (rounds > 0) {
+            System.out.println("Round start :: " + rounds);
             GameMap gameMap = new GameMap(new LocationController(), data);
             gameMap.init();
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
             gameLoop.init();
-            Thread thread = new Thread(gameLoop);
-            thread.start();
             try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                rounds--;
+                gameLoop.runTheGame();
+            } catch (IOException ignored){
             }
+            rounds--;
         }
     }
 

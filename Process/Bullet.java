@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Bullet implements Serializable {
     // Fields
     public transient int SPEED; //Speed and time field
+    public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
     public int locX, locY; //Location fields
     public transient boolean isAlive, justShot; //Status fields
@@ -28,7 +29,7 @@ public class Bullet implements Serializable {
      * @param locY    the first y coordinate
      * @param gameMap the game map instance
      */
-    public Bullet(int locX, int locY, GameMap gameMap, int SPEED) {
+    public Bullet(int locX, int locY, GameMap gameMap, int SPEED, String imagePath) {
         // The starting point of the square
         this.locX = locX;
         this.locY = locY;
@@ -41,6 +42,8 @@ public class Bullet implements Serializable {
         //
         isAlive = true;
         justShot = true;
+        //
+        this.imagePath = imagePath;
         //
         this.gameMap = gameMap;
         vectorFactory = new VectorFactory(SPEED);

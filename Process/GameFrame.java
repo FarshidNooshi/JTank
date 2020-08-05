@@ -39,7 +39,7 @@ public class GameFrame extends JFrame {
      *
      * @param title the name of the game
      */
-    public GameFrame(String title, String username) {
+    public GameFrame(String title, String username, String tankPath) {
         super(title);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -48,8 +48,7 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         // Opening the image
         try {
-            image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
-            bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
+            image = ImageIO.read(new File(tankPath));
             brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
             unBrakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateMetal.png"));
         } catch (IOException e) {
@@ -154,6 +153,15 @@ public class GameFrame extends JFrame {
             }
 
         for (Bullet i : bullets) {
+            try {
+                bullet = ImageIO.read(new File(i.imagePath));
+            } catch (IOException | NullPointerException e) {
+                try {
+                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
+                } catch (IOException ex) {
+                    e.printStackTrace();
+                }
+            }
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
             // Using affine to rotate
@@ -166,24 +174,23 @@ public class GameFrame extends JFrame {
         }
 
         int counter = 2;
+        boolean flag = false;
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
             if (!dataBox.gameOver) {
                 //TODO: 03-08-2020 fix the image part
                 try {
                     image = ImageIO.read(new File(u.getImagePath()));
-                    bullet = ImageIO.read(new File(u.getBulletPath()));
                 } catch (IOException | NullPointerException e) {
                     try {
                         image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
-                        bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
                     } catch (IOException ex) {
                         e.printStackTrace();
                     }
                 }
                 g2d.setColor(Color.BLACK);
                 g2d.drawImage(image, GAME_WIDTH - 80, counter * 50, dataBox.width, dataBox.height, this);
-                g2d.drawString(dataBox.userName, GAME_WIDTH - 80, counter * 50 + 20 + dataBox.height);
+                g2d.drawString(dataBox.userName + " : " + dataBox.score, GAME_WIDTH - 80, counter * 50 + 20 + dataBox.height);
                 counter++;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
@@ -195,14 +202,18 @@ public class GameFrame extends JFrame {
                 g2d.drawImage(image, dataBox.locX, dataBox.locY, dataBox.width, dataBox.height, this);
                 g2d.setTransform(old);
             }
-            // Draw GAME OVER
-            if (dataBox.gameOver && dataBox.userName.equals(username)) {
-                String str = "GAME OVER";
-                g2d.setColor(new Color(100, 12, 22));
-                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
-                int strWidth = g2d.getFontMetrics().stringWidth(str);
-                g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+            if (dataBox.userName.equals(username)) {
+                flag = true;
             }
+        }
+        // Draw GAME OVER
+        if (!flag) {
+            String str = "GAME OVER";
+            g2d.setColor(new Color(100, 12, 22));
+            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD).deriveFont(64.0f));
+            int strWidth = g2d.getFontMetrics().stringWidth(str);
+            g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
+            g2d.setTransform(old);
         }
     }
 

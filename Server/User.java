@@ -110,9 +110,8 @@ public class User implements Serializable {
         try {
             return in.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public void write(Object object) {

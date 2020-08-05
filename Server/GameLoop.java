@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 /**
  * A very simple structure for the main game loop.
  */
-public class GameLoop implements Runnable {
+public class GameLoop {
     // Private fields
     public static final int FPS = 25; // Bullet delay handler
     private boolean gameOver;
@@ -66,14 +66,14 @@ public class GameLoop implements Runnable {
         clientsService = Executors.newCachedThreadPool();
     }
 
-    @Override
-    public void run() {
+    public void runTheGame() throws IOException{
         //
         for (User u : playersVector)
             clientsService.execute(new ClientHandler(u)); // Executing the clients
         clientsService.execute(new TankBullet());
         //
-        while (!gameOver) {
+        System.out.println("This game started");
+        while (numberOfPlayers > 1) {
             long start = System.currentTimeMillis(); // Delay handling
             //
             Iterator<Bullet> iterator = bullets.iterator();
@@ -95,6 +95,11 @@ public class GameLoop implements Runnable {
                 }
             }
         }
+        System.out.println("This game finished");
+        gameOver = true;
+        gameMap.gameOver = true;
+        if (playersVector.size() == 1)
+            playersVector.get(0).dataBox.score++;
         //
         executorService.shutdownNow();
         clientsService.shutdownNow();
@@ -118,8 +123,8 @@ public class GameLoop implements Runnable {
                             state.gameOver = true;
                             //
                             numberOfPlayers--;
-                            if (numberOfPlayers <= 1)
-                                gameOver = true;
+                            u.dataBox.score--;
+                            playersVector.remove(u);
                             //
                             u.updateDataBox();
                             break;
@@ -166,7 +171,7 @@ public class GameLoop implements Runnable {
                     u.updateDataBox();
                     if (state.shotFired) {
                         //TODO 03-08-2020: need to dedicate the image of the bullets
-                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap, gameData.bulletSpeed);
+                        Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap, gameData.bulletSpeed, u.getBulletPath());
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
                     }
@@ -182,6 +187,9 @@ public class GameLoop implements Runnable {
                 write(playersVector, u);
                 write(gameMap, u);
             }
+            write(bullets, u);
+            write(playersVector, u);
+            write(gameMap, u);
         }
     }
 
