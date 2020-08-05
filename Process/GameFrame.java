@@ -25,6 +25,7 @@ public class GameFrame extends JFrame {
     private static final int GAME_HEIGHT = 1000, GAME_WIDTH = 1400; // 720p game resolution
     private String username;
     private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall;
+    private ImageIcon sand = null, grass = null;
     private BufferedImage oneWayUp, oneWayDown, twoWayUp, twoWayDown, twoWayLeft, twoWayRight, threeWayUp, threeWayDown, threeWayLeft, threeWayRight, fourWay;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
@@ -54,6 +55,8 @@ public class GameFrame extends JFrame {
         try {
             image = ImageIO.read(new File(tankPath));
             RPG = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
+            sand = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
+            grass = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
             brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
             unBrakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateMetal.png"));
             oneWayUp = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/1U.png"));
@@ -189,7 +192,10 @@ public class GameFrame extends JFrame {
                             g2d.drawImage(twoWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
                             break;
                         default:
-                            g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            if (gameMap.binaryMap[y][x].tt % 2 == 0)
+                                g2d.drawImage(sand.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            else
+                                g2d.drawImage(grass.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
                     }
                 }
                 else if (gameMap.binaryMap[y][x].getState() == 1) {
@@ -251,7 +257,6 @@ public class GameFrame extends JFrame {
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
             if (!dataBox.gameOver) {
-                //TODO: 03-08-2020 fix the image part
                 try {
                     image = ImageIO.read(new File(u.getImagePath()));
                 } catch (IOException | NullPointerException e) {

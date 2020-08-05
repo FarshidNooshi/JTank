@@ -13,7 +13,7 @@ public class Cell implements Serializable {
     // Privet fields
     private int state;
     public int health, status = 0;
-    private ImageIcon icon;
+    public int tt;
 
     /**
      * The main constructor of the cell class.
@@ -23,30 +23,14 @@ public class Cell implements Serializable {
     public Cell(int state, int tt, int health) {
         this.state = state;
         this.health = health;
-        if (tt % 2 == 1)
-            icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
-        else
-            icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
+        this.tt = tt;
     }
 
     /**
      * Setter of the icon method.
      * @param tt the random number
      */
-    public void setIcon(int tt) {
-        if (tt % 2 == 1)
-            icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
-        else
-            icon = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
-    }
-
-    /**
-     * Getter of the icon.
-     * @return the image of the cell
-     */
-    public ImageIcon getIcon() {
-        return icon;
-    }
+    public void setIcon(int tt) { this.tt = tt; }
 
     /**
      * Getter of the cell type.

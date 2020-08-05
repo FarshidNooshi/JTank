@@ -127,22 +127,24 @@ public class GameLoop {
                     GameState state = u.getState();
                     //
                     for (Bullet b : bullets) {
-                        //
-                        if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
+                        if (b.isAlive()) {
                             //
-                            if (!b.isRPG)
-                                b.isAlive = false;
-                            state.health--;
-                            if (state.health < 1) {
-                                state.gameOver = true;
+                            if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
                                 //
-                                numberOfPlayers--;
-                                u.dataBox.score--;
-                                playersVector.remove(u);
-                                //
-                                u.updateDataBox();
+                                if (!b.isRPG)
+                                    b.isAlive = false;
+                                state.health--;
+                                if (state.health < 1) {
+                                    state.gameOver = true;
+                                    //
+                                    numberOfPlayers--;
+                                    u.dataBox.score--;
+                                    playersVector.remove(u);
+                                    //
+                                    u.updateDataBox();
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
