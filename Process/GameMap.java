@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class GameMap implements Serializable {
     // Fields
-    public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
+    public static final int CHANGING_FACTOR = 50; // This is the factor that we show the map bigger size in gui
     private int numberOfRows, numberOfColumns;
     public boolean gameOver = false;
     public Cell[][] binaryMap; // The array of the map
@@ -31,8 +31,8 @@ public class GameMap implements Serializable {
      * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
-        numberOfRows = random.nextInt(4) + 6;
-        numberOfColumns = random.nextInt(10) + 7;
+        numberOfRows = random.nextInt(8) + 9;     // Max 16
+        numberOfColumns = random.nextInt(19) + 9; // Max 27
         this.locationController = locationController;
         this.gameData = gameData;
     }

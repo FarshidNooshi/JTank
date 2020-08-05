@@ -128,7 +128,6 @@ public class GameLoop {
                     //
                     for (Bullet b : bullets) {
                         //
-                        //
                         if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
                             //
                             if (!b.isRPG)
@@ -230,9 +229,10 @@ public class GameLoop {
                     u.setState(state);
                     for (MysteryBox box : boxes) {
                         if (box.gotTheBox(state.locX, state.locY, state.width, state.height)) {
-                            if (state.takeBox(box.type))
+                            if (state.takeBox(box.type)) {
                                 boxes.remove(box);
-                            break;
+                                break;
+                            }
                         }
                     }
                 }

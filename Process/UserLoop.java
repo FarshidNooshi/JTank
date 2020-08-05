@@ -108,6 +108,14 @@ public class UserLoop extends Thread {
             rounds--;
         }
         // Enter into the game setting again
-        System.exit(-1);
+        Restart restart = new Restart();
+        restart.start();
+    }
+
+    private static class Restart extends Thread {
+        @Override
+        public void run() {
+            Log.run();
+        }
     }
 }

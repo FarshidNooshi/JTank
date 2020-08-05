@@ -22,8 +22,8 @@ public class Setting {
     private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "League"};
     private static String[] numberOfRounds = {"1", "3", "5", "8", "10"};
-    private static String[] tankSpeeds = {"4", "8", "12"};
-    private static String[] bulletSpeeds = {"8", "16", "32"};
+    private static String[] tankSpeeds = {"3", "5", "6"};
+    private static String[] bulletSpeeds = {"5", "8", "10"};
     private static String[] health = {"Low", "Half", "Full"};
     private static JFrame frame = new JFrame("J Tank Trouble - Setting");
     private static JLabel gameMode = new JLabel("Game mode : ");
