@@ -2,6 +2,7 @@ package game.Process;
 
 import game.Server.MysteryBox;
 import game.Server.User;
+import game.TankChooser;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -19,24 +20,23 @@ public class UserLoop extends Thread {
     public static final int FPS = 30;
     private User thisPlayerUser;
     private GameFrame canvas;
-    private Tank tank;
-    private boolean gameOver;
     private int rounds;
 
     /**
      * The main constructor of the UserLoop class.
-     *
      * @param user the current user
      */
     public UserLoop(User user) { thisPlayerUser = user; }
 
+    /**
+     * Starting the user loop of the game.
+     */
     public void initialize() {
         try {
             thisPlayerUser.init(); // To open the user connection to the game
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //
         rounds = thisPlayerUser.gameData.numberOfRounds;
         // creating the output frame
         canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
@@ -45,15 +45,17 @@ public class UserLoop extends Thread {
     @Override
     public void run() {
         while (rounds > 0) {
+            // for waiting
             JOptionPane.showMessageDialog(canvas, "Please wait for the other " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
+            String in = String.valueOf(thisPlayerUser.read());
             //
-            String in = String.valueOf(thisPlayerUser.read()); // for waiting
-            System.out.println("Round start :: " + rounds);
-            gameOver = false;
+            boolean gameOver = false;
+            //
             canvas.setVisible(true);
             canvas.initBufferStrategy();
-            tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
-            canvas.addKeyListener(tank.getKeyListener()); // Updating the listeners
+            //
+            Tank tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
+            canvas.addKeyListener(tank.getKeyListener());
             canvas.addMouseListener(tank.getMouseListener());
             canvas.addMouseMotionListener(tank.getMouseMotionListener());
             // Send the sizes
@@ -103,6 +105,14 @@ public class UserLoop extends Thread {
             System.out.println("Round finished");
             rounds--;
             canvas.setVisible(false);
+        }
+        // Enter into the game setting again
+        try {
+            TankChooser tankChooser;
+            tankChooser = new TankChooser(thisPlayerUser.getUserName());
+            tankChooser.run();
+        } catch (IOException e) {
+            System.exit(0);
         }
     }
 }

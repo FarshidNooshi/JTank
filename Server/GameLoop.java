@@ -54,7 +54,7 @@ public class GameLoop {
     private void initialize() {
         // Creating the states in here
         for (User u : playersVector) {
-            GameState state = new GameState(gameMap.locationController);
+            GameState state = new GameState(gameMap.locationController, gameData.tankSpeed);
             state.speed = gameData.tankSpeed;
             state.health = gameData.tankHealth;
             state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
@@ -130,14 +130,15 @@ public class GameLoop {
                             if (!b.isRPG)
                                 b.isAlive = false;
                             state.health--;
-                            if (state.health < 1)
+                            if (state.health < 1) {
                                 state.gameOver = true;
-                            //
-                            numberOfPlayers--;
-                            u.dataBox.score--;
-                            playersVector.remove(u);
-                            //
-                            u.updateDataBox();
+                                //
+                                numberOfPlayers--;
+                                u.dataBox.score--;
+                                playersVector.remove(u);
+                                //
+                                u.updateDataBox();
+                            }
                             break;
                         }
                     }

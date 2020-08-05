@@ -15,14 +15,15 @@ import java.util.Vector;
 public class GameHandler implements Runnable {
 
     private Vector<User> playersVector;
-    private int numberOfPlayers;
     private GameData data;
-    private int rounds;
+    private int rounds, numberOfPlayers;
 
     public GameHandler(Vector<User> vector, GameData data, int numberOfPlayers) {
+        //
         this.playersVector = vector;
-        this.numberOfPlayers = numberOfPlayers;
         this.data = data;
+        //
+        this.numberOfPlayers = numberOfPlayers;
         rounds = data.numberOfRounds;
     }
 
@@ -30,7 +31,6 @@ public class GameHandler implements Runnable {
     public void run() {
         init();
         while (rounds > 0) {
-            System.out.println("Round start :: " + rounds);
             GameMap gameMap = new GameMap(new LocationController(), data);
             gameMap.init();
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
@@ -49,27 +49,21 @@ public class GameHandler implements Runnable {
             for (int i = 0; i < numberOfPlayers; i++) {
                 Socket socket = serverSocket.accept();
                 join++;
-                //
                 String userName = new Scanner(socket.getInputStream()).nextLine();
-                //
                 for (int j = 0; j < join; j++)
                         if (playersVector.get(j).getUserName().equals(userName)) {
                             playersVector.get(j).setClientSocket(socket);
-                            //
                             playersVector.get(j).out = new ObjectOutputStream(playersVector.get(j).getClientSocket().getOutputStream());
                             playersVector.get(j).in = new ObjectInputStream(playersVector.get(j).getClientSocket().getInputStream());// The client hand side sets in User init
-                            //
                             break;
                         }
             }
-            //
             removeGame();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // This method will remove the current game from the list of data games
     private void removeGame() {
         Main.data.remove(data);
     }

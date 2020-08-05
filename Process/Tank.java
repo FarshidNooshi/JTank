@@ -8,14 +8,6 @@ import java.io.Serializable;
  *
  */
 public class Tank {
-
-    /*
-        The key handlers and mouse motions are removed
-        from the state and putted in here.
-        So basically we don't need state at client side.
-
-     */
-
     // fields
     int width, height;
     boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress, shotFired; // true if the appropriate arrow key is pressed.

@@ -195,7 +195,7 @@ public class GameFrame extends JFrame {
                     g2d.drawImage(brakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
                     g2d.setColor(Color.GREEN);
                     g2d.fillRect(horizonAt + 10, verticalAt + 10, (gameMap.binaryMap[y][x].health + 1) * 10, 10);
-                    g2d.setTransform(old);
+                    g2d.setColor(Color.GRAY);
                 }
                 else if (gameMap.binaryMap[y][x].getState() == 2)
                     g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);

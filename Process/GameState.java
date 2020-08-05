@@ -11,23 +11,25 @@ import java.io.Serializable;
  */
 public class GameState implements Serializable {
     // Private fields
-    public int locX, locY, width, height, speed = 4;
+    public int locX, locY, width, height, speed, health;
     public boolean gameOver, shotFired;
-    private int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
-    public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
-    public int mouseX, mouseY; // the positions of the mouse clicked pos.
-    private long shotTimeLimit, pickTime;// just for remembering the timeLimit of the shots. ;)
+    private transient int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
+    public transient boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
+    public transient int mouseX, mouseY; // the positions of the mouse clicked pos.
+    private transient long shotTimeLimit, pickTime;// just for remembering the timeLimit of the shots. ;)
     private transient VectorFactory vectorFactory; // Each state has its own vector factory
     private transient LocationController locationController;
     public transient boolean booster, shooter;
-    public int health;
 
     /**
      * The game state constructor.
+     * @param speed the tank first speed
+     * @param locationController the instance of location controller
      */
-    public GameState(LocationController locationController) {
+    public GameState(LocationController locationController, int speed) {
         gameOver = false;
         shotFired = false;
+        this.speed = speed;
         currentDirection = 0;
         shotTimeLimit = 0;
         pickTime = 0;
@@ -75,6 +77,7 @@ public class GameState implements Serializable {
      * The method which updates the game state.
      */
     public void update() {
+        // Mystery box check
         long now = System.currentTimeMillis();
         if (now - pickTime > 2000) {
             if (booster) {
@@ -84,18 +87,17 @@ public class GameState implements Serializable {
             booster = false;
             shooter = false;
         }
+        // Shoot if needed
         if (shotFired)
             takeAShot();
         // Mouse using
         if (mousePress) {
             mouseDirection(); // Setting the mouse direction
-
             int speedHolder = speed; // Changing the speed based on the distance
             long distance = (long) Math.pow(Math.abs(locY - mouseY), 2) + (long) Math.pow(Math.abs(locX - mouseX), 2);
             if (distance > 2 * Math.pow(10, 4))
                 speed *= 2; // The new speed based on the distance from mouse
             vectorFactory.setSpeed(speed);
-
             if (distance < 64) {
                 locX = mouseX;
                 locY = mouseY;
@@ -137,9 +139,7 @@ public class GameState implements Serializable {
      *
      * @return the rotation
      */
-    public int direction() {
-        return currentDirection;
-    }
+    public int direction() { return currentDirection; }
 
     private void mouseDirection() {
         if (locX != mouseX)
@@ -148,11 +148,27 @@ public class GameState implements Serializable {
             currentDirection = mouseY > locY ? 90 : 270;
     }
 
+    private void takeAShot() {
+        int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);
+        if (time > 1) {
+            shotTimeLimit = System.currentTimeMillis();
+            shotFired = true;
+        } else
+            shotFired = false;
+    }
+
+    /**
+     * This method will get a box type and
+     * checks if we can take it or not.
+     * @param type the box type
+     * @return can or not
+     */
     public boolean takeBox(String type) {
         if (booster || shooter)
             return false;
         else {
             pickTime = System.currentTimeMillis();
+            //
             if (type.equals("boost")) {
                 booster = true;
                 speed *= 2;
@@ -161,21 +177,8 @@ public class GameState implements Serializable {
                 shooter = true;
             else if (type.equals("health"))
                 health = 3;
+            //
             return true;
         }
-    }
-
-    /**
-     * This method will shot a bullet and
-     * will set the other parameters to shot
-     * the second bullet.
-     */
-    private void takeAShot() {
-        int time = (int) ((System.currentTimeMillis() - shotTimeLimit) / 1000);
-        if (time > 1) {
-            shotTimeLimit = System.currentTimeMillis();
-            shotFired = true;
-        } else
-            shotFired = false;
     }
 }

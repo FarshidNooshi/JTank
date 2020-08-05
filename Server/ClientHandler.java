@@ -146,7 +146,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
     private int gameChooser() {
         try (ServerSocket serverSocket = new ServerSocket(1724)) {
             //

@@ -10,14 +10,10 @@ import game.Process.GameMap;
  */
 public class Location {
     // The two points of the walls
-    public int type;
-    public int health;
-    private int binaryX; // In-array indexes
-    private int binaryY;
-    private int topX; // In-map top left coordinates
-    private int topY;
-    private int bottomX; // In-map bottom right coordinates
-    private int bottomY;
+    public int type, health;
+    private int binaryX, binaryY; // In-array indexes
+    private int topX, topY; // In-map top left coordinates
+    private int bottomX, bottomY; // In-map bottom right coordinates
 
     /**
      * The constructor of the Location class.
@@ -27,14 +23,19 @@ public class Location {
      * @param binaryX the in 2d array place x
      * @param binaryY the in 2d array place y
      * @param type    the type of the wall
+     * @param health the health of the wal;s
      */
     public Location(int binaryX, int binaryY, int topX, int topY, int type, int health) {
+        //
         this.binaryX = binaryX;
         this.binaryY = binaryY;
+        //
         this.topX = topX;
         this.topY = topY;
+        //
         bottomX = topX + GameMap.CHANGING_FACTOR; // We calculate the second point coordinates base on the
         bottomY = topY + GameMap.CHANGING_FACTOR; // changing factor in the game
+        //
         this.type = type;
         this.health = health;
     }

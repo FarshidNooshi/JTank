@@ -12,7 +12,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * methods to check overlapping.
  */
 public class LocationController {
-
     // The list of the walls ,each type
     private CopyOnWriteArrayList<Location> locations;
     private boolean created = false;

@@ -7,7 +7,7 @@ import java.io.Serializable;
  * where a state or a bullet needs to go.
  */
 public class VectorFactory implements Serializable {
-
+    // Fields
     public double x, y;
     private int speed, theta = 0;
     private double grand;
