@@ -42,7 +42,7 @@ public class GameFrame extends JFrame {
     public GameFrame(String title, String username, String tankPath) {
         //
         super(title);
-        setLocation(50,50);
+        setLocation(20,0);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());

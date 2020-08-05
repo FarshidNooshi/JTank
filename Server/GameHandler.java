@@ -13,12 +13,22 @@ import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * This class creates a game and will
+ * get the users.
+ */
 public class GameHandler implements Runnable {
-
+    // Fields
     private CopyOnWriteArrayList<User> playersVector;
     private GameData data;
     private int rounds, numberOfPlayers;
 
+    /**
+     * The main constructor of the class.
+     * @param vector the list of the players
+     * @param data the gama setting
+     * @param numberOfPlayers the number of the players
+     */
     public GameHandler(CopyOnWriteArrayList<User> vector, GameData data, int numberOfPlayers) {
         //
         this.playersVector = vector;
@@ -36,10 +46,7 @@ public class GameHandler implements Runnable {
             gameMap.init();
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
             gameLoop.init();
-            try {
-                gameLoop.runTheGame();
-            } catch (IOException ignored){
-            }
+            gameLoop.runTheGame();
             rounds--;
         }
     }

@@ -8,7 +8,6 @@ import game.Process.GameState;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,6 +31,9 @@ public class GameLoop {
     /**
      * The constructor of the game loop.
      * To create the frame of the game.
+     * @param gameData the data of the match
+     * @param gameMap the map in the game
+     * @param vector the players list
      */
     public GameLoop(GameMap gameMap, CopyOnWriteArrayList<User> vector, GameData gameData) {
         //
@@ -48,7 +50,7 @@ public class GameLoop {
 
     private void start() {
         for (User u : playersVector)
-            u.write("start");
+            u.write("start"); // We take the players out of waiting
     }
 
     private void initialize() {
@@ -75,7 +77,7 @@ public class GameLoop {
         clientsService = Executors.newCachedThreadPool();
     }
 
-    public void runTheGame() throws IOException{
+    public void runTheGame() {
         //
         for (User u : playersVector)
             clientsService.execute(new ClientHandler(u)); // Executing the clients
@@ -202,7 +204,7 @@ public class GameLoop {
             state.height = (int) u.read();
             // Server client game loop
             while (!gameOver) {
-                write(1, u);
+                write(1, u); // This is for letting the client side know if we are sending the data. 1 means we are sending and -1 means not (invokeAll)
                 // Getting the updated data
                 state.keyUP = (boolean) u.read();
                 state.keyDOWN = (boolean) u.read();
@@ -217,12 +219,13 @@ public class GameLoop {
                     state.update();
                     u.updateDataBox();
                     if (state.shotFired) {
-                        //TODO 03-08-2020: need to dedicate the image of the bullets
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap, gameData.bulletSpeed, u.getBulletPath());
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
-                        if (state.shooter)
+                        if (state.shooter) {
                             bullet.isRPG = true;
+                            bullet.lifeTime = 8;
+                        }
                     }
                     u.setState(state);
                     for (MysteryBox box : boxes) {

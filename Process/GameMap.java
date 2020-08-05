@@ -31,7 +31,7 @@ public class GameMap implements Serializable {
      * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
-        numberOfRows = random.nextInt(5) + 6;
+        numberOfRows = random.nextInt(4) + 6;
         numberOfColumns = random.nextInt(10) + 7;
         this.locationController = locationController;
         this.gameData = gameData;

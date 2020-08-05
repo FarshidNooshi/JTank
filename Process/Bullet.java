@@ -12,7 +12,7 @@ public class Bullet implements Serializable {
     // Fields
     public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
-    public int locX, locY, direction; //Location fields
+    public int locX, locY, direction, lifeTime; //Location fields
     private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
     public transient boolean isAlive, justShot, isRPG; //Status fields
     private transient final long start;
@@ -43,6 +43,7 @@ public class Bullet implements Serializable {
         isAlive = true;
         justShot = true;
         isRPG = false;
+        lifeTime = 4;
         //
         this.imagePath = imagePath;
         start = System.currentTimeMillis(); // Keeping the start time
@@ -138,7 +139,7 @@ public class Bullet implements Serializable {
         public void run() {
             // The time checking
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
-            if (time >= 4)
+            if (time >= lifeTime)
                 isAlive = false; // The time limit and then the bullet will die :)
             if (justShot) {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
