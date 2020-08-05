@@ -15,19 +15,19 @@ import java.util.Vector;
  * places the tanks in the empty spaces.
  */
 public class GameMap implements Serializable {
-
+    // Fields
     public static final int CHANGING_FACTOR = 80; // This is the factor that we show the map bigger size in gui
-    public Cell[][] binaryMap; // The array of the map
+    private int numberOfRows, numberOfColumns;
     public boolean gameOver = false;
-    // The data of the map
-    private int numberOfRows;
-    private int numberOfColumns;
-    private Random random = new Random(); // The random instance
+    public Cell[][] binaryMap; // The array of the map
+    private transient Random random = new Random(); // The random instance
     public transient LocationController locationController;
     private GameData gameData;
 
     /**
      * The constructor of the map class.
+     * @param gameData the game setting
+     * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
         numberOfRows = random.nextInt(4) + 4;
@@ -61,6 +61,7 @@ public class GameMap implements Serializable {
                     locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState(), gameData.wallHealth));
             }
         }
+        updateStatus(); // We need this update
     }
 
     /**
@@ -71,7 +72,6 @@ public class GameMap implements Serializable {
             while (true) {
                 int x = random.nextInt(numberOfColumns); // A random place for the states
                 int y = random.nextInt(numberOfRows);
-
                 if (binaryMap[y][x].getState() == 0) {
                     u.getState().setLocation(x * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_Y);
                     binaryMap[y][x].setState(-1); // Showing the tank is in this house
@@ -94,13 +94,42 @@ public class GameMap implements Serializable {
                     binaryMap[y][x].setState(0);
     }
 
-    public int getNumberOfColumns() {
-        return numberOfColumns;
+    /**
+     * This method is for changing the status
+     * situations of the map cells.
+     */
+    public void updateStatus() {
+        for (int y = 0; y < numberOfRows; y++)
+            for (int x = 0; x < numberOfColumns; x++) {
+                binaryMap[y][x].status = 0; // Resetting the status
+                if (check(x, y - 1))
+                    if (binaryMap[y - 1][x].getState() == 0)
+                        binaryMap[y][x].status += 1000; // Up
+                if (check(x, y + 1))
+                    if (binaryMap[y + 1][x].getState() == 0)
+                        binaryMap[y][x].status += 100; // Down
+                if (check(x - 1, y))
+                    if (binaryMap[y][x - 1].getState() == 0)
+                        binaryMap[y][x].status += 10; // Left
+                if (check(x + 1, y))
+                    if (binaryMap[y][x + 1].getState() == 0)
+                        binaryMap[y][x].status += 1; // Right
+            }
     }
 
-    public int getNumberOfRows() {
-        return numberOfRows;
-    }
+    private boolean check(int x, int y) { return 0 <= x && x < numberOfColumns && 0 <= y && y < numberOfRows; }
+
+    /**
+     * Getter for number of columns.
+     * @return the number of columns
+     */
+    public int getNumberOfColumns() { return numberOfColumns; }
+
+    /**
+     * Getter for number of rows.
+     * @return the number of rows
+     */
+    public int getNumberOfRows() { return numberOfRows; }
 
     //TODO: add a method to create a map that all the tanks are connected to each other.
 }

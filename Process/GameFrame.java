@@ -21,16 +21,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class GameFrame extends JFrame {
     // fields
-    public static final int DRAWING_START_X = 40;                   // The drawing starting location
-    public static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
-    private static final int GAME_HEIGHT = 720;                  // 720p game resolution
-    private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
+    public static final int DRAWING_START_X = 40, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
+    private static final int GAME_HEIGHT = 720, GAME_WIDTH = 16 * GAME_HEIGHT / 9; // 720p game resolution
     private String username;
-    private BufferedImage image = null;
-    private BufferedImage bullet = null;
-    private BufferedImage RPG = null;
-    private BufferedImage brakeWall;
-    private BufferedImage unBrakeWall;
+    private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall;
+    private BufferedImage oneWayUp, oneWayDown, twoWayUp, twoWayDown, twoWayLeft, twoWayRight, threeWayUp, threeWayDown, threeWayLeft, threeWayRight, fourWay;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
     private CopyOnWriteArrayList<Bullet> bullets;
@@ -41,25 +36,39 @@ public class GameFrame extends JFrame {
      * the sizes and the images.
      *
      * @param title the name of the game
+     * @param tankPath the address of the tank file
+     * @param username this client in game userName
      */
     public GameFrame(String title, String username, String tankPath) {
+        //
         super(title);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //
+        this.username = username;
         // Opening the image
         try {
             image = ImageIO.read(new File(tankPath));
             RPG = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
             brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
             unBrakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateMetal.png"));
+            oneWayUp = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/1U.png"));
+            oneWayDown = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/1D.png"));
+            twoWayUp = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/2U.png"));
+            twoWayDown = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/2D.png"));
+            twoWayLeft = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/2L.png"));
+            twoWayRight = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/2R.png"));
+            threeWayUp = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/3U.png"));
+            threeWayDown = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/3D.png"));
+            threeWayLeft = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/3L.png"));
+            threeWayRight = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/3R.png"));
+            fourWay = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/4.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //
-        this.username = username;
     }
 
     /**
@@ -73,12 +82,10 @@ public class GameFrame extends JFrame {
     }
 
     /**
-     * This must be called once after the JFrame is shown:
-     * frame.setVisible(true);
+     * This must be called once after the JFrame is shown
      * and before any rendering is started.
      */
     public void initBufferStrategy() {
-        // Triple-buffering
         createBufferStrategy(3);
         bufferStrategy = getBufferStrategy();
     }
@@ -103,81 +110,120 @@ public class GameFrame extends JFrame {
     }
 
     /**
+     * A setter method for setting the bullets.
+     * @param bullets the new set of bullets
+     */
+    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) { this.bullets = bullets; }
+
+    /**
+     * A setter method for setting the boxes.
+     * @param boxes the new set of boxes
+     */
+    public void setBoxes(CopyOnWriteArrayList<MysteryBox> boxes) { this.boxes = boxes; }
+
+    /**
      * Game rendering with triple-buffering using BufferStrategy.
+     * @param playersVector this is the list of the players in game
      */
     public void render(Vector<User> playersVector) {
-        // Render single frame
         do {
-            // The following loop ensures that the contents of the drawing buffer
-            // are consistent in case the underlying surface was recreated
             do {
-                // Get a new graphics context every time through the loop
-                // to make sure the strategy is validated
                 Graphics2D graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
                 try {
                     doRendering(graphics, playersVector);
                 } finally {
-                    // Dispose the graphics
                     graphics.dispose();
                 }
-                // Repeat the rendering if the drawing buffer contents were restored
             } while (bufferStrategy.contentsRestored());
-
-            // Display the buffer
             bufferStrategy.show();
-            // Tell the system to do the drawing NOW;
-            // otherwise it can take a few extra ms and will feel jerky!
             Toolkit.getDefaultToolkit().sync();
-
-            // Repeat the rendering if the drawing buffer was lost
         } while (bufferStrategy.contentsLost());
     }
 
-    /**
-     * Rendering all game elements based on the game state.
-     */
     private void doRendering(Graphics2D g2d, Vector<User> playersVector) {
         AffineTransform old = g2d.getTransform(); // Storing the old g2d transform
         // Draw background
-        g2d.setColor(Color.GRAY); // TODO: 26-Jul-20 from mapMaker import the background also write a mapMaker for creating creative maps.
+        g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
         // Draw Map
         // The loop of drawing
         for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.getNumberOfRows(); y++, verticalAt += GameMap.CHANGING_FACTOR)
             for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.getNumberOfColumns(); x++, horizonAt += GameMap.CHANGING_FACTOR) {
                 // Drawing the house
                 g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
-                if (gameMap.binaryMap[y][x].getState() == 0)
-                    g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                else if (gameMap.binaryMap[y][x].getState() == 1)
+                if (gameMap.binaryMap[y][x].getState() == 0) {
+                    // Up Down Left Right
+                    switch (gameMap.binaryMap[y][x].status) {
+                        case 1111:
+                            g2d.drawImage(fourWay, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1011:
+                            g2d.drawImage(threeWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1101:
+                            g2d.drawImage(threeWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1110:
+                            g2d.drawImage(threeWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 111:
+                            g2d.drawImage(threeWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1100:
+                            g2d.drawImage(oneWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 11:
+                            g2d.drawImage(oneWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1010:
+                            g2d.drawImage(twoWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 101:
+                            g2d.drawImage(twoWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 110:
+                            g2d.drawImage(twoWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        case 1001:
+                            g2d.drawImage(twoWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                            break;
+                        default:
+                            g2d.drawImage(gameMap.binaryMap[y][x].getIcon().getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    }
+                }
+                else if (gameMap.binaryMap[y][x].getState() == 1) {
                     g2d.drawImage(brakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    g2d.setColor(Color.GREEN);
+                    g2d.fillRect(horizonAt + 10, verticalAt + 10, (gameMap.binaryMap[y][x].health + 1) * 10, 10);
+                    g2d.setTransform(old);
+                }
                 else if (gameMap.binaryMap[y][x].getState() == 2)
                     g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
-
+        // Drawing the boxes
         for (MysteryBox m : boxes) {
             if (m.type.equals("boost")) {
                 g2d.setColor(Color.RED);
                 g2d.fillRect(m.locX, m.locY, 10, 10);
                 g2d.setColor(Color.WHITE);
-                g2d.drawString("B", m.locX + 2, m.locY + 10);
+                g2d.drawString("B", m.locX + 1, m.locY + 10);
             }
             if (m.type.equals("health")) {
                 g2d.setColor(Color.BLUE);
                 g2d.fillRect(m.locX, m.locY, 10, 10);
                 g2d.setColor(Color.WHITE);
-                g2d.drawString("+", m.locX + 2, m.locY + 10);
+                g2d.drawString("+", m.locX + 1, m.locY + 10);
             }
             if (m.type.equals("RPG")) {
                 g2d.setColor(Color.BLACK);
                 g2d.fillRect(m.locX, m.locY, 10, 10);
                 g2d.setColor(Color.WHITE);
-                g2d.drawString("X", m.locX + 2, m.locY + 10);
+                g2d.drawString("X", m.locX + 1, m.locY + 10);
             }
         }
-
+        // Drawing the bullets
         for (Bullet i : bullets) {
+            BufferedImage bullet = null;
             try {
                 if (i.isRPG)
                     bullet = RPG;
@@ -196,7 +242,7 @@ public class GameFrame extends JFrame {
             g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, this);
             g2d.setTransform(old);
         }
-
+        // Drawing the players
         int counter = 2;
         boolean flag = false;
         for (User u : playersVector) {
@@ -240,10 +286,4 @@ public class GameFrame extends JFrame {
             g2d.setTransform(old);
         }
     }
-
-    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
-        this.bullets = bullets;
-    }
-
-    public void setBoxes(CopyOnWriteArrayList<MysteryBox> boxes) { this.boxes = boxes; }
 }

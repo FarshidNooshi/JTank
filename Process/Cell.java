@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Cell implements Serializable {
     // Privet fields
     private int state;
-    public int health;
+    public int health, status = 0;
     private ImageIcon icon;
 
     /**

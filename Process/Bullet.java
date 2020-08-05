@@ -10,13 +10,11 @@ import java.io.Serializable;
  */
 public class Bullet implements Serializable {
     // Fields
-    public transient int SPEED; //Speed and time field
     public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
-    public int locX, locY; //Location fields
-    public transient boolean isAlive, justShot, isRPG; //Status fields
-    public int direction;
+    public int locX, locY, direction; //Location fields
     private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
+    public transient boolean isAlive, justShot, isRPG; //Status fields
     private transient final long start;
     private transient GameMap gameMap; //Each bullet needs the map
     private transient VectorFactory vectorFactory;
@@ -28,8 +26,10 @@ public class Bullet implements Serializable {
      * @param locX    the first x coordinate
      * @param locY    the first y coordinate
      * @param gameMap the game map instance
+     * @param speed the speed of this bullet
+     * @param imagePath this bullet image address
      */
-    public Bullet(int locX, int locY, GameMap gameMap, int SPEED, String imagePath) {
+    public Bullet(int locX, int locY, GameMap gameMap, int speed, String imagePath) {
         // The starting point of the square
         this.locX = locX;
         this.locY = locY;
@@ -45,11 +45,11 @@ public class Bullet implements Serializable {
         isRPG = false;
         //
         this.imagePath = imagePath;
+        start = System.currentTimeMillis(); // Keeping the start time
         //
         this.gameMap = gameMap;
-        vectorFactory = new VectorFactory(SPEED);
+        vectorFactory = new VectorFactory(speed);
         this.locationController = gameMap.locationController;
-        start = System.currentTimeMillis(); // Keeping the start time
     }
 
     /**
@@ -151,8 +151,10 @@ public class Bullet implements Serializable {
                     if (!isRPG)
                         isAlive = false; // This means that the bullet has hit a breakable wall
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
-                    if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0)
+                    if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0) {
                         gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);
+                        gameMap.updateStatus();
+                    }
                     return;
                 } else {
                     wallChangingWay(location);
@@ -163,7 +165,5 @@ public class Bullet implements Serializable {
         }
     }
 
-    public boolean hitTheTank(int tankX, int tankY, int width, int height) {
-        return Math.abs(System.currentTimeMillis() - start) > 100 && tankX < locX && locX < tankX + width && tankY < locY && locY < tankY + height;
-    }
+    public boolean hitTheTank(int tankX, int tankY, int width, int height) { return Math.abs(System.currentTimeMillis() - start) > 500 && tankX < locX && locX < tankX + width && tankY < locY && locY < tankY + height; }
 }
