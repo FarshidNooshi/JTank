@@ -1,5 +1,6 @@
 package game.Process;
 
+import game.Server.MysteryBox;
 import game.Server.User;
 
 import javax.swing.*;
@@ -73,6 +74,8 @@ public class UserLoop extends Thread {
                 // receiving the data
                 CopyOnWriteArrayList<Bullet> bullets = (CopyOnWriteArrayList<Bullet>) thisPlayerUser.read();
                 canvas.setBullets(bullets); // Get the bullets and the users
+                CopyOnWriteArrayList<MysteryBox> boxes = (CopyOnWriteArrayList<MysteryBox>) thisPlayerUser.read();
+                canvas.setBoxes(boxes);
                 Vector<User> users = (Vector<User>) thisPlayerUser.read();
                 GameMap gameMap = (GameMap) thisPlayerUser.read();
                 canvas.setGameMap(gameMap);

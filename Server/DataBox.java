@@ -8,6 +8,6 @@ import java.io.Serializable;
  */
 public class DataBox implements Serializable {
     public String userName;
-    public int locX, locY, direction, width, height, score;
+    public int locX, locY, direction, width, height, score, health;
     public boolean gameOver;
 }

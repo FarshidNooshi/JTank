@@ -1,6 +1,7 @@
 package game.Process;
 
 import game.Server.DataBox;
+import game.Server.MysteryBox;
 import game.Server.User;
 
 import javax.imageio.ImageIO;
@@ -20,18 +21,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class GameFrame extends JFrame {
     // fields
-    static final int DRAWING_START_X = 40;                   // The drawing starting location
-    static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
+    public static final int DRAWING_START_X = 40;                   // The drawing starting location
+    public static final int DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
     private static final int GAME_HEIGHT = 720;                  // 720p game resolution
     private static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
     private String username;
     private BufferedImage image = null;
     private BufferedImage bullet = null;
+    private BufferedImage RPG = null;
     private BufferedImage brakeWall;
     private BufferedImage unBrakeWall;
     private BufferStrategy bufferStrategy;
     private GameMap gameMap; // This is the map of each game
     private CopyOnWriteArrayList<Bullet> bullets;
+    private CopyOnWriteArrayList<MysteryBox> boxes;
 
     /**
      * The constructor of the Game frame class to set
@@ -49,6 +52,7 @@ public class GameFrame extends JFrame {
         // Opening the image
         try {
             image = ImageIO.read(new File(tankPath));
+            RPG = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
             brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
             unBrakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateMetal.png"));
         } catch (IOException e) {
@@ -152,15 +156,35 @@ public class GameFrame extends JFrame {
                     g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
             }
 
+        for (MysteryBox m : boxes) {
+            if (m.type.equals("boost")) {
+                g2d.setColor(Color.RED);
+                g2d.fillRect(m.locX, m.locY, 10, 10);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString("B", m.locX + 2, m.locY + 10);
+            }
+            if (m.type.equals("health")) {
+                g2d.setColor(Color.BLUE);
+                g2d.fillRect(m.locX, m.locY, 10, 10);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString("+", m.locX + 2, m.locY + 10);
+            }
+            if (m.type.equals("RPG")) {
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(m.locX, m.locY, 10, 10);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString("X", m.locX + 2, m.locY + 10);
+            }
+        }
+
         for (Bullet i : bullets) {
             try {
-                bullet = ImageIO.read(new File(i.imagePath));
+                if (i.isRPG)
+                    bullet = RPG;
+                else
+                    bullet = ImageIO.read(new File(i.imagePath));
             } catch (IOException | NullPointerException e) {
-                try {
-                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png"));
-                } catch (IOException ex) {
-                    e.printStackTrace();
-                }
+                bullet = RPG;
             }
             int rotateDegree = i.direction; // The rotation degree
             double rotation = Math.toRadians(rotateDegree);
@@ -195,7 +219,7 @@ public class GameFrame extends JFrame {
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
                 double rotation = Math.toRadians(rotateDegree);
-                g2d.drawString(dataBox.userName, dataBox.locX, dataBox.locY - 10);
+                g2d.drawString(dataBox.userName + " " + dataBox.health * 25, dataBox.locX, dataBox.locY - 10);
                 //noinspection IntegerDivisionInFloatingPointContext
                 g2d.rotate(rotation, dataBox.locX + dataBox.width / 2, dataBox.locY + dataBox.height / 2);
                 // draw the rotated image
@@ -220,4 +244,6 @@ public class GameFrame extends JFrame {
     public void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
         this.bullets = bullets;
     }
+
+    public void setBoxes(CopyOnWriteArrayList<MysteryBox> boxes) { this.boxes = boxes; }
 }

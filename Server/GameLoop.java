@@ -1,11 +1,14 @@
 package game.Server;
 
 import game.Process.Bullet;
+import game.Process.GameFrame;
 import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +25,8 @@ public class GameLoop {
     private final GameMap gameMap;
     private GameData gameData;
     private Vector<User> playersVector;
+    private CopyOnWriteArrayList<MysteryBox> boxes;
+    private static String[] boxTypes = {"boost", "health", "RPG"};
     private CopyOnWriteArrayList<Bullet> bullets;
     private ExecutorService executorService, clientsService;
 
@@ -51,6 +56,7 @@ public class GameLoop {
         for (User u : playersVector) {
             GameState state = new GameState(gameMap.locationController);
             state.speed = gameData.tankSpeed;
+            state.health = gameData.tankHealth;
             state.setLimits(gameMap.getNumberOfRows(), gameMap.getNumberOfColumns());
             u.setState(state);
         }
@@ -64,6 +70,7 @@ public class GameLoop {
         bullets = new CopyOnWriteArrayList<>();
         executorService = Executors.newCachedThreadPool();
         clientsService = Executors.newCachedThreadPool();
+        boxes = new CopyOnWriteArrayList<>();
     }
 
     public void runTheGame() throws IOException{
@@ -71,6 +78,7 @@ public class GameLoop {
         for (User u : playersVector)
             clientsService.execute(new ClientHandler(u)); // Executing the clients
         clientsService.execute(new TankBullet());
+        clientsService.execute(new MysteryMaker());
         //
         System.out.println("This game started");
         while (numberOfPlayers > 1) {
@@ -119,14 +127,43 @@ public class GameLoop {
                         //
                         if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
                             //
-                            b.isAlive = false;
-                            state.gameOver = true;
+                            if (!b.isRPG)
+                                b.isAlive = false;
+                            state.health--;
+                            if (state.health < 1)
+                                state.gameOver = true;
                             //
                             numberOfPlayers--;
                             u.dataBox.score--;
                             playersVector.remove(u);
                             //
                             u.updateDataBox();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private class MysteryMaker implements Runnable {
+        Random random = new Random();
+        long last = System.currentTimeMillis();
+        @Override
+        public void run() {
+            while (!gameOver) {
+                long now = System.currentTimeMillis();
+                if (boxes.size() < 3 && now - last > 3000) {
+                    while (true) {
+                        int x = random.nextInt(gameMap.getNumberOfColumns());
+                        int y = random.nextInt(gameMap.getNumberOfRows());
+                        if (gameMap.binaryMap[y][x].getState() == 0) {
+                            MysteryBox box = new MysteryBox();
+                            box.type = boxTypes[random.nextInt(3)];
+                            box.locX = x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X + 20;
+                            box.locY = y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y + 20;
+                            boxes.add(box);
+                            last = now;
                             break;
                         }
                     }
@@ -174,8 +211,17 @@ public class GameLoop {
                         Bullet bullet = new Bullet(state.locX + state.width / 2, state.locY + state.height / 2, gameMap, gameData.bulletSpeed, u.getBulletPath());
                         bullet.setDirections(state.direction());
                         bullets.add(bullet);
+                        if (state.shooter)
+                            bullet.isRPG = true;
                     }
                     u.setState(state);
+                    for (MysteryBox box : boxes) {
+                        if (box.gotTheBox(state.locX, state.locY, state.width, state.height)) {
+                            if (state.takeBox(box.type))
+                                boxes.remove(box);
+                            break;
+                        }
+                    }
                 }
                 try {
                     u.out.reset(); // This is for sending the new state, it helps the syncing between client and server
@@ -184,10 +230,12 @@ public class GameLoop {
                 }
                 // giving the data
                 write(bullets, u);
+                write(boxes, u);
                 write(playersVector, u);
                 write(gameMap, u);
             }
             write(bullets, u);
+            write(boxes, u);
             write(playersVector, u);
             write(gameMap, u);
         }

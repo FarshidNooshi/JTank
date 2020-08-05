@@ -14,7 +14,7 @@ public class Bullet implements Serializable {
     public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
     public int locX, locY; //Location fields
-    public transient boolean isAlive, justShot; //Status fields
+    public transient boolean isAlive, justShot, isRPG; //Status fields
     public int direction;
     private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
     private transient final long start;
@@ -42,6 +42,7 @@ public class Bullet implements Serializable {
         //
         isAlive = true;
         justShot = true;
+        isRPG = false;
         //
         this.imagePath = imagePath;
         //
@@ -147,7 +148,8 @@ public class Bullet implements Serializable {
             Location location = locationController.bulletWallCheck(locX + DIAM / 2, locY + DIAM / 2);
             if (location != null) {
                 if (location.type == 1) {
-                    isAlive = false; // This means that the bullet has hit a breakable wall
+                    if (!isRPG)
+                        isAlive = false; // This means that the bullet has hit a breakable wall
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
                     if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0)
                         gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);

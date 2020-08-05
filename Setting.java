@@ -37,7 +37,7 @@ public class Setting {
     private static JLabel tankDamage = new JLabel("Tanks health : ");
     private static JComboBox<String> tankDamageInput = new JComboBox<>(health);
     private static JLabel numberOfPeople = new JLabel("Number Of players : ");
-    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(1));
+    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(2));
     private static JButton decreaseNum = new JButton("<<");
     private static JButton increaseNum = new JButton(">>");
     private static JLabel rounds = new JLabel("Rounds : ");
@@ -131,7 +131,7 @@ public class Setting {
         send.setHorizontalTextPosition(SwingConstants.CENTER);
         decreaseNum.addActionListener(e -> {
             int target = Integer.parseInt(numberOfPeopleInput.getText());
-            if (target != 1)
+            if (target != 2)
                 numberOfPeopleInput.setText(String.valueOf(--target));
         });
         increaseNum.addActionListener(e -> {

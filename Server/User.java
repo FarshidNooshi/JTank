@@ -71,6 +71,7 @@ public class User implements Serializable {
         //
         dataBox.direction = state.direction();
         dataBox.gameOver = state.gameOver;
+        dataBox.health = state.health;
     }
 
     // Setters and getters

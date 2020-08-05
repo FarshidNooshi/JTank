@@ -16,9 +16,11 @@ public class GameState implements Serializable {
     private int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
     public boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
     public int mouseX, mouseY; // the positions of the mouse clicked pos.
-    private long shotTimeLimit;// just for remembering the timeLimit of the shots. ;)
+    private long shotTimeLimit, pickTime;// just for remembering the timeLimit of the shots. ;)
     private transient VectorFactory vectorFactory; // Each state has its own vector factory
     private transient LocationController locationController;
+    public transient boolean booster, shooter;
+    public int health;
 
     /**
      * The game state constructor.
@@ -28,6 +30,7 @@ public class GameState implements Serializable {
         shotFired = false;
         currentDirection = 0;
         shotTimeLimit = 0;
+        pickTime = 0;
         //
         keyUP = false;
         keyDOWN = false;
@@ -37,6 +40,9 @@ public class GameState implements Serializable {
         mousePress = false;
         mouseX = 0;
         mouseY = 0;
+        //
+        booster = false;
+        shooter = false;
         //
         vectorFactory = new VectorFactory(speed);
         this.locationController = locationController;
@@ -69,6 +75,15 @@ public class GameState implements Serializable {
      * The method which updates the game state.
      */
     public void update() {
+        long now = System.currentTimeMillis();
+        if (now - pickTime > 2000) {
+            if (booster) {
+                speed /= 2;
+                vectorFactory.setSpeed(speed);
+            }
+            booster = false;
+            shooter = false;
+        }
         if (shotFired)
             takeAShot();
         // Mouse using
@@ -131,6 +146,23 @@ public class GameState implements Serializable {
             currentDirection = 180 + (int) Math.toDegrees(Math.atan2((locY - mouseY), (locX - mouseX)));
         else
             currentDirection = mouseY > locY ? 90 : 270;
+    }
+
+    public boolean takeBox(String type) {
+        if (booster || shooter)
+            return false;
+        else {
+            pickTime = System.currentTimeMillis();
+            if (type.equals("boost")) {
+                booster = true;
+                speed *= 2;
+                vectorFactory.setSpeed(speed);
+            } else if (type.equals("RPG"))
+                shooter = true;
+            else if (type.equals("health"))
+                health = 3;
+            return true;
+        }
     }
 
     /**
