@@ -4,10 +4,7 @@ import game.Log;
 import game.Server.MysteryBox;
 import game.Server.User;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -45,21 +42,17 @@ public class UserLoop extends Thread {
     public void run() {
         while (rounds > 0) {
             // for waiting
-            JOptionPane.showMessageDialog(canvas, "Please wait for the others " + thisPlayerUser.getUserName(), "Loading ...", JOptionPane.WARNING_MESSAGE);
             String in = String.valueOf(thisPlayerUser.read());
             //
             canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
             canvas.setVisible(true);
             canvas.initBufferStrategy();
-            //
             Tank tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
             canvas.addKeyListener(tank.getKeyListener());
             canvas.addMouseListener(tank.getMouseListener());
             canvas.addMouseMotionListener(tank.getMouseMotionListener());
-            // Send the sizes
-            thisPlayerUser.write(tank.width);
+            thisPlayerUser.write(tank.width); // Send the tank sizes
             thisPlayerUser.write(tank.height);
-            // The game loop
             while (true) {
                 try {
                     int inRoundStatus = (int) thisPlayerUser.read(); // We use this to check if we are getting inputs or not
@@ -69,8 +62,8 @@ public class UserLoop extends Thread {
                     break;
                 }
                 long start = System.currentTimeMillis(); // This is for delay between server and client
-                //
-                thisPlayerUser.write(tank.keyUP); // Giving the data
+                // Giving the data
+                thisPlayerUser.write(tank.keyUP);
                 thisPlayerUser.write(tank.keyDOWN);
                 thisPlayerUser.write(tank.keyLEFT);
                 thisPlayerUser.write(tank.keyRIGHT);
@@ -86,10 +79,8 @@ public class UserLoop extends Thread {
                 CopyOnWriteArrayList<User> users = (CopyOnWriteArrayList<User>) thisPlayerUser.read();
                 GameMap gameMap = (GameMap) thisPlayerUser.read();
                 canvas.setGameMap(gameMap);
-                //
                 if (gameMap != null)
                     canvas.render(users); // do the rendering
-                //
                 long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
                 if (delay > 0) {
                     try {
@@ -102,7 +93,8 @@ public class UserLoop extends Thread {
             canvas.setVisible(false);
             try {
                 Thread.sleep(3000);
-            } catch (InterruptedException e) {
+                thisPlayerUser.out.flush();
+            } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
             rounds--;

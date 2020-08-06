@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class GameState implements Serializable {
     // Private fields
     public int locX, locY, width, height, speed, health;
-    public boolean gameOver, shotFired;
+    public boolean gameOver, shotFired, inUse;
     private transient int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
     public transient boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
     public transient int mouseX, mouseY; // the positions of the mouse clicked pos.
