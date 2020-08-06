@@ -133,11 +133,6 @@ public class GameLoop {
                                 b.isAlive = false;
                             state.health--;
                             if (state.health < 1) {
-                                state.gameOver = true;
-                                //
-<<<<<<< HEAD
-                                if (!b.isRPG)
-                                    b.isAlive = false;
                                 state.health--;
                                 if (state.health < 1) {
                                     state.gameOver = true;
@@ -149,15 +144,7 @@ public class GameLoop {
                                     u.updateDataBox();
                                 }
                                 break;
-=======
-                                numberOfPlayers--;
-                                u.dataBox.score--;
-                                playersVector.remove(u);
-                                //
-                                u.updateDataBox();
->>>>>>> 38dd1397b72ed594de340b2e4c46b190157baafd
                             }
-                            break;
                         }
                     }
                 }
