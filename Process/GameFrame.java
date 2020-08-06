@@ -24,7 +24,7 @@ public class GameFrame extends JFrame {
     public static final int DRAWING_START_X = 50, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
     private static final int GAME_HEIGHT = 1000, GAME_WIDTH = 1400; // 720p game resolution
     private String username;
-    private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall;
+    private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall, explode = null, fired = null;
     private ImageIcon sand = null, grass = null;
     private BufferedImage oneWayUp, oneWayDown, twoWayUp, twoWayDown, twoWayLeft, twoWayRight, threeWayUp, threeWayDown, threeWayLeft, threeWayRight, fourWay;
     private BufferStrategy bufferStrategy;
@@ -55,6 +55,8 @@ public class GameFrame extends JFrame {
         try {
             image = ImageIO.read(new File(tankPath));
             RPG = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
+            explode = ImageIO.read(new File("src/game/IconsInGame/Farshid/explosion2.png"));
+            fired = ImageIO.read(new File("src/game/IconsInGame/Farshid/explosionSmoke4.png"));
             sand = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileSand2.png");
             grass = new ImageIcon("src/game/IconsInGame/Farshid/Cell/tileGrass2.png");
             brakeWall = ImageIO.read(new File("src/game/IconsInGame/Farshid/Cell/crateWood.png"));
@@ -149,6 +151,8 @@ public class GameFrame extends JFrame {
         // Draw background
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0,0, GameFrame.GAME_WIDTH, DRAWING_START_Y - 10);
         // Draw Map
         // The loop of drawing
         for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.getNumberOfRows(); y++, verticalAt += GameMap.CHANGING_FACTOR)
@@ -228,27 +232,6 @@ public class GameFrame extends JFrame {
                 g2d.drawString("X", m.locX + 1, m.locY + 10);
             }
         }
-        // Drawing the bullets
-        for (Bullet i : bullets) {
-            BufferedImage bullet = null;
-            try {
-                if (i.isRPG)
-                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
-                else
-                    bullet = ImageIO.read(new File(i.imagePath));
-            } catch (IOException | NullPointerException e) {
-                bullet = RPG;
-            }
-            int rotateDegree = i.direction; // The rotation degree
-            double rotation = Math.toRadians(rotateDegree);
-            // Using affine to rotate
-            int w = bullet.getWidth();
-            int h = bullet.getHeight();
-            //noinspection IntegerDivisionInFloatingPointContext
-            g2d.rotate(rotation, i.locX + w / 6, i.locY + h / 6);
-            g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, this);
-            g2d.setTransform(old);
-        }
         // Drawing the players
         int counter = 2;
         boolean flag = false;
@@ -257,7 +240,6 @@ public class GameFrame extends JFrame {
         for (User u : playersVector) {
             DataBox dataBox = u.dataBox; // Using data box
             if (!dataBox.gameOver) {
-                //TODO: 03-08-2020 fix the image part
                 try {
                     image = ImageIO.read(new File(u.getImagePath()));
                 } catch (IOException | NullPointerException e) {
@@ -287,6 +269,33 @@ public class GameFrame extends JFrame {
             if (dataBox.userName.equals(username)) {
                 flag = true;
             }
+        }
+        // Drawing the bullets
+        for (Bullet i : bullets) {
+            BufferedImage bullet = null;
+            try {
+                if (i.isRPG)
+                    bullet = ImageIO.read(new File("src/game/IconsInGame/Farshid/shotRed.png"));
+                else
+                    bullet = ImageIO.read(new File(i.imagePath));
+            } catch (IOException | NullPointerException e) {
+                bullet = RPG;
+            }
+            if (i.fired)
+                g2d.drawImage(fired, i.firstX - fired.getWidth() / 3, i.firstY - fired.getHeight() / 3, fired.getWidth() / 2, fired.getHeight() / 2, this);
+            if (i.exploded) {
+                g2d.drawImage(explode, i.locX - explode.getWidth() / 3, i.locY - explode.getHeight() / 3, explode.getWidth() / 2, explode.getHeight() / 2, this);
+                continue;
+            }
+            int rotateDegree = i.direction; // The rotation degree
+            double rotation = Math.toRadians(rotateDegree);
+            // Using affine to rotate
+            int w = bullet.getWidth();
+            int h = bullet.getHeight();
+            //noinspection IntegerDivisionInFloatingPointContext
+            g2d.rotate(rotation, i.locX + w / 6, i.locY + h / 6);
+            g2d.drawImage(bullet, i.locX, i.locY, w / 3, h / 3, this);
+            g2d.setTransform(old);
         }
         // Draw GAME OVER
         if (!flag) {

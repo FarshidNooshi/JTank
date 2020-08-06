@@ -113,17 +113,20 @@ public class Setting {
         initSizes(bulletSpeed, bulletSpeedInput, wallDamage, wallDamageInput);
         tankDamage.setSize(100, 25);
         tankDamage.setOpaque(true);
-        tankDamage.setBackground(Color.GRAY);
+        tankDamage.setBackground(new Color(50,200,90));
+        tankDamage.setForeground(Color.WHITE);
         tankDamageInput.setSize(100, 25);
         numberOfPeople.setSize(150, 25);
         numberOfPeople.setOpaque(true);
-        numberOfPeople.setBackground(Color.GRAY);
+        numberOfPeople.setBackground(new Color(50,200,90));
+        numberOfPeople.setForeground(Color.WHITE);
         numberOfPeopleInput.setSize(50, 25);
         decreaseNum.setSize(new Dimension(50, 25));
         increaseNum.setSize(new Dimension(50, 25));
         rounds.setSize(new Dimension(100,25));
         rounds.setOpaque(true);
-        rounds.setBackground(Color.GRAY);
+        rounds.setBackground(new Color(50,200,90));
+        rounds.setForeground(Color.WHITE);
         roundsInput.setSize(100, 25);
         cancel.setSize(new Dimension(100, 25));
         cancel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -144,11 +147,13 @@ public class Setting {
     private static void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
         bulletSpeed.setSize(100, 25);
         bulletSpeed.setOpaque(true);
-        bulletSpeed.setBackground(Color.GRAY);
+        bulletSpeed.setBackground(new Color(50,200,90));
+        bulletSpeed.setForeground(Color.WHITE);
         bulletSpeedInput.setSize(100, 25);
         wallDamage.setSize(100, 25);
         wallDamage.setOpaque(true);
-        wallDamage.setBackground(Color.GRAY);
+        wallDamage.setBackground(new Color(50,200,90));
+        wallDamage.setForeground(Color.WHITE);
         wallDamageInput.setSize(100, 25);
     }
 

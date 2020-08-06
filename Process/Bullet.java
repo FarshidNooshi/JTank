@@ -12,9 +12,10 @@ public class Bullet implements Serializable {
     // Fields
     public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
-    public int locX, locY, direction, lifeTime; //Location fields
-    private transient int firstX, firstY, mapRowsLimit, mapColsLimit;
-    public transient boolean isAlive, justShot, isRPG; //Status fields
+    public int locX, locY, direction, lifeTime, firstX, firstY; //Location fields
+    public boolean fired, exploded, isRPG;
+    public transient int mapRowsLimit, mapColsLimit, counterFired, counterDead;
+    public transient boolean isAlive, justShot; //Status fields
     private transient final long start;
     private transient GameMap gameMap; //Each bullet needs the map
     private transient VectorFactory vectorFactory;
@@ -42,8 +43,13 @@ public class Bullet implements Serializable {
         //
         isAlive = true;
         justShot = true;
+        fired = true;
+        exploded = false;
         isRPG = false;
+        //
         lifeTime = 4;
+        counterFired = 0;
+        counterDead = 0;
         //
         this.imagePath = imagePath;
         start = System.currentTimeMillis(); // Keeping the start time
@@ -139,8 +145,10 @@ public class Bullet implements Serializable {
         public void run() {
             // The time checking
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
-            if (time >= lifeTime)
-                isAlive = false; // The time limit and then the bullet will die :)
+            if (time >= lifeTime) {
+                counterDead = 0;
+                exploded = true;
+            }
             if (justShot) {
                 if (Math.abs(firstX - locX) > GameMap.CHANGING_FACTOR / 5 || Math.abs(firstY - locY) > GameMap.CHANGING_FACTOR / 5)
                     justShot = false; // This is for avoiding destroying the tank as soon as the bullet fired
@@ -149,8 +157,10 @@ public class Bullet implements Serializable {
             Location location = locationController.bulletWallCheck(locX + DIAM / 2, locY + DIAM / 2);
             if (location != null) {
                 if (location.type == 1) {
-                    if (!isRPG)
-                        isAlive = false; // This means that the bullet has hit a breakable wall
+                    if (!isRPG) {
+                        counterDead = 0;
+                        exploded = true; // This means that the bullet has hit a breakable wall
+                    }
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
                     if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0) {
                         gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].setState(0);
@@ -161,8 +171,14 @@ public class Bullet implements Serializable {
                     wallChangingWay(location);
                 }
             }
-            // The bullet update method
-            update();
+            if (!exploded)
+                update();
+            if (counterFired == 8)
+                fired = false;
+            if (exploded && counterDead == 4)
+                isAlive = false;
+            counterFired++;
+            counterDead++;
         }
     }
 

@@ -91,9 +91,8 @@ public class GameLoop {
             Iterator<Bullet> iterator = bullets.iterator();
             while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
-                if (bullet.isAlive())
-                    executorService.execute(bullet.getMover());
-                else
+                executorService.execute(bullet.getMover());
+                if (!bullet.isAlive)
                     bullets.remove(bullet);
             }
             long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
@@ -127,23 +126,27 @@ public class GameLoop {
                     //
                     for (Bullet b : bullets) {
                         //
-                        if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
-                            //
-                            if (!b.isRPG)
-                                b.isAlive = false;
-                            state.health--;
-                            if (state.health < 1) {
+                        if (!b.exploded) {
+                            if (b.hitTheTank(state.locX, state.locY, state.width, state.height)) {
+                                //
+                                if (!b.isRPG) {
+                                    b.counterDead = 0;
+                                    b.exploded = true;
+                                }
                                 state.health--;
                                 if (state.health < 1) {
-                                    state.gameOver = true;
-                                    //
-                                    numberOfPlayers--;
-                                    u.dataBox.score--;
-                                    users.remove(u);
-                                    //
-                                    u.updateDataBox();
+                                    state.health--;
+                                    if (state.health < 1) {
+                                        state.gameOver = true;
+                                        //
+                                        numberOfPlayers--;
+                                        u.dataBox.score--;
+                                        users.remove(u);
+                                        //
+                                        u.updateDataBox();
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }

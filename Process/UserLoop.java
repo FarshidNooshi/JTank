@@ -96,6 +96,11 @@ public class UserLoop extends Thread {
                 }
             }
             String winner = (String) thisPlayerUser.read();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             canvas.setVisible(false);
             ResultShower resultShower = new ResultShower();
             if (thisPlayerUser.getUserName().equals(winner))
@@ -103,7 +108,7 @@ public class UserLoop extends Thread {
             else
                 resultShower.start(winner, 0);
             try {
-                Thread.sleep(10000);
+                Thread.sleep(6000);
                 thisPlayerUser.out.flush();
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
