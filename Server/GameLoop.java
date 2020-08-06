@@ -183,6 +183,7 @@ public class GameLoop {
             while (true)
                 if (!u.getState().inUse) {
                     write(-1, u); // Means the game is over now
+                    write(users.get(0).getUserName(), u);
                     break;
                 }
     }

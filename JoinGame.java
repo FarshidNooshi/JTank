@@ -32,6 +32,7 @@ public class JoinGame extends JFrame {
      */
     public JoinGame() {
         //
+        setTitle("JTank Trouble - Game Choosing");
         setSize(new Dimension(750,500));
         setLocation(390,130);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -78,7 +79,9 @@ public class JoinGame extends JFrame {
         int counter = 1;
         for (GameData d : data) {
             JButton jButton = new JButton();
-            jButton.setSize(new Dimension(500, 20));
+            jButton.setSize(new Dimension(500, 30));
+            jButton.setBackground(new Color(30,90,220));
+            jButton.setForeground(Color.WHITE);
             jButton.setText(d.toString());
             jButton.setLocation(125, counter * 20);
             jButton.addActionListener(new ActionListener() {

@@ -1,8 +1,10 @@
 package game.Process;
 
 import game.Log;
+import game.ResultShower;
 import game.Server.MysteryBox;
 import game.Server.User;
+import game.WaitingPage;
 
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -42,7 +44,10 @@ public class UserLoop extends Thread {
     public void run() {
         while (rounds > 0) {
             // for waiting
+            WaitingPage waitingPage = new WaitingPage();
+            waitingPage.start();
             String in = String.valueOf(thisPlayerUser.read());
+            waitingPage.shutDown();
             //
             canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
             canvas.setVisible(true);
@@ -90,12 +95,20 @@ public class UserLoop extends Thread {
                     }
                 }
             }
+            String winner = (String) thisPlayerUser.read();
             canvas.setVisible(false);
+            ResultShower resultShower = new ResultShower();
+            if (thisPlayerUser.getUserName().equals(winner))
+                resultShower.start(winner, 1);
+            else
+                resultShower.start(winner, 0);
             try {
-                Thread.sleep(3000);
+                Thread.sleep(10000);
                 thisPlayerUser.out.flush();
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
+            } finally {
+                resultShower.shutDown();
             }
             rounds--;
         }
