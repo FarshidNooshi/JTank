@@ -79,7 +79,7 @@ public class UserLoop extends Thread {
                 thisPlayerUser.write(tank.mouseY);
                 thisPlayerUser.write(tank.shotFired);
                 // receiving the data
-                CopyOnWriteArrayList<Bullet> bullets = (CopyOnWriteArrayList<Bullet>) thisPlayerUser.read();
+                CopyOnWriteArrayList<Bullet> bullets = (CopyOnWriteArrayList<Bullet>) thisPlayerUser.read(); // bug
                 canvas.setBullets(bullets); // Get the bullets and the users
                 CopyOnWriteArrayList<MysteryBox> boxes = (CopyOnWriteArrayList<MysteryBox>) thisPlayerUser.read();
                 canvas.setBoxes(boxes);
