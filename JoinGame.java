@@ -137,9 +137,6 @@ public class JoinGame extends JFrame {
                     if (result == -1)
                         System.exit(-1);
                     else {
-                        // need this wait
-//                        Thread.sleep(2000);
-                        //
                         new DataOutputStream(gameSocket.getOutputStream()).writeInt(finalChose.port);
                         //
                         u.gameData = finalChose;

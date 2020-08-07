@@ -43,7 +43,6 @@ public class GameHandler implements Runnable {
         init();
         while (rounds > 0) {
             GameMap gameMap = new GameMap(new LocationController(), data);
-            gameMap.init();
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
             gameLoop.init();
             gameLoop.runTheGame();

@@ -216,11 +216,6 @@ class Setting {
 
             @Override
             protected void done() {
-//                try {
-//                    Thread.sleep(2000); // Need this wait
-//                } catch (InterruptedException ex) {
-//                    ex.printStackTrace();
-//                }
                 frame.setVisible(false);
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
                     u = (User) in.readObject();
