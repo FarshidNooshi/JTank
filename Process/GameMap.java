@@ -7,7 +7,6 @@ import game.Server.User;
 
 import java.io.Serializable;
 import java.util.Random;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -18,49 +17,88 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GameMap implements Serializable {
     // Fields
     public static final int CHANGING_FACTOR = 50; // This is the factor that we show the map bigger size in gui
-    private int numberOfRows, numberOfColumns;
     public boolean gameOver = false;
     public Cell[][] binaryMap; // The array of the map
-    private transient Random random = new Random(); // The random instance
     public transient LocationController locationController;
+    private int numberOfRows, numberOfColumns;
+    private transient Random random = new Random(); // The random instance
     private GameData gameData;
+    private boolean[][] mark;
 
     /**
      * The constructor of the map class.
-     * @param gameData the game setting
+     *
+     * @param gameData           the game setting
      * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
-        numberOfRows = random.nextInt(8) + 9;     // Max 16
-        numberOfColumns = random.nextInt(19) + 9; // Max 27
+        numberOfRows = random.nextInt(6) + 9;     // Max 14
+        numberOfColumns = random.nextInt(17) + 9; // Max 25
         this.locationController = locationController;
         this.gameData = gameData;
+        init(null);
+    }
+
+    private boolean check() {
+        mark = new boolean[numberOfRows][numberOfColumns];
+        for (int i = 0; i < numberOfRows; i++)
+            for (int j = 0; j < numberOfColumns; j++)
+                mark[i][j] = false;
+        for (int i = 0; i < numberOfRows; i++)
+            for (int j = 0; j < numberOfColumns; j++)
+                if (binaryMap[i][j].getState() == -1)
+                    return dfs(i, j) == gameData.numberOfPeople;
+        return true;
+    }
+
+    private Integer dfs(int x, int y) {
+        int ret = (binaryMap[x][y].getState() == -1 ? 1 : 0);
+        mark[x][y] = true;
+        for (int px = -1; px <= 1; px++)
+            for (int py = -1; py <= 1; py++) {
+                int xx = x + px;
+                int yy = y + py;
+                if (!valid(xx, yy) || mark[xx][yy] || binaryMap[xx][yy].getState() == 2)
+                    continue;
+                ret += dfs(xx, yy);
+            }
+        return ret;
+    }
+
+    private boolean valid(int xx, int yy) {
+        return xx >= 0 && yy >= 0 && xx < numberOfRows && yy < numberOfColumns;
     }
 
     /**
      * This method will create the map game.
      * Also creates the location controller.
      */
-    public void init() {
+    public void init(String address) {
         binaryMap = new Cell[numberOfRows][numberOfColumns];
         locationController.init(); // Creating the controller
-        makeGameMap();
+        makeGameMap(address);
     }
+
 
     /**
      * This method will iterate in the array
      * and will make the map binary form to show it
      * in a big size in gui.
      */
-    private void makeGameMap() {
-        for (int y = 0; y < numberOfRows; y++) {
-            for (int x = 0; x < numberOfColumns; x++) {
-                binaryMap[y][x] = new Cell(random.nextInt(3), random.nextInt(2), gameData.wallHealth);
-                if (random.nextInt(100) % 2 == 0)
-                    binaryMap[y][x].setState(0);
-                if (binaryMap[y][x].getState() != 0)
-                    locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState(), gameData.wallHealth));
+    private void makeGameMap(String address) {
+        if (address == null) {
+            for (int y = 0; y < numberOfRows; y++) {
+                for (int x = 0; x < numberOfColumns; x++) {
+                    binaryMap[y][x] = new Cell(random.nextInt(3), random.nextInt(2), gameData.wallHealth);
+                    if (random.nextInt(100) % 2 == 0)
+                        binaryMap[y][x].setState(0);
+                    if (binaryMap[y][x].getState() != 0)
+                        locationController.add(new Location(x, y, game.Process.GameFrame.DRAWING_START_X + x * GameMap.CHANGING_FACTOR, game.Process.GameFrame.DRAWING_START_Y + y * GameMap.CHANGING_FACTOR, binaryMap[y][x].getState(), gameData.wallHealth));
+                }
             }
+        } else {
+            System.out.println("salam");
+            // TODO: 07-Aug-20 map address ro bekhoone
         }
         updateStatus(); // We need this update
     }
@@ -69,18 +107,26 @@ public class GameMap implements Serializable {
      * This method will place the tanks into empty spaces.
      */
     public void setPlaces(CopyOnWriteArrayList<User> users) {
+        do {
+            setUserTanksPositions(users);
+        } while (!check());
+
+        flushTank(); // We need to empty the tank places
+    }
+
+    private void setUserTanksPositions(CopyOnWriteArrayList<User> users) {
+        flushTank();
         for (User u : users) {
             while (true) {
                 int x = random.nextInt(numberOfColumns); // A random place for the states
                 int y = random.nextInt(numberOfRows);
                 if (binaryMap[y][x].getState() == 0) {
-                    u.getState().setLocation(x * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + game.Process.GameFrame.DRAWING_START_Y);
+                    u.getState().setLocation(x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X, y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y);
                     binaryMap[y][x].setState(-1); // Showing the tank is in this house
                     break;
                 }
             }
         }
-        flushTank(); // We need to empty the tank places
     }
 
     /**
@@ -118,19 +164,27 @@ public class GameMap implements Serializable {
             }
     }
 
-    private boolean check(int x, int y) { return 0 <= x && x < numberOfColumns && 0 <= y && y < numberOfRows; }
+    private boolean check(int x, int y) {
+        return 0 <= x && x < numberOfColumns && 0 <= y && y < numberOfRows;
+    }
 
     /**
      * Getter for number of columns.
+     *
      * @return the number of columns
      */
-    public int getNumberOfColumns() { return numberOfColumns; }
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
 
     /**
      * Getter for number of rows.
+     *
      * @return the number of rows
      */
-    public int getNumberOfRows() { return numberOfRows; }
+    public int getNumberOfRows() {
+        return numberOfRows;
+    }
 
     //TODO: add a method to create a map that all the tanks are connected to each other.
 }
