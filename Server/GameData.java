@@ -12,5 +12,8 @@ public class GameData implements Serializable {
     public String matchType, ip;
 
     @Override
-    public String toString() { return  "Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " || IP : " + ip + "  -  PORT : " + port; }
+    public String toString() {
+        return "Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " || IP : " + ip + "  -  PORT : " + port;
+    }
+
 }

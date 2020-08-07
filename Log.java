@@ -19,21 +19,21 @@ import java.util.concurrent.ExecutionException;
  */
 public class Log {
     // The private fields
-    private static JFrame frame = new JFrame("J Tank Trouble");
-    private static JTextField userName = new JTextField("User Name");
-    private static JPasswordField passwordField = new JPasswordField();
-    private static JCheckBox remember = new JCheckBox("Remember me");
-    private static JCheckBox showPassword = new JCheckBox("Show Password");
-    private static JLabel userLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/name_48px.png"));
-    private static JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
-    private static JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
-    private static JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/Logo.png"));
+    private JFrame frame = new JFrame("J Tank Trouble");
+    private JTextField userName = new JTextField("User Name");
+    private JPasswordField passwordField = new JPasswordField();
+    private JCheckBox remember = new JCheckBox("Remember me");
+    private JCheckBox showPassword = new JCheckBox("Show Password");
+    private JLabel userLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/name_48px.png"));
+    private JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
+    private JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
+    private JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/Logo.png"));
 
     /**
      * This method will build the login frame and will
      * display it to the user.
      */
-    public static void run() {
+    public void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
         frame.setLocation(390, 130);
@@ -80,7 +80,7 @@ public class Log {
      * This method will set the styles to
      * the components.
      */
-    private static void init() {
+    private void init() {
         logo.setSize(500, 150);
         logIn.setSize(80, 30);
         signUp.setSize(80, 30);
@@ -97,8 +97,6 @@ public class Log {
         showPassword.setContentAreaFilled(false);
         remember.setForeground(Color.BLACK);
         showPassword.setForeground(Color.BLACK);
-        logIn.setBorder(null);
-        signUp.setBorder(null);
         userName.setBorder(null);
         passwordField.setBorder(null);
         passwordField.setText("Password");
@@ -152,10 +150,8 @@ public class Log {
         initButtons();
     }
 
-    private static void initButtons() {
+    private void initButtons() {
         logIn.addActionListener(e -> new SwingWorker<>() {
-
-            Setting setting = new Setting();
 
             /**
              * Computes a result, or throws an exception if unable to do so.
@@ -170,16 +166,16 @@ public class Log {
              */
             @Override
             protected Object doInBackground() {
-                String ip = "127.0.0.1";//you can change it later .
+                String ip = "127.0.0.1";//you can change it later.
                 int port = 1726;//you can change the port later too.
                 String ret = null;
                 try {
                     Socket socket = new Socket(ip, port);
                     ret = takeString(socket, "Log in");
                     if (ret.equalsIgnoreCase("user entered the game."))
-                        setting.setConnectionSocket(socket);
+                        Setting.setConnectionSocket(socket);
                 } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+                    System.err.println(ex.getMessage());
                 }
                 return ret;
             }
@@ -190,7 +186,7 @@ public class Log {
                     String ret = get().toString();
                     if (ret.equalsIgnoreCase("user entered the game.")) {
                         // Done with the login
-                        frame.setVisible(false);
+                        frame.dispose();
                         // Enter into the game setting
                         TankChooser tankChooser = new TankChooser(userName.getText());
                         tankChooser.run();
@@ -198,7 +194,7 @@ public class Log {
                     }
                     if (!userName.getText().equalsIgnoreCase("User Name"))
                         JOptionPane.showMessageDialog(null, get().toString());
-                } catch (InterruptedException | ExecutionException | NullPointerException | IOException ex) {
+                } catch (InterruptedException | ExecutionException | NullPointerException ex) {
                     JOptionPane.showMessageDialog(null, "Your attempt to connect to our servers was failed.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -240,7 +236,7 @@ public class Log {
         }.execute());
     }
 
-    private static String takeString(Socket socket, String s) throws IOException {
+    private String takeString(Socket socket, String s) throws IOException {
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream());
         String name = userName.getText();

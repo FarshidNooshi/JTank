@@ -1,9 +1,7 @@
 package game;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -12,12 +10,12 @@ import java.util.Objects;
 
 public class TankChooser extends JFrame {
 
-    private File finalImage = new File("src/game/IconsInGame/Farshid/Tank/Icon.png");
-    private File finalBullet = new File("src/game/IconsInGame/Farshid/Bullet/fireball2.png");
+    private File finalImage = new File("src/game/IconsInGame/Farshid/Tank/tank_blue.png");
+    private File finalBullet = new File("src/game/IconsInGame/Farshid/Bullet/bulletBlue1.png");
     private String username;
     private JButton send;
 
-    public TankChooser(String username) throws IOException {
+    public TankChooser(String username) {
         send = new JButton();
         this.username = username;
     }
@@ -29,19 +27,18 @@ public class TankChooser extends JFrame {
         if (response == JOptionPane.YES_OPTION) {
             JFrame ask = new JFrame("Choose tank model");
             JPanel c = new MainPanel(new ImageIcon("src/game/IconsInGame/Farshid/background.png").getImage());
-            JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Logo.png"));
+            JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/Logo.png"));
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
             c.add(logo);
             logo.setLocation(300, 0);
             logo.setSize(700, 150);
             ask.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
             // Getting the tanks images
-            File file = new File("src/game/IconsInGame/Farshid/Tank");
             c.setLayout(null);
-            int tmp = 0;
             ask.setExtendedState(Frame.MAXIMIZED_BOTH);
             ask.setResizable(false);
             // Creating buttons
-            CreatingButtons(ask, c, file, tmp);
+            CreatingButtons(ask, c);
             ask.add(c);
             ask.setAlwaysOnTop(true);
             ask.setLocationRelativeTo(null);
@@ -51,23 +48,24 @@ public class TankChooser extends JFrame {
         }
     }
 
-    private void CreatingButtons(JFrame ask, JPanel c, File file, int tmp) {
+    private void CreatingButtons(JFrame ask, JPanel c) {
         boolean[] flag = {false, false};
-        addTanks(ask, c, file, tmp, flag);
+        addTanks(ask, c, flag);
         addBullet(ask, c, flag);
     }
 
-    private void addTanks(JFrame ask, JPanel c, File file, int tmp, boolean[] flag) {
+    private void addTanks(JFrame ask, JPanel c, boolean[] flag) {
+        File file = new File("src/game/IconsInGame/Farshid/Tank");
+        int tmp = 0;
         for (String name : Objects.requireNonNull(file.list())) {
             JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
-            button.setLocation(160 * (tmp / 5), 100 + 110 * (tmp++ % 5));
+            button.setLocation(160 * (tmp % 2), 100 + 110 * (tmp++ / 2));
             button.setSize(150, 100);
             c.add(button);
-            File finalFile1 = file;
             button.addActionListener(e -> {
-                finalImage = new File(finalFile1.getPath() + File.separator + name);
+                finalImage = new File(file.getPath() + File.separator + name);
                 flag[0] = true;
-                if (flag[0] && flag[1]) {
+                if (flag[1]) {
                     ask.setVisible(false);
                     send.doClick();
                 }
@@ -76,20 +74,17 @@ public class TankChooser extends JFrame {
     }
 
     private void addBullet(JFrame ask, JPanel c, boolean[] flag) {
-        File file;
-        int tmp;// Reading bullet files and adding them to customizer frame
-        file = new File("src/game/IconsInGame/Farshid/Bullet");
-        tmp = 0;
+        File file = new File("src/game/IconsInGame/Farshid/Bullet");
+        int tmp = 0;// Reading bullet files and adding them to customizer frame
         for (String name : Objects.requireNonNull(file.list())) {
             JButton button = new JButton(new ImageIcon(file.getPath() + File.separator + name));
             button.setLocation(1250 - 40 * (tmp / 5), 100 + 55 * (tmp++ % 5));
             button.setSize(30, 45);
             c.add(button);
-            File finalFile = file;
             button.addActionListener(e -> {
-                finalBullet = new File(finalFile.getPath() + File.separator + name);
+                finalBullet = new File(file.getPath() + File.separator + name);
                 flag[1] = true;
-                if (flag[1] && flag[0]) {
+                if (flag[0]) {
                     ask.setVisible(false);
                     send.doClick();
                 }

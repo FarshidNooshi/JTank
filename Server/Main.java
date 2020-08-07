@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,12 +20,12 @@ import java.util.concurrent.Executors;
  */
 public class Main {
 
-    private static ExecutorService service = Executors.newCachedThreadPool();
-    private static ExecutorService pool = Executors.newCachedThreadPool();
-    private static HashMap<Integer, CopyOnWriteArrayList<User>> queue = new HashMap<Integer, CopyOnWriteArrayList<User>>();
     //
     public static int gamePort = 2000;
     public static ArrayList<GameData> data = new ArrayList<>();
+    private static ExecutorService service = Executors.newCachedThreadPool();
+    private static ExecutorService pool = Executors.newCachedThreadPool();
+    private static HashMap<Integer, CopyOnWriteArrayList<User>> queue = new HashMap<Integer, CopyOnWriteArrayList<User>>();
     //
 
     public static void main(String[] args) {

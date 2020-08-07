@@ -12,8 +12,6 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -36,14 +34,14 @@ public class GameFrame extends JFrame {
      * The constructor of the Game frame class to set
      * the sizes and the images.
      *
-     * @param title the name of the game
+     * @param title    the name of the game
      * @param tankPath the address of the tank file
      * @param username this client in game userName
      */
     public GameFrame(String title, String username, String tankPath) {
         //
         super(title);
-        setLocation(20,0);
+        setLocation(20, 0);
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
@@ -117,18 +115,25 @@ public class GameFrame extends JFrame {
 
     /**
      * A setter method for setting the bullets.
+     *
      * @param bullets the new set of bullets
      */
-    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) { this.bullets = bullets; }
+    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
+        this.bullets = bullets;
+    }
 
     /**
      * A setter method for setting the boxes.
+     *
      * @param boxes the new set of boxes
      */
-    public void setBoxes(CopyOnWriteArrayList<MysteryBox> boxes) { this.boxes = boxes; }
+    public void setBoxes(CopyOnWriteArrayList<MysteryBox> boxes) {
+        this.boxes = boxes;
+    }
 
     /**
      * Game rendering with triple-buffering using BufferStrategy.
+     *
      * @param playersVector this is the list of the players in game
      */
     public void render(CopyOnWriteArrayList<User> playersVector) {
@@ -152,64 +157,14 @@ public class GameFrame extends JFrame {
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         g2d.setColor(Color.WHITE);
-        g2d.fillRect(0,0, GameFrame.GAME_WIDTH, DRAWING_START_Y - 10);
+        g2d.fillRect(0, 0, GameFrame.GAME_WIDTH, DRAWING_START_Y - 10);
         // Draw Map
         // The loop of drawing
         for (int y = 0, verticalAt = DRAWING_START_Y; y < gameMap.getNumberOfRows(); y++, verticalAt += GameMap.CHANGING_FACTOR)
             for (int x = 0, horizonAt = DRAWING_START_X; x < gameMap.getNumberOfColumns(); x++, horizonAt += GameMap.CHANGING_FACTOR) {
                 // Drawing the house
                 g2d.fillRect(horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR);
-                if (gameMap.binaryMap[y][x].getState() == 0) {
-                    // Up Down Left Right
-                    switch (gameMap.binaryMap[y][x].status) {
-                        case 1111:
-                            g2d.drawImage(fourWay, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1011:
-                            g2d.drawImage(threeWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1101:
-                            g2d.drawImage(threeWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1110:
-                            g2d.drawImage(threeWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 111:
-                            g2d.drawImage(threeWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1100:
-                            g2d.drawImage(oneWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 11:
-                            g2d.drawImage(oneWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1010:
-                            g2d.drawImage(twoWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 101:
-                            g2d.drawImage(twoWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 110:
-                            g2d.drawImage(twoWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        case 1001:
-                            g2d.drawImage(twoWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            break;
-                        default:
-                            if (gameMap.binaryMap[y][x].tt % 2 == 0)
-                                g2d.drawImage(grass.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                            else
-                                g2d.drawImage(sand.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                    }
-                }
-                else if (gameMap.binaryMap[y][x].getState() == 1) {
-                    g2d.drawImage(brakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
-                    g2d.setColor(Color.GREEN);
-                    g2d.fillRect(horizonAt + 10, verticalAt + 10, (gameMap.binaryMap[y][x].health + 1) * 8, 10);
-                    g2d.setColor(Color.GRAY);
-                }
-                else if (gameMap.binaryMap[y][x].getState() == 2)
-                    g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                drawBackGround(g2d, gameMap.binaryMap[y][x], verticalAt, horizonAt);
             }
         // Drawing the boxes
         for (MysteryBox m : boxes) {
@@ -244,15 +199,15 @@ public class GameFrame extends JFrame {
                     image = ImageIO.read(new File(u.getImagePath()));
                 } catch (IOException | NullPointerException e) {
                     try {
-                        image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/Icon.png"));
+                        image = ImageIO.read(new File("src/game/IconsInGame/Farshid/Tank/tank_blue.png"));
                     } catch (IOException ex) {
                         e.printStackTrace();
                     }
                 }
                 g2d.setColor(Color.BLACK);
                 g2d.drawImage(image, counter * 50 + 50, 40, dataBox.width, dataBox.height, this);
-                g2d.drawString(dataBox.userName + " : " + dataBox.score, counter * 50 + 50,50 + dataBox.height);
-                counter+=2;
+                g2d.drawString(dataBox.userName + " : " + dataBox.score, counter * 50 + 50, 50 + dataBox.height);
+                counter += 2;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
                 double rotation = Math.toRadians(rotateDegree);
@@ -306,5 +261,57 @@ public class GameFrame extends JFrame {
             g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
             g2d.setTransform(old);
         }
+    }
+
+    private void drawBackGround(Graphics2D g2d, Cell cell, int verticalAt, int horizonAt) {
+        if (cell.getState() == 0) {
+            // Up Down Left Right
+            switch (cell.status) {
+                case 1111:
+                    g2d.drawImage(fourWay, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1011:
+                    g2d.drawImage(threeWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1101:
+                    g2d.drawImage(threeWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1110:
+                    g2d.drawImage(threeWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 111:
+                    g2d.drawImage(threeWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1100:
+                    g2d.drawImage(oneWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 11:
+                    g2d.drawImage(oneWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1010:
+                    g2d.drawImage(twoWayUp, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 101:
+                    g2d.drawImage(twoWayRight, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 110:
+                    g2d.drawImage(twoWayLeft, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                case 1001:
+                    g2d.drawImage(twoWayDown, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    break;
+                default:
+                    if (cell.tt % 2 == 0)
+                        g2d.drawImage(grass.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+                    else
+                        g2d.drawImage(sand.getImage(), horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+            }
+        } else if (cell.getState() == 1) {
+            g2d.drawImage(brakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
+            g2d.setColor(Color.GREEN);
+            g2d.fillRect(horizonAt + 10, verticalAt + 10, (cell.health + 1) * 8, 10);
+            g2d.setColor(Color.GRAY);
+        } else if (cell.getState() == 2)
+            g2d.drawImage(unBrakeWall, horizonAt, verticalAt, GameMap.CHANGING_FACTOR, GameMap.CHANGING_FACTOR, this);
     }
 }

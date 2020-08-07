@@ -11,16 +11,16 @@ import java.net.Socket;
  * to store and restore the users information.
  */
 public class User implements Serializable {
+    public transient ObjectOutputStream out; // and the input and output streams
+    public transient ObjectInputStream in; // are different in server side and client side.
+    public DataBox dataBox;
+    public GameData gameData;
     // Private fields
     private String userName, password;
     private String imagePath, bulletPath;
     private transient GameState state;
     private transient GameMap gameMap;
     private transient Socket clientSocket; // This socket is different in server
-    public transient ObjectOutputStream out; // and the input and output streams
-    public transient ObjectInputStream in; // are different in server side and client side.
-    public DataBox dataBox;
-    public GameData gameData;
 
     /**
      * The main constructor of the User class.

@@ -7,9 +7,10 @@ import game.Server.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -30,11 +31,11 @@ public class JoinGame extends JFrame {
     /**
      * The constructor of the on server games.
      */
-    public JoinGame() {
+    JoinGame() {
         //
         setTitle("JTank Trouble - Game Choosing");
-        setSize(new Dimension(750,500));
-        setLocation(390,130);
+        setSize(new Dimension(750, 500));
+        setLocation(390, 130);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
         //
@@ -68,10 +69,20 @@ public class JoinGame extends JFrame {
         }
         //
         try {
-            data = (ArrayList<GameData>) new ObjectInputStream(connectionSocket.getInputStream()).readObject(); // Receiving the data
+            data = read(); // Receiving the data
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<GameData> read() throws IOException, ClassNotFoundException {
+        Object obj = new ObjectInputStream(connectionSocket.getInputStream()).readObject();
+        ArrayList<GameData> ret = new ArrayList<>();
+        if (obj.getClass() == ret.getClass())
+            ret = (ArrayList<GameData>) obj;
+        else
+            System.err.println("Unknown object received.");
+        return ret;
     }
 
     private void frameCreate() {
@@ -80,39 +91,37 @@ public class JoinGame extends JFrame {
         for (GameData d : data) {
             JButton jButton = new JButton();
             jButton.setSize(new Dimension(500, 30));
-            jButton.setBackground(new Color(30,90,220));
+            jButton.setBackground(new Color(30, 90, 220));
             jButton.setForeground(Color.WHITE);
             jButton.setText(d.toString());
             jButton.setLocation(125, counter * 20);
-            jButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    finalChose = d;
-                }
-            });
+            jButton.addActionListener(e -> finalChose = d);
             c.add(jButton);
             counter++;
         }
         //
         create.setSize(new Dimension(100, 20));
-        send.setSize(new Dimension(100,20));
+        send.setSize(new Dimension(100, 20));
         create.setLocation(225, ++counter * 20);
         send.setLocation(425, counter * 20);
+        send.setBackground(Color.BLACK);
+        create.setBackground(Color.BLACK);
+        send.setForeground(Color.white);
+        create.setForeground(Color.white);
         c.add(send);
         c.add(create);
     }
 
     private void initButtons() {
         //
-        send.addActionListener(e -> new SwingWorker<>(){
+        send.addActionListener(e -> new SwingWorker<>() {
 
             @Override
             protected Object doInBackground() throws Exception {
                 connectionSocket.getOutputStream().write(1);
                 if (finalChose == null)
                     return -1;
-                else
-                    return 0;
+                return 0;
             }
 
             @Override
@@ -129,7 +138,7 @@ public class JoinGame extends JFrame {
                         System.exit(-1);
                     else {
                         // need this wait
-                        Thread.sleep(2000);
+//                        Thread.sleep(2000);
                         //
                         new DataOutputStream(gameSocket.getOutputStream()).writeInt(finalChose.port);
                         //
@@ -145,7 +154,7 @@ public class JoinGame extends JFrame {
             }
         }.execute());
         //
-        create.addActionListener(e -> new SwingWorker<>(){
+        create.addActionListener(e -> new SwingWorker<>() {
 
             @Override
             protected Object doInBackground() throws Exception {

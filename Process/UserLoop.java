@@ -6,6 +6,7 @@ import game.Server.MysteryBox;
 import game.Server.User;
 import game.WaitingPage;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,16 +18,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class UserLoop extends Thread {
     // private fields
-    public static final int FPS = 30;
+    private static final int FPS = 30;
     private User thisPlayerUser;
-    private GameFrame canvas;
     private int rounds;
 
     /**
      * The main constructor of the UserLoop class.
+     *
      * @param user the current user
      */
-    public UserLoop(User user) { thisPlayerUser = user; }
+    public UserLoop(User user) {
+        thisPlayerUser = user;
+    }
 
     /**
      * Starting the user loop of the game.
@@ -42,14 +45,15 @@ public class UserLoop extends Thread {
 
     @Override
     public void run() {
-        while (rounds > 0) {
+        while (rounds-- > 0) {
             // for waiting
             WaitingPage waitingPage = new WaitingPage();
             waitingPage.start();
-            String in = String.valueOf(thisPlayerUser.read());
+            //noinspection ResultOfMethodCallIgnored
+            String.valueOf(thisPlayerUser.read());
             waitingPage.shutDown();
             //
-            canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
+            GameFrame canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
             canvas.setVisible(true);
             canvas.initBufferStrategy();
             Tank tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
@@ -68,14 +72,7 @@ public class UserLoop extends Thread {
                 }
                 long start = System.currentTimeMillis(); // This is for delay between server and client
                 // Giving the data
-                thisPlayerUser.write(tank.keyUP);
-                thisPlayerUser.write(tank.keyDOWN);
-                thisPlayerUser.write(tank.keyLEFT);
-                thisPlayerUser.write(tank.keyRIGHT);
-                thisPlayerUser.write(tank.mousePress);
-                thisPlayerUser.write(tank.mouseX);
-                thisPlayerUser.write(tank.mouseY);
-                thisPlayerUser.write(tank.shotFired);
+                GivingTheData(tank);
                 // receiving the data
                 CopyOnWriteArrayList<Bullet> bullets = (CopyOnWriteArrayList<Bullet>) thisPlayerUser.read();
                 canvas.setBullets(bullets); // Get the bullets and the users
@@ -84,8 +81,8 @@ public class UserLoop extends Thread {
                 CopyOnWriteArrayList<User> users = (CopyOnWriteArrayList<User>) thisPlayerUser.read();
                 GameMap gameMap = (GameMap) thisPlayerUser.read();
                 canvas.setGameMap(gameMap);
-                if (gameMap != null)
-                    canvas.render(users); // do the rendering
+                assert gameMap != null;
+                canvas.render(users); // do the rendering
                 long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
                 if (delay > 0) {
                     try {
@@ -95,37 +92,47 @@ public class UserLoop extends Thread {
                     }
                 }
             }
+            canvas.setVisible(false);
             String winner = (String) thisPlayerUser.read();
             try {
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            canvas.setVisible(false);
             ResultShower resultShower = new ResultShower();
             if (thisPlayerUser.getUserName().equals(winner))
                 resultShower.start(winner, 1);
             else
                 resultShower.start(winner, 0);
             try {
-                Thread.sleep(6000);
+                Thread.sleep(2000);
                 thisPlayerUser.out.flush();
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             } finally {
                 resultShower.shutDown();
             }
-            rounds--;
         }
         // Enter into the game setting again
         Restart restart = new Restart();
         restart.start();
     }
 
+    private void GivingTheData(Tank tank) {
+        thisPlayerUser.write(tank.keyUP);
+        thisPlayerUser.write(tank.keyDOWN);
+        thisPlayerUser.write(tank.keyLEFT);
+        thisPlayerUser.write(tank.keyRIGHT);
+        thisPlayerUser.write(tank.mousePress);
+        thisPlayerUser.write(tank.mouseX);
+        thisPlayerUser.write(tank.mouseY);
+        thisPlayerUser.write(tank.shotFired);
+    }
+
     private static class Restart extends Thread {
         @Override
         public void run() {
-            Log.run();
+            EventQueue.invokeLater(new Log()::run);
         }
     }
 }

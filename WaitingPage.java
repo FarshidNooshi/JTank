@@ -47,9 +47,7 @@ public class WaitingPage {
         public void run() {
             int index = 0;
             while (jFrame.isVisible()) {
-                jLabel.setText("Loading " + strings[index]);
-                index++;
-                index %= strings.length;
+                jLabel.setText("Loading " + strings[index++ % strings.length]);
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
