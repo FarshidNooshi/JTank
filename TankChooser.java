@@ -12,6 +12,9 @@ public class TankChooser extends JFrame {
 
     private File finalImage = new File("src/game/IconsInGame/Farshid/Tank/tank_blue.png");
     private File finalBullet = new File("src/game/IconsInGame/Farshid/Bullet/bulletBlue1.png");
+    private JLabel label = new JLabel();
+    private JLabel hours = new JLabel();
+    private JLabel results = new JLabel();
     private String username;
     private JButton send;
 
@@ -33,6 +36,10 @@ public class TankChooser extends JFrame {
             logo.setLocation(300, 0);
             logo.setSize(700, 150);
             ask.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
+            // User name information
+            creatingUserInfo(c, label, "User name : " + username, 300);
+            creatingUserInfo(c, hours, "Hours playing : " + 0, 350);
+            creatingUserInfo(c, results, "Total Wins : " + 0 + " Loses : " + 0, 400);
             // Getting the tanks images
             c.setLayout(null);
             ask.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -52,6 +59,18 @@ public class TankChooser extends JFrame {
         boolean[] flag = {false, false};
         addTanks(ask, c, flag);
         addBullet(ask, c, flag);
+    }
+
+    private void creatingUserInfo(JPanel c, JLabel label, String text, int y) {
+        label.setLocation(600, y);
+        label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 20));
+        label.setSize(250, 25);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setText(text);
+        label.setBackground(Color.BLACK);
+        label.setForeground(Color.WHITE);
+        label.setOpaque(true);
+        c.add(label);
     }
 
     private void addTanks(JFrame ask, JPanel c, boolean[] flag) {
