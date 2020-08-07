@@ -24,7 +24,7 @@ public class GameLoop {
     private GameData gameData;
     private CopyOnWriteArrayList<User> users, finalList;
     private CopyOnWriteArrayList<MysteryBox> boxes;
-    private static String[] boxTypes = {"boost", "health", "RPG"};
+    private static String[] boxTypes = {"boost", "health", "RPG", "shield"};
     private CopyOnWriteArrayList<Bullet> bullets;
     private ExecutorService executorService, clientsService;
 
@@ -119,7 +119,6 @@ public class GameLoop {
             while (!gameOver) {
                 Iterator<User> userIterator = users.iterator();
                 while (userIterator.hasNext()) {
-                    // TODO: Fix it ConcurrentModificationException
                     User u = userIterator.next();
                     //
                     GameState state = u.getState();
@@ -133,7 +132,8 @@ public class GameLoop {
                                     b.counterDead = 0;
                                     b.exploded = true;
                                 }
-                                state.health--;
+                                if (!state.shield)
+                                    state.health--;
                                 if (state.health < 1) {
                                     state.health--;
                                     if (state.health < 1) {
@@ -162,13 +162,13 @@ public class GameLoop {
         public void run() {
             while (!gameOver) {
                 long now = System.currentTimeMillis();
-                if (boxes.size() < 3 && now - last > 3000) {
+                if (boxes.size() < 7 && now - last > 3000) {
                     while (true) {
                         int x = random.nextInt(gameMap.getNumberOfColumns());
                         int y = random.nextInt(gameMap.getNumberOfRows());
                         if (gameMap.binaryMap[y][x].getState() == 0) {
                             MysteryBox box = new MysteryBox();
-                            box.type = boxTypes[random.nextInt(3)];
+                            box.type = boxTypes[random.nextInt(4)];
                             box.locX = x * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_X + 20;
                             box.locY = y * GameMap.CHANGING_FACTOR + GameFrame.DRAWING_START_Y + 20;
                             boxes.add(box);

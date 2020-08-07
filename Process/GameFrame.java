@@ -186,6 +186,12 @@ public class GameFrame extends JFrame {
                 g2d.setColor(Color.WHITE);
                 g2d.drawString("X", m.locX + 1, m.locY + 10);
             }
+            if (m.type.equals("shield")) {
+                g2d.setColor(new Color(0,100,50));
+                g2d.fillRect(m.locX, m.locY, 10, 10);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString("S", m.locX + 1, m.locY + 10);
+            }
         }
         // Drawing the players
         int counter = 2;
@@ -215,11 +221,15 @@ public class GameFrame extends JFrame {
                     massage = " ";
                 g2d.setFont(new Font(g2d.getFont().getName(), g2d.getFont().getStyle(), 14));
                 g2d.drawString(massage + dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 50 + 50, 50 + dataBox.height);
+                g2d.setFont(new Font(g2d.getFont().getName(), g2d.getFont().getStyle(), 8));
                 counter += 2;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
                 double rotation = Math.toRadians(rotateDegree);
-                g2d.setColor(Color.GREEN);
+                if (dataBox.hasShield)
+                    g2d.setColor(Color.RED);
+                else
+                    g2d.setColor(Color.GREEN);
                 g2d.fillRect(dataBox.locX, dataBox.locY - 3, dataBox.health * 10, 3);
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(dataBox.userName + " " + dataBox.health * 25, dataBox.locX, dataBox.locY - 8);

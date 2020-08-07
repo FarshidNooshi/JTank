@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class GameState implements Serializable {
     // Private fields
     public int locX, locY, width, height, speed, health;
-    public boolean gameOver, shotFired, inUse;
+    public boolean gameOver, shotFired, inUse, shield;
     private transient int mapRowsLimit, mapColsLimit, currentDirection; // This is the map limits
     public transient boolean keyUP, keyDOWN, keyRIGHT, keyLEFT, mousePress; // true if the appropriate arrow key is pressed.
     public transient int mouseX, mouseY; // the positions of the mouse clicked pos.
@@ -80,6 +80,9 @@ public class GameState implements Serializable {
         // Mystery box check
         long now = System.currentTimeMillis();
         if (now - pickTime > 2000) {
+            if (now - pickTime > 4000) {
+                shield = false;
+            }
             if (booster) {
                 speed /= 2;
                 vectorFactory.setSpeed(speed);
@@ -164,7 +167,7 @@ public class GameState implements Serializable {
      * @return can or not
      */
     public boolean takeBox(String type) {
-        if (booster || shooter)
+        if (booster || shooter || shield)
             return false;
         else {
             pickTime = System.currentTimeMillis();
@@ -176,7 +179,9 @@ public class GameState implements Serializable {
             } else if (type.equals("RPG"))
                 shooter = true;
             else if (type.equals("health"))
-                health = 3;
+                health++;
+            else if (type.equals("shield"))
+                shield = true;
             //
             return true;
         }

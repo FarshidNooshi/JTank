@@ -9,5 +9,5 @@ import java.io.Serializable;
 public class DataBox implements Serializable {
     public String userName;
     public int locX, locY, direction, width, height, win, loose, health;
-    public boolean gameOver;
+    public boolean gameOver, hasShield;
 }
