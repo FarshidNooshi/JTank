@@ -90,11 +90,11 @@ public class JoinGame extends JFrame {
         int counter = 1;
         for (GameData d : data) {
             JButton jButton = new JButton();
-            jButton.setSize(new Dimension(500, 30));
+            jButton.setSize(new Dimension(700, 30));
             jButton.setBackground(new Color(30, 90, 220));
             jButton.setForeground(Color.WHITE);
             jButton.setText(d.toString());
-            jButton.setLocation(125, counter * 20);
+            jButton.setLocation(25, counter * 20);
             jButton.addActionListener(e -> finalChose = d);
             c.add(jButton);
             counter++;

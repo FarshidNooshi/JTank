@@ -56,6 +56,7 @@ public class GameHandler implements Runnable {
             for (int i = 0; i < numberOfPlayers; i++) {
                 Socket socket = serverSocket.accept();
                 join++;
+                data.playersOnline = join;
                 String userName = new Scanner(socket.getInputStream()).nextLine();
                 for (int j = 0; j < join; j++)
                         if (playersVector.get(j).getUserName().equals(userName)) {

@@ -8,12 +8,12 @@ import java.io.Serializable;
  */
 public class GameData implements Serializable {
     public int bulletSpeed, tankSpeed, wallHealth, tankHealth;
-    public int numberOfPeople, port, numberOfRounds;
+    public int numberOfPeople, port, numberOfRounds, playersOnline;
     public String matchType, ip;
 
     @Override
     public String toString() {
-        return "Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " || IP : " + ip + "  -  PORT : " + port;
+        return "Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " - Players in : " + playersOnline + " || IP : " + ip + "  -  PORT : " + port;
     }
 
 }
