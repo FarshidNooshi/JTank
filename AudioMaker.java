@@ -9,9 +9,6 @@ import java.io.FileNotFoundException;
 
 public class AudioMaker {
 
-    private static String explodeFile = "src/game/Audio/explode.mp3";
-    private static String fireFile = "src/game/Audio/Fire.mp3";
-
     public static MakeEffect getSound(int type) {
         return new MakeEffect(type);
     }
@@ -29,6 +26,8 @@ public class AudioMaker {
         public void run() {
             try {
                 FileInputStream file;
+                String explodeFile = "src/game/Audio/explode.mp3";
+                String fireFile = "src/game/Audio/Fire.mp3";
                 if (type == 1)
                     file = new FileInputStream(new File(fireFile));
                 else

@@ -70,7 +70,8 @@ public class JoinGame extends JFrame {
         //
         try {
             data = read(); // Receiving the data
-            finalChose = data.get(0);
+            if (data.size() != 0)
+                finalChose = data.get(0);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -2,16 +2,13 @@ package game.Server;
 
 import game.Control.LocationController;
 import game.Process.GameMap;
-import game.Process.ThreadPool;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -56,7 +53,8 @@ public class GameHandler implements Runnable {
 
     private void init() {
         int join = 0;
-        try (ServerSocket serverSocket = new ServerSocket(data.port)) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(data.port);
             for (int i = 0; i < numberOfPlayers; i++) {
                 Socket socket = serverSocket.accept();
                 join++;
