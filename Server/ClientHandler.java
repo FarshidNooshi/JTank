@@ -71,6 +71,7 @@ public class ClientHandler implements Runnable {
                         int wallHealth = Integer.parseInt(in.nextLine());
                         int tankHealth = Integer.parseInt(in.nextLine());
                         int rounds = Integer.parseInt(in.nextLine());
+                        String type = in.nextLine();
                         //
                         GameData gameData = new GameData();
                         gameData.name = name;
@@ -83,6 +84,8 @@ public class ClientHandler implements Runnable {
                         gameData.numberOfRounds = rounds;
                         gameData.ip = "127.0.0.1";
                         gameData.port = Main.gamePort;
+                        if (!type.equals("Single"))
+                            gameData.isTeamBattle = true;
                         //
                         client.gameData = gameData;
                         try (ObjectOutputStream out2 = new ObjectOutputStream(connectionSocket.getOutputStream())) {

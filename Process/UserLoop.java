@@ -100,10 +100,16 @@ public class UserLoop extends Thread {
                 e.printStackTrace();
             }
             ResultShower resultShower = new ResultShower();
-            if (thisPlayerUser.getUserName().equals(winner))
-                resultShower.start(winner, 1);
+            if (thisPlayerUser.gameData.isTeamBattle)
+                if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team"))
+                    resultShower.start(winner, 1);
+                else
+                    resultShower.start(winner, 0);
             else
-                resultShower.start(winner, 0);
+                if (thisPlayerUser.getUserName().equals(winner))
+                    resultShower.start(winner, 1);
+                else
+                    resultShower.start(winner, 0);
             try {
                 Thread.sleep(2000);
                 thisPlayerUser.out.flush();

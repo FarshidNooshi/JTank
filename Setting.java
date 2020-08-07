@@ -6,6 +6,8 @@ import game.Server.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,6 +23,7 @@ class Setting {
     private static User u = null;
     private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "League"};
+    private static String[] gameTypes = {"Single", "Team Battle"};
     private static String[] numberOfRounds = {"1", "3", "5", "8", "10"};
     private static String[] tankSpeeds = {"3", "5", "6"};
     private static String[] bulletSpeeds = {"5", "8", "10"};
@@ -44,8 +47,11 @@ class Setting {
     private static JButton increaseNum = new JButton(">>");
     private static JLabel rounds = new JLabel("Rounds : ");
     private static JComboBox<String> roundsInput = new JComboBox<>(numberOfRounds);
+    private static JLabel typeOfTheGame = new JLabel("Game type : ");
+    private static JComboBox<String> typeInput = new JComboBox<>(gameTypes);
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
+    private static int change = 1;
 
     /**
      * This method will build the setting frame
@@ -53,7 +59,7 @@ class Setting {
      */
     static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-        frame.setPreferredSize(new Dimension(800, 500));
+        frame.setPreferredSize(new Dimension(800, 550));
         frame.setLocation(350, 130);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -79,8 +85,8 @@ class Setting {
     }
 
     private static void setLocations() {
-        gameName.setLocation(250, 0);
-        nameInput.setLocation(450, 0);
+        gameName.setLocation(250, 5);
+        nameInput.setLocation(450, 5);
         gameMode.setLocation(250, 50);
         modeInput.setLocation(450, 50);
         tankSpeed.setLocation(250, 100);
@@ -97,8 +103,10 @@ class Setting {
         increaseNum.setLocation(575, 300);
         rounds.setLocation(250, 350);
         roundsInput.setLocation(450, 350);
-        cancel.setLocation(250, 400);
-        send.setLocation(450, 400);
+        typeOfTheGame.setLocation(250, 400);
+        typeInput.setLocation(450, 400);
+        cancel.setLocation(250, 450);
+        send.setLocation(450, 450);
     }
 
     private static void addComponents(JPanel c) {
@@ -120,6 +128,8 @@ class Setting {
         c.add(increaseNum);
         c.add(rounds);
         c.add(roundsInput);
+        c.add(typeOfTheGame);
+        c.add(typeInput);
         c.add(cancel);
         c.add(send);
     }
@@ -139,17 +149,29 @@ class Setting {
         decreaseNum.addActionListener(e -> {
             int target = Integer.parseInt(numberOfPeopleInput.getText());
             if (target != 2)
-                numberOfPeopleInput.setText(String.valueOf(--target));
+                numberOfPeopleInput.setText(String.valueOf(target - change));
         });
         increaseNum.addActionListener(e -> {
             int target = Integer.parseInt(numberOfPeopleInput.getText());
-            numberOfPeopleInput.setText(String.valueOf(++target));
+            numberOfPeopleInput.setText(String.valueOf(target + change));
+        });
+        typeInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (typeInput.getSelectedIndex() == 0)
+                    change = 1;
+                else {
+                    numberOfPeopleInput.setText(String.valueOf(2));
+                    change = 2;
+                }
+            }
         });
     }
 
     private static void iniSizes() {
         gameName.setSize(100, 25);
         nameInput.setSize(200, 25);
+        gameName.setForeground(Color.BLACK);
         tankDamage.setSize(100, 25);
         tankDamage.setForeground(Color.BLACK);
         tankDamageInput.setSize(100, 25);
@@ -161,6 +183,9 @@ class Setting {
         rounds.setSize(new Dimension(100, 25));
         rounds.setForeground(Color.BLACK);
         roundsInput.setSize(100, 25);
+        typeOfTheGame.setSize(100, 25);
+        typeInput.setSize(100,25);
+        typeOfTheGame.setForeground(Color.BLACK);
         cancel.setSize(new Dimension(100, 25));
         cancel.setHorizontalTextPosition(SwingConstants.CENTER);
         send.setSize(new Dimension(100, 25));
@@ -178,6 +203,7 @@ class Setting {
         tankDamageInput.setForeground(Color.white);
         wallDamageInput.setForeground(Color.white);
         bulletSpeedInput.setForeground(Color.white);
+        typeInput.setForeground(Color.WHITE);
         nameInput.setForeground(Color.WHITE);
         send.setBackground(Color.BLACK);
         cancel.setBackground(Color.BLACK);
@@ -189,6 +215,7 @@ class Setting {
         tankDamageInput.setBackground(Color.BLACK);
         wallDamageInput.setBackground(Color.BLACK);
         bulletSpeedInput.setBackground(Color.BLACK);
+        typeInput.setBackground(Color.BLACK);
         nameInput.setBackground(Color.BLACK);
     }
 
@@ -219,6 +246,7 @@ class Setting {
                         out.println(roundsInput.getSelectedItem());
                     else
                         out.println(1);
+                    out.println(typeInput.getSelectedItem());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -10,6 +10,7 @@ public class GameData implements Serializable {
     public int bulletSpeed, tankSpeed, wallHealth, tankHealth;
     public int numberOfPeople, port, numberOfRounds, playersOnline;
     public String matchType, ip, name;
+    public boolean isTeamBattle;
 
     @Override
     public String toString() {

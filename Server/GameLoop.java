@@ -108,8 +108,20 @@ public class GameLoop {
         invokeAll();
         if (users.size() == 1)
             users.get(0).dataBox.win++;
+        if (gameData.isTeamBattle)
+            teamMatchResult();
         executorService.shutdownNow();
         clientsService.shutdownNow();
+    }
+
+    private void teamMatchResult() {
+        int team = users.get(0).teamNumber;
+        for (User u : finalList)
+            if (u.teamNumber == team)
+                if (!u.getUserName().equals(users.get(0).getUserName())) {
+                    u.dataBox.win++;
+                    u.dataBox.loose--;
+                }
     }
 
     // This is for bullet and players handling
@@ -187,7 +199,13 @@ public class GameLoop {
             while (true)
                 if (!u.getState().inUse) {
                     write(-1, u); // Means the game is over now
-                    write(users.get(0).getUserName(), u);
+                    if (gameData.isTeamBattle)
+                        if (users.get(0).teamNumber == 1)
+                            write("Blue team", u);
+                        else
+                            write("Red team", u);
+                    else
+                        write(users.get(0).getUserName(), u);
                     break;
                 }
     }

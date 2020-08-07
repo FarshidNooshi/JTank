@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -41,6 +42,8 @@ public class GameHandler implements Runnable {
     @Override
     public void run() {
         init();
+        if (data.isTeamBattle)
+            setTheTeams();
         while (rounds > 0) {
             GameMap gameMap = new GameMap(new LocationController(), data);
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
@@ -92,5 +95,27 @@ public class GameHandler implements Runnable {
         }
         best.isBestPlayer = true;
         worst.isWorstPlayer = true;
+    }
+
+    private void setTheTeams() {
+        int teamOne = 0, teamTwo = 0;
+        Random random = new Random();
+        for (User u : playersVector) {
+            u.isTeamMatch = true;
+            if (teamOne == numberOfPlayers / 2)
+                u.teamNumber = 2;
+            else if (teamTwo == numberOfPlayers / 2)
+                u.teamNumber = 1;
+            else {
+                int team = random.nextInt();
+                if (team % 2 == 0) {
+                    u.teamNumber = 1;
+                    teamOne++;
+                } else {
+                    u.teamNumber = 2;
+                    teamTwo++;
+                }
+            }
+        }
     }
 }
