@@ -206,7 +206,7 @@ public class GameFrame extends JFrame {
                 }
                 g2d.setColor(Color.BLACK);
                 g2d.drawImage(image, counter * 50 + 50, 40, dataBox.width, dataBox.height, this);
-                g2d.drawString(dataBox.userName + " : " + dataBox.score, counter * 50 + 50, 50 + dataBox.height);
+                g2d.drawString(dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 50 + 50, 50 + dataBox.height);
                 counter += 2;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree

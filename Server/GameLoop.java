@@ -107,7 +107,7 @@ public class GameLoop {
         gameOver = true;
         invokeAll();
         if (users.size() == 1)
-            users.get(0).dataBox.score++;
+            users.get(0).dataBox.win++;
         executorService.shutdownNow();
         clientsService.shutdownNow();
     }
@@ -140,7 +140,7 @@ public class GameLoop {
                                         state.gameOver = true;
                                         //
                                         numberOfPlayers--;
-                                        u.dataBox.score--;
+                                        u.dataBox.loose++;
                                         users.remove(u);
                                         //
                                         u.updateDataBox();
