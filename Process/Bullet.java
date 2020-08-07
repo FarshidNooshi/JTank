@@ -13,8 +13,8 @@ public class Bullet implements Serializable {
     public String imagePath;
     private final int DIAM = 8; //location fields&radios of the circle
     public int locX, locY, direction, lifeTime, firstX, firstY; //Location fields
-    public boolean fired, exploded, isRPG;
-    public transient int mapRowsLimit, mapColsLimit, counterFired, counterDead;
+    public boolean fired, exploded, isRPG, makeSound, firedSound;
+    public transient int mapRowsLimit, mapColsLimit, counterFired, counterDead, firstCounter;
     public transient boolean isAlive, justShot; //Status fields
     private transient final long start;
     private transient GameMap gameMap; //Each bullet needs the map
@@ -46,10 +46,13 @@ public class Bullet implements Serializable {
         fired = true;
         exploded = false;
         isRPG = false;
+        makeSound = false;
+        firedSound = false;
         //
         lifeTime = 4;
         counterFired = 0;
         counterDead = 0;
+        firstCounter = 0;
         //
         this.imagePath = imagePath;
         start = System.currentTimeMillis(); // Keeping the start time
@@ -144,8 +147,10 @@ public class Bullet implements Serializable {
         @Override
         public void run() {
             // The time checking
+            makeSound = false;
+            firedSound = firstCounter < 1;
             int time = (int) ((System.currentTimeMillis() - start) / 1000);
-            if (time >= lifeTime) {
+            if (time >= lifeTime && !exploded) {
                 counterDead = 0;
                 exploded = true;
             }
@@ -160,6 +165,7 @@ public class Bullet implements Serializable {
                     if (!isRPG) {
                         counterDead = 0;
                         exploded = true; // This means that the bullet has hit a breakable wall
+                        makeSound = true;
                     }
                     gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health--;
                     if (gameMap.binaryMap[location.getBinaryY()][location.getBinaryX()].health < 0) {
@@ -179,6 +185,7 @@ public class Bullet implements Serializable {
                 isAlive = false;
             counterFired++;
             counterDead++;
+            firstCounter++;
         }
     }
 

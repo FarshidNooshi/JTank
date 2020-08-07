@@ -143,6 +143,7 @@ public class GameLoop {
                                 if (!b.isRPG) {
                                     b.counterDead = 0;
                                     b.exploded = true;
+                                    b.makeSound = true;
                                 }
                                 if (!state.shield)
                                     state.health--;

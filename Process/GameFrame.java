@@ -1,5 +1,6 @@
 package game.Process;
 
+import game.AudioMaker;
 import game.Server.DataBox;
 import game.Server.MysteryBox;
 import game.Server.User;
@@ -13,6 +14,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The window on which the rendering is performed.
@@ -29,6 +33,7 @@ public class GameFrame extends JFrame {
     private GameMap gameMap; // This is the map of each game
     private CopyOnWriteArrayList<Bullet> bullets;
     private CopyOnWriteArrayList<MysteryBox> boxes;
+    private ExecutorService soundEffect;
 
     /**
      * The constructor of the Game frame class to set
@@ -49,6 +54,7 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         //
         this.username = username;
+        soundEffect = Executors.newCachedThreadPool();
         // Opening the image
         try {
             image = ImageIO.read(new File(tankPath));
@@ -265,6 +271,10 @@ public class GameFrame extends JFrame {
             } catch (IOException | NullPointerException e) {
                 bullet = RPG;
             }
+            if (i.firedSound)
+                soundEffect.execute(AudioMaker.getSound(1));
+            if (i.makeSound)
+                soundEffect.execute(AudioMaker.getSound(2));
             if (i.fired)
                 g2d.drawImage(fired, i.firstX - fired.getWidth() / 3, i.firstY - fired.getHeight() / 3, fired.getWidth() / 2, fired.getHeight() / 2, this);
             if (i.exploded) {
