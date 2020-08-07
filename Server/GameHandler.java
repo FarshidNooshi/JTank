@@ -46,6 +46,7 @@ public class GameHandler implements Runnable {
             GameLoop gameLoop = new GameLoop(gameMap, playersVector, data);
             gameLoop.init();
             gameLoop.runTheGame();
+            updateRatings();
             rounds--;
         }
     }
@@ -74,5 +75,22 @@ public class GameHandler implements Runnable {
 
     private void removeGame() {
         Main.data.remove(data);
+    }
+
+    private void updateRatings() {
+        for (User u : playersVector) {
+            u.isBestPlayer = false;
+            u.isWorstPlayer = false;
+        }
+        User best = playersVector.get(0), worst = playersVector.get(0);
+        for (int i = 1; i < numberOfPlayers; i++) {
+            User temp = playersVector.get(i);
+            if (temp.dataBox.win >= best.dataBox.win)
+                best = temp;
+            if (temp.dataBox.loose >= worst.dataBox.loose)
+                worst = temp;
+        }
+        best.isBestPlayer = true;
+        worst.isWorstPlayer = true;
     }
 }

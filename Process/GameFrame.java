@@ -206,7 +206,15 @@ public class GameFrame extends JFrame {
                 }
                 g2d.setColor(Color.BLACK);
                 g2d.drawImage(image, counter * 50 + 50, 40, dataBox.width, dataBox.height, this);
-                g2d.drawString(dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 50 + 50, 50 + dataBox.height);
+                String massage;
+                if (u.isBestPlayer)
+                    massage = "" + '\u265A' + " ";
+                else if (u.isWorstPlayer)
+                    massage = "" + '\u2620' + " ";
+                else
+                    massage = " ";
+                g2d.setFont(new Font(g2d.getFont().getName(), g2d.getFont().getStyle(), 14));
+                g2d.drawString(massage + dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 50 + 50, 50 + dataBox.height);
                 counter += 2;
                 // This is the rotation finding part for tank.
                 int rotateDegree = dataBox.direction; // The rotation degree
