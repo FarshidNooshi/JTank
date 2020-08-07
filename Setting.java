@@ -26,6 +26,8 @@ class Setting {
     private static String[] bulletSpeeds = {"5", "8", "10"};
     private static String[] health = {"Low", "Half", "Full"};
     private static JFrame frame = new JFrame("J Tank Trouble - Setting");
+    private static JLabel gameName = new JLabel("Game name : ");
+    private static JTextField nameInput = new JTextField("Untitled");
     private static JLabel gameMode = new JLabel("Game mode : ");
     private static JComboBox<String> modeInput = new JComboBox<>(gameModes);
     private static JLabel tankSpeed = new JLabel("Tanks speed : ");
@@ -77,6 +79,8 @@ class Setting {
     }
 
     private static void setLocations() {
+        gameName.setLocation(250, 0);
+        nameInput.setLocation(450, 0);
         gameMode.setLocation(250, 50);
         modeInput.setLocation(450, 50);
         tankSpeed.setLocation(250, 100);
@@ -98,6 +102,8 @@ class Setting {
     }
 
     private static void addComponents(JPanel c) {
+        c.add(gameName);
+        c.add(nameInput);
         c.add(gameMode);
         c.add(modeInput);
         c.add(tankSpeed);
@@ -142,6 +148,8 @@ class Setting {
     }
 
     private static void iniSizes() {
+        gameName.setSize(100, 25);
+        nameInput.setSize(200, 25);
         tankDamage.setSize(100, 25);
         tankDamage.setForeground(Color.BLACK);
         tankDamageInput.setSize(100, 25);
@@ -170,6 +178,7 @@ class Setting {
         tankDamageInput.setForeground(Color.white);
         wallDamageInput.setForeground(Color.white);
         bulletSpeedInput.setForeground(Color.white);
+        nameInput.setForeground(Color.WHITE);
         send.setBackground(Color.BLACK);
         cancel.setBackground(Color.BLACK);
         modeInput.setBackground(Color.BLACK);
@@ -180,6 +189,7 @@ class Setting {
         tankDamageInput.setBackground(Color.BLACK);
         wallDamageInput.setBackground(Color.BLACK);
         bulletSpeedInput.setBackground(Color.BLACK);
+        nameInput.setBackground(Color.BLACK);
     }
 
     private static void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
@@ -198,6 +208,7 @@ class Setting {
             protected Object doInBackground() {
                 try {
                     PrintStream out = new PrintStream(connectionSocket.getOutputStream());
+                    out.println(nameInput.getText());
                     out.println(numberOfPeopleInput.getText());
                     out.println(modeInput.getSelectedItem());
                     out.println(bulletSpeedInput.getSelectedItem());

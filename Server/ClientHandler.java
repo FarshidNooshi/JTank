@@ -63,6 +63,7 @@ public class ClientHandler implements Runnable {
                         if (result == 1)
                             return;
                         //
+                        String name = in.nextLine();
                         int numberOfPlayers = Integer.parseInt(in.nextLine());
                         String mathType = in.nextLine();
                         int bulletSpeed = Integer.parseInt(in.nextLine());
@@ -72,6 +73,7 @@ public class ClientHandler implements Runnable {
                         int rounds = Integer.parseInt(in.nextLine());
                         //
                         GameData gameData = new GameData();
+                        gameData.name = name;
                         gameData.matchType = mathType;
                         gameData.numberOfPeople = numberOfPlayers;
                         gameData.bulletSpeed = bulletSpeed;

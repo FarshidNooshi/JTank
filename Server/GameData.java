@@ -9,11 +9,11 @@ import java.io.Serializable;
 public class GameData implements Serializable {
     public int bulletSpeed, tankSpeed, wallHealth, tankHealth;
     public int numberOfPeople, port, numberOfRounds, playersOnline;
-    public String matchType, ip;
+    public String matchType, ip, name;
 
     @Override
     public String toString() {
-        return "Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " - Players in : " + playersOnline + " || IP : " + ip + "  -  PORT : " + port;
+        return name + " Capacity : " + numberOfPeople + "  -  Match type : " + matchType + " - Players in : " + playersOnline + " || IP : " + ip + "  -  PORT : " + port;
     }
 
 }
