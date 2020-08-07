@@ -70,6 +70,7 @@ public class JoinGame extends JFrame {
         //
         try {
             data = read(); // Receiving the data
+            finalChose = data.get(0);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -90,7 +91,7 @@ public class JoinGame extends JFrame {
         int counter = 1;
         for (GameData d : data) {
             JButton jButton = new JButton();
-            jButton.setSize(new Dimension(700, 30));
+            jButton.setSize(new Dimension(500, 30));
             jButton.setBackground(new Color(30, 90, 220));
             jButton.setForeground(Color.WHITE);
             jButton.setText(d.toString());
