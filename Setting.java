@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Objects;
 
 /**
  * This is the setting menu where user
@@ -272,6 +273,8 @@ class Setting {
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
                     u = (User) in.readObject();
                     assert u != null;
+                    if (Objects.equals(typeInput.getSelectedItem(), "Team Battle"))
+                        u.isTeamMatch = true;
                     UserLoop userLoop = new UserLoop(u);
                     userLoop.initialize();
                     userLoop.start();

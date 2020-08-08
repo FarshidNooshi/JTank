@@ -62,6 +62,7 @@ public class UserLoop extends Thread {
             canvas.addMouseMotionListener(tank.getMouseMotionListener());
             thisPlayerUser.write(tank.width); // Send the tank sizes
             thisPlayerUser.write(tank.height);
+            thisPlayerUser.teamNumber = (int) thisPlayerUser.read();
             while (true) {
                 try {
                     int inRoundStatus = (int) thisPlayerUser.read(); // We use this to check if we are getting inputs or not
@@ -92,23 +93,26 @@ public class UserLoop extends Thread {
                     }
                 }
             }
-            canvas.setVisible(false);
             String winner = (String) thisPlayerUser.read();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(7000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            canvas.setVisible(false);
             ResultShower resultShower = new ResultShower();
-            if (thisPlayerUser.gameData.isTeamBattle)
+            if (thisPlayerUser.isTeamMatch) {
                 if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team") || thisPlayerUser.teamNumber == 2 && winner.equals("Red team"))
                     resultShower.start(winner, 1);
                 else
                     resultShower.start(winner, 0);
-            else if (thisPlayerUser.getUserName().equals(winner))
-                resultShower.start(winner, 1);
-            else
-                resultShower.start(winner, 0);
+            }
+            else {
+                if (thisPlayerUser.getUserName().equals(winner))
+                    resultShower.start(winner, 1);
+                else
+                    resultShower.start(winner, 0);
+            }
             try {
                 Thread.sleep(4000);
                 thisPlayerUser.out.flush();

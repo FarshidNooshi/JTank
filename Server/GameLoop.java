@@ -331,6 +331,7 @@ public class GameLoop {
             // Receiving the width and height
             state.width = (int) u.read();
             state.height = (int) u.read();
+            u.write(u.teamNumber);
             // Server client game loop
             while (!gameOver) {
                 state.inUse = true; // This boolean is used for locking this user state to avoid sending other things mean while this loop is executing
