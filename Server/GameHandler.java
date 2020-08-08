@@ -29,7 +29,7 @@ public class GameHandler implements Runnable {
      * @param data            the gama setting
      * @param numberOfPlayers the number of the players
      */
-    public GameHandler(CopyOnWriteArrayList<User> vector, GameData data, int numberOfPlayers) {
+    GameHandler(CopyOnWriteArrayList<User> vector, GameData data, int numberOfPlayers) {
         //
         this.playersVector = vector;
         this.data = data;
