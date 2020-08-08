@@ -6,6 +6,7 @@ import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -337,14 +338,20 @@ public class GameLoop {
                 state.inUse = true; // This boolean is used for locking this user state to avoid sending other things mean while this loop is executing
                 write(1, u); // This is for letting the client side know if we are sending the data. 1 means we are sending and -1 means not (invokeAll)
                 // Getting the updated data
-                state.keyUP = (boolean) u.read();
-                state.keyDOWN = (boolean) u.read();
-                state.keyLEFT = (boolean) u.read();
-                state.keyRIGHT = (boolean) u.read();
-                state.mousePress = (boolean) u.read();
-                state.mouseX = (int) u.read();
-                state.mouseY = (int) u.read();
-                state.shotFired = (boolean) u.read();
+                try {
+                    state.keyUP = (boolean) u.read();
+                    state.keyDOWN = (boolean) u.read();
+                    state.keyLEFT = (boolean) u.read();
+                    state.keyRIGHT = (boolean) u.read();
+                    state.mousePress = (boolean) u.read();
+                    state.mouseX = (int) u.read();
+                    state.mouseY = (int) u.read();
+                    state.shotFired = (boolean) u.read();
+                } catch (NullPointerException e) {
+                    numberOfPlayers--;
+                    users.remove(u);
+                    break;
+                }
                 if (!state.gameOver) {
                     // Updating while the player is on the game
                     state.update();

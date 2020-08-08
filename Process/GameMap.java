@@ -33,8 +33,8 @@ public class GameMap implements Serializable {
      * @param locationController the location controller of this map
      */
     public GameMap(LocationController locationController, GameData gameData) {
-        numberOfRows = random.nextInt(6) + 8;     // Max 14
-        numberOfColumns = random.nextInt(17) + 9; // Max 25
+        numberOfRows = random.nextInt(6) + 6;     // Max 12
+        numberOfColumns = random.nextInt(17) + 7; // Max 23
         this.locationController = locationController;
         this.gameData = gameData;
         init(null);
@@ -200,6 +200,4 @@ public class GameMap implements Serializable {
     public int getNumberOfRows() {
         return numberOfRows;
     }
-
-    //TODO: add a method to create a map that all the tanks are connected to each other.
 }

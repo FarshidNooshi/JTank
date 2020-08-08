@@ -53,7 +53,7 @@ public class UserLoop extends Thread {
             String.valueOf(thisPlayerUser.read());
             waitingPage.shutDown();
             //
-            GameFrame canvas = new GameFrame("Jtank", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
+            GameFrame canvas = new GameFrame("JTank Trouble", thisPlayerUser.getUserName(), thisPlayerUser.getImagePath());
             canvas.setVisible(true);
             canvas.initBufferStrategy();
             Tank tank = new Tank(canvas.getImage().getWidth() / 4, canvas.getImage().getHeight() / 4); // Creating the user input
@@ -95,7 +95,7 @@ public class UserLoop extends Thread {
             }
             String winner = (String) thisPlayerUser.read();
             try {
-                Thread.sleep(7000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

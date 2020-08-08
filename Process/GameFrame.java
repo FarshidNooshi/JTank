@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 public class GameFrame extends JFrame {
     // fields
     public static final int DRAWING_START_X = 50, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
-    private static final int GAME_HEIGHT = 1000, GAME_WIDTH = 1280; // 720p game resolution
+    private static final int GAME_HEIGHT = 720, GAME_WIDTH = 1280; // 720p game resolution
     private String username;
     private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall, explode = null, fired = null;
     private ImageIcon sand = null, grass = null;
@@ -216,7 +216,7 @@ public class GameFrame extends JFrame {
                     }
                 }
                 g2d.setColor(Color.BLACK);
-                g2d.drawImage(image, counter * 50 + 50, 40, dataBox.width, dataBox.height, this);
+                g2d.drawImage(image, counter * 60 + 50, 40, dataBox.width, dataBox.height, this);
                 String massage;
                 if (u.isBestPlayer)
                     massage = "" + '\u265A' + " ";
@@ -230,7 +230,7 @@ public class GameFrame extends JFrame {
                         g2d.setColor(Color.BLUE);
                     else
                         g2d.setColor(Color.RED);
-                g2d.drawString(massage + dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 50 + 50, 50 + dataBox.height);
+                g2d.drawString(massage + dataBox.userName + ": " + dataBox.win + " - " + dataBox.loose, counter * 60 + 50, 55 + dataBox.height);
                 g2d.setFont(new Font(g2d.getFont().getName(), g2d.getFont().getStyle(), 10));
                 counter += 2;
                 // This is the rotation finding part for tank.
@@ -299,6 +299,9 @@ public class GameFrame extends JFrame {
             g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
             g2d.setTransform(old);
         }
+        g2d.setColor(Color.BLUE);
+        g2d.setFont(new Font(g2d.getFont().getName(), g2d.getFont().getStyle(), 10));
+        g2d.drawString("< Fight In Glory > Zeus_KingRicochet : 8/8/2020", GAME_WIDTH - 250, GAME_HEIGHT - 10);
     }
 
     private void drawBackGround(Graphics2D g2d, Cell cell, int verticalAt, int horizonAt) {
