@@ -6,7 +6,6 @@ import game.Process.GameMap;
 import game.Process.GameState;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -119,6 +118,7 @@ public class GameLoop {
             teamMatchResult();
         executorService.shutdownNow();
         clientsService.shutdownNow();
+        botService.shutdownNow();
     }
 
     private void teamMatchResult() {
@@ -148,18 +148,22 @@ public class GameLoop {
     // This method will tell the sockets to close
     private void invokeAll() {
         for (User u : finalList)
-            while (true)
-                if (!u.getState().inUse && !u.isBot) {
+            while (true) {
+                if (u.isBot)
+                    break;
+                if (!u.getState().inUse) {
                     write(-1, u); // Means the game is over now
                     if (gameData.isTeamBattle)
                         if (users.get(0).teamNumber == 1)
                             write("Blue team", u);
                         else
                             write("Red team", u);
-                    else
+                    else {
                         write(users.get(0).getUserName(), u);
+                    }
                     break;
                 }
+            }
     }
 
     private Object read(User u) {
@@ -259,6 +263,10 @@ public class GameLoop {
 
         @Override
         public void run() {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
+            }
             user.getState().width = 25;
             user.getState().height = 25;
             while (!user.getState().gameOver) {
@@ -270,8 +278,7 @@ public class GameLoop {
                 if (delay > 0) {
                     try {
                         Thread.sleep(delay);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }
@@ -350,6 +357,7 @@ public class GameLoop {
                 } catch (NullPointerException e) {
                     numberOfPlayers--;
                     users.remove(u);
+                    state.inUse = false;
                     break;
                 }
                 if (!state.gameOver) {
