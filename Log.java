@@ -35,8 +35,7 @@ public class Log {
      * display it to the user.
      */
     public void run() {
-        Thread thread = new Thread(AudioMaker.getTheme());
-        thread.start();
+        AudioMaker.startTheTheme();
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(750, 500));
         frame.setLocation(390, 130);

@@ -269,6 +269,7 @@ class Setting {
 
             @Override
             protected void done() {
+                AudioMaker.stop();
                 frame.setVisible(false);
                 try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
                     u = (User) in.readObject();
@@ -292,6 +293,7 @@ class Setting {
 
             @Override
             protected void done() {
+                AudioMaker.stop();
                 System.exit(0);
             }
         }.execute());

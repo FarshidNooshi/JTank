@@ -13,8 +13,15 @@ public class AudioMaker {
         return new MakeEffect(type);
     }
 
-    public static StartTheme getTheme() {
-        return new StartTheme();
+    private static Thread mainTheme;
+
+    public static void startTheTheme() {
+        mainTheme = new Thread(new StartTheme());
+        mainTheme.start();
+    }
+
+    public static void stop() {
+        mainTheme.stop();
     }
 
     static class MakeEffect implements Runnable {
