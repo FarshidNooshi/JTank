@@ -221,7 +221,6 @@ public class GameLoop {
             user.getState().width = 25;
             user.getState().height = 25;
             while (!user.getState().gameOver) {
-                user.updateDataBox();
                 update();
                 // TODO 08-08-2020: add the update method
             }
@@ -240,7 +239,36 @@ public class GameLoop {
                 user.getState().keyRIGHT = true;
             if (Integer.bitCount(rand & 16) == 1)
                 user.getState().shotFired = true;
+            user.getState().update();
             user.updateDataBox();
+            if (user.getState().shotFired) {
+                Bullet bullet = new Bullet(user.getState().locX + user.getState().width / 2, user.getState().locY + user.getState().height / 2, gameMap, gameData.bulletSpeed, user.getBulletPath());
+                bullet.setDirections(user.getState().direction());
+                bullets.add(bullet);
+                if (user.getState().shooter) {
+                    bullet.isRPG = true;
+                    bullet.lifeTime = 8;
+                }
+            }
+            for (MysteryBox box : boxes) {
+                if (box.gotTheBox(user.getState().locX, user.getState().locY, user.getState().width, user.getState().height)) {
+                    if (user.getState().takeBox(box.type)) {
+                        boxes.remove(box);
+                        break;
+                    }
+                }
+            }
+            try {
+                user.out.reset(); // This is for sending the new state, it helps the syncing between client and server
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // giving the data
+            write(bullets, user);
+            write(boxes, user);
+            write(users, user);
+            write(gameMap, user); // I get some image exceptions in here
+            user.getState().inUse = false; // Free the state
         }
     }
 
