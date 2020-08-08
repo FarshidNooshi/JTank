@@ -15,7 +15,7 @@ public class User implements Serializable {
     public transient ObjectInputStream in; // are different in server side and client side.
     public DataBox dataBox;
     public GameData gameData;
-    public boolean isBestPlayer, isWorstPlayer, isTeamMatch;
+    public boolean isBestPlayer, isWorstPlayer, isTeamMatch, isBot;
     public int teamNumber;
     // Private fields
     private String userName, password;

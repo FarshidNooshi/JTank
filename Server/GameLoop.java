@@ -26,7 +26,7 @@ public class GameLoop {
     private CopyOnWriteArrayList<MysteryBox> boxes;
     private static String[] boxTypes = {"boost", "health", "RPG", "shield"};
     private CopyOnWriteArrayList<Bullet> bullets;
-    private ExecutorService executorService, clientsService;
+    private ExecutorService executorService, clientsService, botService;
 
     /**
      * The constructor of the game loop.
@@ -50,7 +50,8 @@ public class GameLoop {
 
     private void invokeStart() {
         for (User u : users)
-            u.write("start"); // We take the players out of waiting
+            if (!u.isBot)
+                u.write("start"); // We take the players out of waiting
     }
 
     private void initialize() {
@@ -75,6 +76,7 @@ public class GameLoop {
         boxes = new CopyOnWriteArrayList<>();
         executorService = Executors.newCachedThreadPool();
         clientsService = Executors.newCachedThreadPool();
+        botService = Executors.newCachedThreadPool();
     }
 
     /**
@@ -83,10 +85,13 @@ public class GameLoop {
      */
     public void runTheGame() {
         for (User u : users)
-            clientsService.execute(new ClientHandler(u)); // Executing the clients
+            if (u.isBot)
+                botService.execute(new TankAI(u)); // The tank handler
+            else
+                clientsService.execute(new ClientHandler(u)); // Executing the clients
         clientsService.execute(new TankBullet());
         clientsService.execute(new MysteryMaker());
-        while (numberOfPlayers > 1) {
+        while (gameCheck()) {
             long start = System.currentTimeMillis(); // Delay handling
             Iterator<Bullet> iterator = bullets.iterator();
             while (iterator.hasNext()) {
@@ -122,6 +127,20 @@ public class GameLoop {
                     u.dataBox.win++;
                     u.dataBox.loose--;
                 }
+    }
+
+    private boolean gameCheck() {
+        if (gameData.isTeamBattle) {
+            int teamOne = 0;
+            int teamTwo = 0;
+            for (User u : users)
+                if (u.teamNumber == 1)
+                    teamOne++;
+                else
+                    teamTwo++;
+            return teamOne != 0 && teamTwo != 0;
+        } else
+            return numberOfPlayers > 1;
     }
 
     // This is for bullet and players handling
@@ -194,11 +213,25 @@ public class GameLoop {
         }
     }
 
+    private class TankAI implements Runnable {
+        User user;
+        TankAI(User user) { this.user = user; }
+        @Override
+        public void run() {
+            user.getState().width = 25;
+            user.getState().height = 25;
+            while (!user.getState().gameOver) {
+                user.updateDataBox();
+                // TODO 08-08-2020: add the update method
+            }
+        }
+    }
+
     // This method will tell the sockets to close
     private void invokeAll() {
         for (User u : finalList)
             while (true)
-                if (!u.getState().inUse) {
+                if (!u.getState().inUse && !u.isBot) {
                     write(-1, u); // Means the game is over now
                     if (gameData.isTeamBattle)
                         if (users.get(0).teamNumber == 1)

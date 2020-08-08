@@ -101,7 +101,7 @@ public class UserLoop extends Thread {
             }
             ResultShower resultShower = new ResultShower();
             if (thisPlayerUser.gameData.isTeamBattle)
-                if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team"))
+                if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team") || thisPlayerUser.teamNumber == 2 && winner.equals("Red team"))
                     resultShower.start(winner, 1);
                 else
                     resultShower.start(winner, 0);

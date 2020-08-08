@@ -24,6 +24,7 @@ class Setting {
     private static Socket connectionSocket;
     private static String[] gameModes = {"Death Match", "League"};
     private static String[] gameTypes = {"Single", "Team Battle"};
+    private static String[] playTypes = {"Local game", "Join Network"};
     private static String[] numberOfRounds = {"1", "3", "5", "8", "10"};
     private static String[] tankSpeeds = {"3", "5", "6"};
     private static String[] bulletSpeeds = {"5", "8", "10"};
@@ -49,6 +50,8 @@ class Setting {
     private static JComboBox<String> roundsInput = new JComboBox<>(numberOfRounds);
     private static JLabel typeOfTheGame = new JLabel("Game type : ");
     private static JComboBox<String> typeInput = new JComboBox<>(gameTypes);
+    private static JLabel playMode = new JLabel("Play mode : ");
+    private static JComboBox<String> playInput = new JComboBox<>(playTypes);
     private static JButton cancel = new JButton("Cancel");
     private static JButton send = new JButton("Go");
     private static int change = 1;
@@ -59,7 +62,7 @@ class Setting {
      */
     static void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
-        frame.setPreferredSize(new Dimension(800, 550));
+        frame.setPreferredSize(new Dimension(800, 600));
         frame.setLocation(350, 130);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -105,8 +108,10 @@ class Setting {
         roundsInput.setLocation(450, 350);
         typeOfTheGame.setLocation(250, 400);
         typeInput.setLocation(450, 400);
-        cancel.setLocation(250, 450);
-        send.setLocation(450, 450);
+        playMode.setLocation(250, 450);
+        playInput.setLocation(450, 450);
+        cancel.setLocation(250, 500);
+        send.setLocation(450, 500);
     }
 
     private static void addComponents(JPanel c) {
@@ -130,6 +135,8 @@ class Setting {
         c.add(roundsInput);
         c.add(typeOfTheGame);
         c.add(typeInput);
+        c.add(playMode);
+        c.add(playInput);
         c.add(cancel);
         c.add(send);
     }
@@ -186,6 +193,9 @@ class Setting {
         typeOfTheGame.setSize(100, 25);
         typeInput.setSize(100,25);
         typeOfTheGame.setForeground(Color.BLACK);
+        playMode.setSize(100, 25);
+        playMode.setForeground(Color.BLACK);
+        playInput.setSize(new Dimension(100, 25));
         cancel.setSize(new Dimension(100, 25));
         cancel.setHorizontalTextPosition(SwingConstants.CENTER);
         send.setSize(new Dimension(100, 25));
@@ -205,6 +215,7 @@ class Setting {
         bulletSpeedInput.setForeground(Color.white);
         typeInput.setForeground(Color.WHITE);
         nameInput.setForeground(Color.WHITE);
+        playInput.setForeground(Color.WHITE);
         send.setBackground(Color.BLACK);
         cancel.setBackground(Color.BLACK);
         modeInput.setBackground(Color.BLACK);
@@ -217,6 +228,7 @@ class Setting {
         bulletSpeedInput.setBackground(Color.BLACK);
         typeInput.setBackground(Color.BLACK);
         nameInput.setBackground(Color.BLACK);
+        playInput.setBackground(Color.BLACK);
     }
 
     private static void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
@@ -247,6 +259,7 @@ class Setting {
                     else
                         out.println(1);
                     out.println(typeInput.getSelectedItem());
+                    out.println(playInput.getSelectedItem());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
