@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 public class GameFrame extends JFrame {
     // fields
     public static final int DRAWING_START_X = 50, DRAWING_START_Y = 2 * DRAWING_START_X; // The drawing starting location
-    private static final int GAME_HEIGHT = 720, GAME_WIDTH = 1280; // 720p game resolution
+    private static final int GAME_HEIGHT = 1000, GAME_WIDTH = 1280; // 720p game resolution
     private String username;
     private BufferedImage image = null, RPG = null, brakeWall, unBrakeWall, explode = null, fired = null;
     private ImageIcon sand = null, grass = null;

@@ -57,7 +57,7 @@ public class Log {
             userName.setLocation(330, 155);
             passwordLabel.setLocation(250, 175);
             passwordField.setLocation(330, 205);
-            remember.setLocation(275, 250);
+            remember.setLocation(275, 260);
             showPassword.setLocation(275, 300);
             logIn.setLocation(275, 350);
             signUp.setLocation(365, 350);

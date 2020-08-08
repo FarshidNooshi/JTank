@@ -13,8 +13,8 @@ public class ResultShower {
     private JPanel jPanel;
     private JLabel jLabel;
     private JLabel jLabel2;
-    private String[] winners = {"Victory is yours", "You won", "Well done lad"};
-    private String[] looser = {"Battle lost", "Mission failed", "You lost"};
+    private String[] winners = {"Victory", "Battle won", "Congratulations"};
+    private String[] looser = {"Battle lost", "Mission failed", "Defeat"};
     private Random random;
 
     public ResultShower() {
@@ -35,7 +35,7 @@ public class ResultShower {
         jLabel.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel.setForeground(Color.WHITE);
-        jLabel.setFont(new Font(jLabel.getFont().getName(), 22, 30));
+        jLabel.setFont(new Font(jLabel.getFont().getName(), 16, 24));
         jLabel2.setForeground(Color.WHITE);
         jPanel.setSize(250,100);
         if (status == 1) {
