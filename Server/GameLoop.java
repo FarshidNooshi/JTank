@@ -261,27 +261,35 @@ public class GameLoop {
             user.getState().width = 25;
             user.getState().height = 25;
             while (!user.getState().gameOver) {
+                long start = System.currentTimeMillis(); // Delay handling
+                user.getState().inUse = true;
                 update();
-                // TODO 08-08-2020: add the update method
+                user.updateDataBox();
+                long delay = (1000 / FPS) - (System.currentTimeMillis() - start); // This is for handling the delays
+                if (delay > 0) {
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
         private void update() {
-            int rand = new Random().nextInt(32);
-            write(1, user);
+            int rand = new Random().nextInt();
             user.getState().setToFalse();
-            if (Integer.bitCount(rand & 1) == 1)
+            if (rand % 3 == 0)
                 user.getState().keyUP = true;
-            if (Integer.bitCount(rand & 2) == 1)
+            else if (rand % 5 == 0)
                 user.getState().keyDOWN = true;
-            if (Integer.bitCount(rand & 4) == 1)
+            else if (rand % 5 == 1)
                 user.getState().keyLEFT = true;
-            if (Integer.bitCount(rand & 8) == 1)
+            else if (rand % 5 == 2)
                 user.getState().keyRIGHT = true;
-            if (Integer.bitCount(rand & 16) == 1)
+            else if (rand % 7 == 0)
                 user.getState().shotFired = true;
             user.getState().update();
-            user.updateDataBox();
             if (user.getState().shotFired) {
                 Bullet bullet = new Bullet(user.getState().locX + user.getState().width / 2, user.getState().locY + user.getState().height / 2, gameMap, gameData.bulletSpeed, user.getBulletPath());
                 bullet.setDirections(user.getState().direction());
@@ -299,16 +307,6 @@ public class GameLoop {
                     }
                 }
             }
-            try {
-                user.out.reset(); // This is for sending the new state, it helps the syncing between client and server
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // giving the data
-            write(bullets, user);
-            write(boxes, user);
-            write(users, user);
-            write(gameMap, user); // I get some image exceptions in here
             user.getState().inUse = false; // Free the state
         }
     }
