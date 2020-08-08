@@ -58,6 +58,7 @@ public class GameMap implements Serializable {
             for (int py = -1; py <= 1; py++) {
                 int xx = x + px;
                 int yy = y + py;
+                if (Math.abs(px) + Math.abs(py) != 1)   continue;
                 if (!valid(xx, yy) || mark[xx][yy] || binaryMap[xx][yy].getState() == 2)
                     continue;
                 ret += dfs(xx, yy);
