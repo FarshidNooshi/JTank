@@ -161,6 +161,12 @@ public class GameLoop {
                     else {
                         write(users.get(0).getUserName(), u);
                     }
+                    try {
+                        u.out.flush();
+                        u.out.reset();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
             }
@@ -263,12 +269,13 @@ public class GameLoop {
 
         @Override
         public void run() {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignored) {
-            }
             user.getState().width = 25;
             user.getState().height = 25;
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             while (!user.getState().gameOver) {
                 long start = System.currentTimeMillis(); // Delay handling
                 user.getState().inUse = true;

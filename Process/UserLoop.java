@@ -45,7 +45,7 @@ public class UserLoop extends Thread {
 
     @Override
     public void run() {
-        while (rounds-- > 0) {
+        while (rounds > 0) {
             // for waiting
             WaitingPage waitingPage = new WaitingPage();
             waitingPage.start();
@@ -93,12 +93,12 @@ public class UserLoop extends Thread {
                     }
                 }
             }
-            String winner = (String) thisPlayerUser.read();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            String winner = (String) thisPlayerUser.read();
             canvas.setVisible(false);
             ResultShower resultShower = new ResultShower();
             if (thisPlayerUser.isTeamMatch) {
@@ -120,6 +120,7 @@ public class UserLoop extends Thread {
                 e.printStackTrace();
             } finally {
                 resultShower.shutDown();
+                rounds--;
             }
         }
         // Enter into the game setting again
