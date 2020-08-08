@@ -1,14 +1,13 @@
 package game;
 
+import game.Server.Pair;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -29,7 +28,7 @@ public class Log {
     private JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
     private JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/Logo.png"));
-
+ 
     /**
      * This method will build the login frame and will
      * display it to the user.
@@ -52,30 +51,45 @@ public class Log {
             }
             assert c != null;
             c.setLayout(null);
-            logo.setLocation(125, 0);
-            userLabel.setLocation(250, 125);
-            userName.setLocation(330, 155);
-            passwordLabel.setLocation(250, 175);
-            passwordField.setLocation(330, 205);
-            remember.setLocation(275, 260);
-            showPassword.setLocation(275, 300);
-            logIn.setLocation(275, 350);
-            signUp.setLocation(365, 350);
-            c.add(logo);
-            c.add(userLabel);
-            c.add(userName);
-            c.add(passwordLabel);
-            c.add(passwordField);
-            c.add(remember);
-            c.add(showPassword);
-            c.add(logIn);
-            c.add(signUp);
+            setLocations();
+            addStuff(c);
             frame.add(c);
             frame.pack();
             frame.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
-        logIn.doClick(); //for remember.
+//        logIn.doClick(); //for remember.
+    }
+
+    /**
+     * this method will add the stuff that we made to the panel c
+     * @param c the panel that we wanna add our stuff
+     */
+    private void addStuff(JPanel c) {
+        c.add(logo);
+        c.add(userLabel);
+        c.add(userName);
+        c.add(passwordLabel);
+        c.add(passwordField);
+        c.add(remember);
+        c.add(showPassword);
+        c.add(logIn);
+        c.add(signUp);
+    }
+
+    /**
+     * the name tells everything about it.
+     */
+    private void setLocations() {
+        logo.setLocation(125, 0);
+        userLabel.setLocation(250, 125);
+        userName.setLocation(330, 155);
+        passwordLabel.setLocation(250, 175);
+        passwordField.setLocation(330, 205);
+        remember.setLocation(275, 260);
+        showPassword.setLocation(275, 300);
+        logIn.setLocation(275, 350);
+        signUp.setLocation(365, 350);
     }
 
     /**
@@ -117,7 +131,7 @@ public class Log {
             /**
              * Invoked when a component gains the keyboard focus.
              *
-             * @param e // TODO: 29-Jul-20
+             * @param e even that happened.
              */
             @Override
             public void focusGained(FocusEvent e) {
@@ -135,7 +149,7 @@ public class Log {
             /**
              * Invoked when a component gains the keyboard focus.
              *
-             * @param e todo
+             * @param e  even that happened.(Focus Event)
              */
             @Override
             public void focusGained(FocusEvent e) {
@@ -244,20 +258,28 @@ public class Log {
         PrintStream out = new PrintStream(socket.getOutputStream());
         String name = userName.getText();
         String pass = String.valueOf(passwordField.getPassword());
-        readUserPass(name, pass);
+        var pair = readUserPass();
+        if (!pair.getFirst().equals("*") && !pair.getSecond().equals("*")) {
+            name = pair.getFirst();
+            pass = pair.getSecond();
+        }
         out.println(s);
         out.println(name);
         out.println(pass);
         String response = in.nextLine();
+        modifyRemember(name, pass, response);
+        return response;
+    }
+
+    private void modifyRemember(String name, String pass, String response) throws FileNotFoundException {
         if (remember.isSelected() && response.equalsIgnoreCase("user entered the game.")) {
             PrintWriter writer = new PrintWriter("src/game/UserInfo/userToRemember.txt");
             writer.println(name);
             writer.println(pass);
         }
-        return response;
     }
 
-    private void readUserPass(String username, String password) {
+    private Pair<String, String> readUserPass() {
         Scanner scanner = new Scanner("src/game/UserInfo/userToRemember.txt");
         String s1 = "*", s2 = "*";
         if (scanner.hasNextLine()) {
@@ -265,10 +287,7 @@ public class Log {
         }
         if (scanner.hasNextLine())
             s2 = scanner.nextLine();
-        if (!s1.equals("*") && !s2.equals("*")) {
-            username = s1;
-            password = s2;
-        }
+        return new Pair<>(s1, s2);
     }
 
     private static class MainPanel extends JPanel {

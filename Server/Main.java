@@ -56,10 +56,6 @@ public class Main {
         ArrayList<User> arrayList = new ArrayList<>();
         Writer writer = new Writer(path); // Save all the users again
         writer.writeToFile(arrayList);
-        path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
-        ArrayList<Pair<String, User>> arrayList2 = new ArrayList<>();
-        writer = new Writer(path); // Save all the users again
-        writer.writeToFile(arrayList2);
     }
 
     public static HashMap<Integer, CopyOnWriteArrayList<User>> getQueue() {

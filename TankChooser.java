@@ -19,7 +19,7 @@ public class TankChooser extends JFrame {
     private JButton send;
     private Setting setting;
 
-    public TankChooser(String username, Setting setting) {
+    TankChooser(String username, Setting setting) {
         send = new JButton();
         this.username = username;
         this.setting = setting;

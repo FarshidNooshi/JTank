@@ -83,6 +83,7 @@ public class JoinGame extends JFrame {
         Object obj = new ObjectInputStream(connectionSocket.getInputStream()).readObject();
         ArrayList<GameData> ret = new ArrayList<>();
         if (obj.getClass() == ret.getClass())
+            //noinspection unchecked
             ret = (ArrayList<GameData>) obj;
         else
             System.err.println("Unknown object received.");

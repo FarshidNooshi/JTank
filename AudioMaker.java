@@ -15,18 +15,19 @@ public class AudioMaker {
 
     private static Thread mainTheme;
 
-    public static void startTheTheme() {
+    static void startTheTheme() {
         mainTheme = new Thread(new StartTheme());
         mainTheme.start();
     }
 
-    public static void stop() {
+    static void stop() {
+        //noinspection deprecation
         mainTheme.stop();
     }
 
     static class MakeEffect implements Runnable {
         int type;
-        public MakeEffect(int type) {
+        MakeEffect(int type) {
             this.type = type;
         }
         @Override

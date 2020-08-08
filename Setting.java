@@ -163,15 +163,12 @@ class Setting {
             int target = Integer.parseInt(numberOfPeopleInput.getText());
             numberOfPeopleInput.setText(String.valueOf(target + change));
         });
-        typeInput.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (typeInput.getSelectedIndex() == 0)
-                    change = 1;
-                else {
-                    numberOfPeopleInput.setText(String.valueOf(2));
-                    change = 2;
-                }
+        typeInput.addActionListener(e -> {
+            if (typeInput.getSelectedIndex() == 0)
+                change = 1;
+            else {
+                numberOfPeopleInput.setText(String.valueOf(2));
+                change = 2;
             }
         });
     }
