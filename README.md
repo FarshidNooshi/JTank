@@ -1,4 +1,4 @@
-# TankTrouble
+# JTank Trouble
 
 Our AP final project
 
@@ -10,6 +10,6 @@ Farshid Nooshi
 
 Amir Hossein Najafi Zadeh
 
-#project description 
+# project description 
 
 it's a pdf attached to this project in the description folder 
