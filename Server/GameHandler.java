@@ -1,17 +1,15 @@
 package game.Server;
 
+import com.github.javafaker.Faker;
 import game.Control.LocationController;
 import game.Process.GameMap;
-import game.Process.ThreadPool;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -41,7 +39,11 @@ public class GameHandler implements Runnable {
 
     @Override
     public void run() {
-        init();
+        if (data.gamePlay.equals("Local game")) {
+            init(1);
+            createBots();
+        } else
+            init(numberOfPlayers);
         if (data.isTeamBattle)
             setTheTeams();
         while (rounds > 0) {
@@ -54,10 +56,11 @@ public class GameHandler implements Runnable {
         }
     }
 
-    private void init() {
+    private void init(int number) {
         int join = 0;
-        try (ServerSocket serverSocket = new ServerSocket(data.port)) {
-            for (int i = 0; i < numberOfPlayers; i++) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(data.port);
+            for (int i = 0; i < number; i++) {
                 Socket socket = serverSocket.accept();
                 join++;
                 data.playersOnline = join;
@@ -116,6 +119,17 @@ public class GameHandler implements Runnable {
                     teamTwo++;
                 }
             }
+        }
+    }
+
+    private void createBots() {
+        Faker faker = new Faker();
+        for (int i = 1; i < numberOfPlayers; i++) {
+            User user = new User(faker.name().firstName(), "0000");
+            user.setImagePath("src/game/IconsInGame/Farshid/Tank/tank_darkLarge.png");
+            user.setBulletPath("src/game/IconsInGame/Farshid/Bullet/bulletDark3_outline.png");
+            user.isBot = true;
+            playersVector.add(user);
         }
     }
 }

@@ -35,6 +35,7 @@ public class ResultShower {
         jLabel.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel.setForeground(Color.WHITE);
+        jLabel.setFont(new Font(jLabel.getFont().getName(), 22, 30));
         jLabel2.setForeground(Color.WHITE);
         jPanel.setSize(250,100);
         if (status == 1) {

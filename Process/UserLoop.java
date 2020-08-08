@@ -95,13 +95,13 @@ public class UserLoop extends Thread {
             canvas.setVisible(false);
             String winner = (String) thisPlayerUser.read();
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             ResultShower resultShower = new ResultShower();
             if (thisPlayerUser.gameData.isTeamBattle)
-                if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team"))
+                if (thisPlayerUser.teamNumber == 1 && winner.equals("Blue team") || thisPlayerUser.teamNumber == 2 && winner.equals("Red team"))
                     resultShower.start(winner, 1);
                 else
                     resultShower.start(winner, 0);
@@ -111,7 +111,7 @@ public class UserLoop extends Thread {
                 else
                     resultShower.start(winner, 0);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(4000);
                 thisPlayerUser.out.flush();
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
