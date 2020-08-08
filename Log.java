@@ -154,7 +154,7 @@ public class Log {
 
     private void initButtons() {
         logIn.addActionListener(e -> new SwingWorker<>() {
-
+            Setting setting = new Setting();
             /**
              * Computes a result, or throws an exception if unable to do so.
              *
@@ -175,7 +175,7 @@ public class Log {
                     Socket socket = new Socket(ip, port);
                     ret = takeString(socket, "Log in");
                     if (ret.equalsIgnoreCase("user entered the game."))
-                        Setting.setConnectionSocket(socket);
+                        setting.setConnectionSocket(socket);
                 } catch (Exception ex) {
                     System.err.println(ex.getMessage());
                 }
@@ -190,7 +190,7 @@ public class Log {
                         // Done with the login
                         frame.dispose();
                         // Enter into the game setting
-                        TankChooser tankChooser = new TankChooser(userName.getText());
+                        TankChooser tankChooser = new TankChooser(userName.getText(), setting);
                         tankChooser.run();
                         return;
                     }

@@ -20,47 +20,47 @@ import java.net.Socket;
  */
 class Setting {
     // Private fields
-    private static User u = null;
-    private static Socket connectionSocket;
-    private static String[] gameModes = {"Death Match", "League"};
-    private static String[] gameTypes = {"Single", "Team Battle"};
-    private static String[] playTypes = {"Local game", "Join Network"};
-    private static String[] numberOfRounds = {"1", "3", "5", "8", "10"};
-    private static String[] tankSpeeds = {"3", "5", "6"};
-    private static String[] bulletSpeeds = {"5", "8", "10"};
-    private static String[] health = {"Low", "Half", "Full"};
-    private static JFrame frame = new JFrame("J Tank Trouble - Setting");
-    private static JLabel gameName = new JLabel("Game name : ");
-    private static JTextField nameInput = new JTextField("Untitled");
-    private static JLabel gameMode = new JLabel("Game mode : ");
-    private static JComboBox<String> modeInput = new JComboBox<>(gameModes);
-    private static JLabel tankSpeed = new JLabel("Tanks speed : ");
-    private static JComboBox<String> tankSpeedInput = new JComboBox<>(tankSpeeds);
-    private static JLabel bulletSpeed = new JLabel("Bullets speed : ");
-    private static JComboBox<String> bulletSpeedInput = new JComboBox<>(bulletSpeeds);
-    private static JLabel wallDamage = new JLabel("Walls health : ");
-    private static JComboBox<String> wallDamageInput = new JComboBox<>(health);
-    private static JLabel tankDamage = new JLabel("Tanks health : ");
-    private static JComboBox<String> tankDamageInput = new JComboBox<>(health);
-    private static JLabel numberOfPeople = new JLabel("Number Of players : ");
-    private static JLabel numberOfPeopleInput = new JLabel(String.valueOf(2));
-    private static JButton decreaseNum = new JButton("<<");
-    private static JButton increaseNum = new JButton(">>");
-    private static JLabel rounds = new JLabel("Rounds : ");
-    private static JComboBox<String> roundsInput = new JComboBox<>(numberOfRounds);
-    private static JLabel typeOfTheGame = new JLabel("Game type : ");
-    private static JComboBox<String> typeInput = new JComboBox<>(gameTypes);
-    private static JLabel playMode = new JLabel("Play mode : ");
-    private static JComboBox<String> playInput = new JComboBox<>(playTypes);
-    private static JButton cancel = new JButton("Cancel");
-    private static JButton send = new JButton("Go");
-    private static int change = 1;
+    private User u = null;
+    private Socket connectionSocket;
+    private String[] gameModes = {"Death Match", "League"};
+    private String[] gameTypes = {"Single", "Team Battle"};
+    private String[] playTypes = {"Local game", "Join Network"};
+    private String[] numberOfRounds = {"1", "3", "5", "8", "10"};
+    private String[] tankSpeeds = {"3", "5", "6"};
+    private String[] bulletSpeeds = {"5", "8", "10"};
+    private String[] health = {"Low", "Half", "Full"};
+    private JFrame frame = new JFrame("J Tank Trouble - Setting");
+    private JLabel gameName = new JLabel("Game name : ");
+    private JTextField nameInput = new JTextField("Untitled");
+    private JLabel gameMode = new JLabel("Game mode : ");
+    private JComboBox<String> modeInput = new JComboBox<>(gameModes);
+    private JLabel tankSpeed = new JLabel("Tanks speed : ");
+    private JComboBox<String> tankSpeedInput = new JComboBox<>(tankSpeeds);
+    private JLabel bulletSpeed = new JLabel("Bullets speed : ");
+    private JComboBox<String> bulletSpeedInput = new JComboBox<>(bulletSpeeds);
+    private JLabel wallDamage = new JLabel("Walls health : ");
+    private JComboBox<String> wallDamageInput = new JComboBox<>(health);
+    private JLabel tankDamage = new JLabel("Tanks health : ");
+    private JComboBox<String> tankDamageInput = new JComboBox<>(health);
+    private JLabel numberOfPeople = new JLabel("Number Of players : ");
+    private JLabel numberOfPeopleInput = new JLabel(String.valueOf(2));
+    private JButton decreaseNum = new JButton("<<");
+    private JButton increaseNum = new JButton(">>");
+    private JLabel rounds = new JLabel("Rounds : ");
+    private JComboBox<String> roundsInput = new JComboBox<>(numberOfRounds);
+    private JLabel typeOfTheGame = new JLabel("Game type : ");
+    private JComboBox<String> typeInput = new JComboBox<>(gameTypes);
+    private JLabel playMode = new JLabel("Play mode : ");
+    private JComboBox<String> playInput = new JComboBox<>(playTypes);
+    private JButton cancel = new JButton("Cancel");
+    private JButton send = new JButton("Go");
+    private int change = 1;
 
     /**
      * This method will build the setting frame
      * and will display it to the user.
      */
-    static void run() {
+    void run() {
         frame.setIconImage(new ImageIcon("src/game/IconsInGame/Icon.png").getImage());
         frame.setPreferredSize(new Dimension(800, 600));
         frame.setLocation(350, 130);
@@ -87,7 +87,7 @@ class Setting {
         SwingUtilities.invokeLater(r);
     }
 
-    private static void setLocations() {
+    private void setLocations() {
         gameName.setLocation(250, 5);
         nameInput.setLocation(450, 5);
         gameMode.setLocation(250, 50);
@@ -114,7 +114,7 @@ class Setting {
         send.setLocation(450, 500);
     }
 
-    private static void addComponents(JPanel c) {
+    private void addComponents(JPanel c) {
         c.add(gameName);
         c.add(nameInput);
         c.add(gameMode);
@@ -141,7 +141,7 @@ class Setting {
         c.add(send);
     }
 
-    private static void init() {
+    private void init() {
         initSizes(gameMode, modeInput, tankSpeed, tankSpeedInput);
         initSizes(bulletSpeed, bulletSpeedInput, wallDamage, wallDamageInput);
         iniSizes();
@@ -152,7 +152,7 @@ class Setting {
         initButtons();
     }
 
-    private static void addListeners() {
+    private void addListeners() {
         decreaseNum.addActionListener(e -> {
             int target = Integer.parseInt(numberOfPeopleInput.getText());
             if (target != 2)
@@ -175,7 +175,7 @@ class Setting {
         });
     }
 
-    private static void iniSizes() {
+    private void iniSizes() {
         gameName.setSize(100, 25);
         nameInput.setSize(200, 25);
         gameName.setForeground(Color.BLACK);
@@ -202,7 +202,7 @@ class Setting {
         send.setHorizontalTextPosition(SwingConstants.CENTER);
     }
 
-    private static void setColors() {
+    private void setColors() {
         send.setForeground(Color.white);
         cancel.setForeground(Color.white);
         modeInput.setForeground(Color.white);
@@ -231,7 +231,7 @@ class Setting {
         playInput.setBackground(Color.BLACK);
     }
 
-    private static void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
+    private void initSizes(JLabel bulletSpeed, JComboBox<String> bulletSpeedInput, JLabel wallDamage, JComboBox<String> wallDamageInput) {
         bulletSpeed.setSize(100, 25);
         bulletSpeed.setForeground(Color.BLACK);
         bulletSpeedInput.setSize(100, 25);
@@ -240,7 +240,7 @@ class Setting {
         wallDamageInput.setSize(100, 25);
     }
 
-    private static void initButtons() {
+    private void initButtons() {
         send.addActionListener(e -> new SwingWorker<>() {
 
             @Override
@@ -295,8 +295,8 @@ class Setting {
     }
 
 
-    static void setConnectionSocket(Socket connectionSocket) {
-        Setting.connectionSocket = connectionSocket;
+    void setConnectionSocket(Socket connectionSocket) {
+        this.connectionSocket = connectionSocket;
     }
 
     private static class MainPanel extends JPanel {

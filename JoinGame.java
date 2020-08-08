@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * This class gets the current games on the
@@ -27,11 +28,13 @@ public class JoinGame extends JFrame {
     private ArrayList<GameData> data;
     private GameData finalChose;
     private JPanel c;
+    private Setting setting;
 
     /**
      * The constructor of the on server games.
      */
-    JoinGame() {
+    JoinGame(Setting setting) {
+        this.setting = setting;
         //
         setTitle("JTank Trouble - Game Choosing");
         setSize(new Dimension(750, 500));
@@ -164,7 +167,7 @@ public class JoinGame extends JFrame {
             @Override
             protected void done() {
                 setVisible(false);
-                Setting.run();
+                setting.run();
             }
         }.execute());
     }

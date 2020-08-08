@@ -10,7 +10,7 @@ import java.awt.*;
  * login page and get user login or sig up inputs
  * to enter the user into the game server.
  */
-public class Main {// TODO: 07-Aug-20 add time and stuff like that to the game.
+public class Main {
     public static void main(String[] args) {
         // Initialize the global thread-pool
         ThreadPool.init();

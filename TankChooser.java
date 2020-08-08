@@ -17,10 +17,12 @@ public class TankChooser extends JFrame {
     private JLabel results = new JLabel();
     private String username;
     private JButton send;
+    private Setting setting;
 
-    public TankChooser(String username) {
+    public TankChooser(String username, Setting setting) {
         send = new JButton();
         this.username = username;
+        this.setting = setting;
     }
 
     public void run() {
@@ -136,7 +138,7 @@ public class TankChooser extends JFrame {
             @Override
             protected void done() {
                 setVisible(false);
-                JoinGame joinGame = new JoinGame();
+                JoinGame joinGame = new JoinGame(setting);
                 joinGame.run();
             }
         }.execute());

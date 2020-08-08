@@ -228,6 +228,7 @@ public class GameLoop {
 
         private void update() {
             int rand = new Random().nextInt(32);
+            write(1, user);
             user.getState().setToFalse();
             if (Integer.bitCount(rand & 1) == 1)
                 user.getState().keyUP = true;
@@ -237,19 +238,19 @@ public class GameLoop {
                 user.getState().keyLEFT = true;
             if (Integer.bitCount(rand & 8) == 1)
                 user.getState().keyRIGHT = true;
-//            if (Integer.bitCount(rand & 16) == 1)
-//                user.getState().shotFired = true;
+            if (Integer.bitCount(rand & 16) == 1)
+                user.getState().shotFired = true;
             user.getState().update();
             user.updateDataBox();
-//            if (user.getState().shotFired) {
-//                Bullet bullet = new Bullet(user.getState().locX + user.getState().width / 2, user.getState().locY + user.getState().height / 2, gameMap, gameData.bulletSpeed, user.getBulletPath());
-//                bullet.setDirections(user.getState().direction());
-//                bullets.add(bullet);
-//                if (user.getState().shooter) {
-//                    bullet.isRPG = true;
-//                    bullet.lifeTime = 8;
-//                }
-//            }
+            if (user.getState().shotFired) {
+                Bullet bullet = new Bullet(user.getState().locX + user.getState().width / 2, user.getState().locY + user.getState().height / 2, gameMap, gameData.bulletSpeed, user.getBulletPath());
+                bullet.setDirections(user.getState().direction());
+                bullets.add(bullet);
+                if (user.getState().shooter) {
+                    bullet.isRPG = true;
+                    bullet.lifeTime = 8;
+                }
+            }
             for (MysteryBox box : boxes) {
                 if (box.gotTheBox(user.getState().locX, user.getState().locY, user.getState().width, user.getState().height)) {
                     if (user.getState().takeBox(box.type)) {
