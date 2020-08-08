@@ -123,6 +123,7 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
         try {
+            assert serverSocket != null;
             Socket socket = serverSocket.accept();
             Scanner scanner = new Scanner(socket.getInputStream());
             String s1 = scanner.nextLine();
