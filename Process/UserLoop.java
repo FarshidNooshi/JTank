@@ -105,11 +105,10 @@ public class UserLoop extends Thread {
                     resultShower.start(winner, 1);
                 else
                     resultShower.start(winner, 0);
+            else if (thisPlayerUser.getUserName().equals(winner))
+                resultShower.start(winner, 1);
             else
-                if (thisPlayerUser.getUserName().equals(winner))
-                    resultShower.start(winner, 1);
-                else
-                    resultShower.start(winner, 0);
+                resultShower.start(winner, 0);
             try {
                 Thread.sleep(4000);
                 thisPlayerUser.out.flush();

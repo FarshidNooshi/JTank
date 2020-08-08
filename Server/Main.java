@@ -25,7 +25,7 @@ public class Main {
     public static ArrayList<GameData> data = new ArrayList<>();
     private static ExecutorService service = Executors.newCachedThreadPool();
     private static ExecutorService pool = Executors.newCachedThreadPool();
-    private static HashMap<Integer, CopyOnWriteArrayList<User>> queue = new HashMap<Integer, CopyOnWriteArrayList<User>>();
+    private static HashMap<Integer, CopyOnWriteArrayList<User>> queue = new HashMap<>();
     //
 
     public static void main(String[] args) {
@@ -66,15 +66,8 @@ public class Main {
         return queue;
     }
 
-    public static void setQueue(HashMap<Integer, CopyOnWriteArrayList<User>> queue) {
-        Main.queue = queue;
-    }
-
     public static ExecutorService getService() {
         return service;
     }
 
-    public static void setService(ExecutorService service) {
-        Main.service = service;
-    }
 }

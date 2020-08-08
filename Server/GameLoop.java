@@ -18,22 +18,23 @@ import java.util.concurrent.Executors;
 public class GameLoop {
     // Private fields
     public static final int FPS = 25; // Bullet delay handler
+    private static String[] boxTypes = {"boost", "health", "RPG", "shield"};
+    private final GameMap gameMap;
     private boolean gameOver;
     private int numberOfPlayers;
-    private final GameMap gameMap;
     private GameData gameData;
     private CopyOnWriteArrayList<User> users, finalList;
     private CopyOnWriteArrayList<MysteryBox> boxes;
-    private static String[] boxTypes = {"boost", "health", "RPG", "shield"};
     private CopyOnWriteArrayList<Bullet> bullets;
     private ExecutorService executorService, clientsService, botService;
 
     /**
      * The constructor of the game loop.
      * To create the frame of the game.
+     *
      * @param gameData the data of the match
-     * @param gameMap the map in the game
-     * @param vector the players list
+     * @param gameMap  the map in the game
+     * @param vector   the players list
      */
     public GameLoop(GameMap gameMap, CopyOnWriteArrayList<User> vector, GameData gameData) {
         //
@@ -143,6 +144,40 @@ public class GameLoop {
             return numberOfPlayers > 1;
     }
 
+    // This method will tell the sockets to close
+    private void invokeAll() {
+        for (User u : finalList)
+            while (true)
+                if (!u.getState().inUse && !u.isBot) {
+                    write(-1, u); // Means the game is over now
+                    if (gameData.isTeamBattle)
+                        if (users.get(0).teamNumber == 1)
+                            write("Blue team", u);
+                        else
+                            write("Red team", u);
+                    else
+                        write(users.get(0).getUserName(), u);
+                    break;
+                }
+    }
+
+    private Object read(User u) {
+        try {
+            return u.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void write(Object object, User u) {
+        try {
+            u.write(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // This is for bullet and players handling
     private class TankBullet implements Runnable {
         @Override
@@ -190,6 +225,7 @@ public class GameLoop {
     private class MysteryMaker implements Runnable {
         Random random = new Random();
         long last = System.currentTimeMillis();
+
         @Override
         public void run() {
             while (!gameOver) {
@@ -215,7 +251,11 @@ public class GameLoop {
 
     private class TankAI implements Runnable {
         User user;
-        TankAI(User user) { this.user = user; }
+
+        TankAI(User user) {
+            this.user = user;
+        }
+
         @Override
         public void run() {
             user.getState().width = 25;
@@ -273,23 +313,6 @@ public class GameLoop {
         }
     }
 
-    // This method will tell the sockets to close
-    private void invokeAll() {
-        for (User u : finalList)
-            while (true)
-                if (!u.getState().inUse && !u.isBot) {
-                    write(-1, u); // Means the game is over now
-                    if (gameData.isTeamBattle)
-                        if (users.get(0).teamNumber == 1)
-                            write("Blue team", u);
-                        else
-                            write("Red team", u);
-                    else
-                        write(users.get(0).getUserName(), u);
-                    break;
-                }
-    }
-
     // The client runnable
     private class ClientHandler implements Runnable {
         // The user
@@ -297,6 +320,7 @@ public class GameLoop {
 
         /**
          * The class constructor
+         *
          * @param u each user uses its own client handler in server
          */
         public ClientHandler(User u) {
@@ -357,23 +381,6 @@ public class GameLoop {
                 write(gameMap, u); // I get some image exceptions in here
                 state.inUse = false; // Free the state
             }
-        }
-    }
-
-    private Object read(User u) {
-        try {
-            return u.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void write(Object object, User u) {
-        try {
-            u.write(object);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

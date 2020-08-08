@@ -8,6 +8,7 @@ import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -75,7 +76,7 @@ public class Log {
             frame.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
-//        logIn.doClick(); //for remember.
+        logIn.doClick(); //for remember.
     }
 
     /**
@@ -155,6 +156,7 @@ public class Log {
     private void initButtons() {
         logIn.addActionListener(e -> new SwingWorker<>() {
             Setting setting = new Setting();
+
             /**
              * Computes a result, or throws an exception if unable to do so.
              *
@@ -243,14 +245,31 @@ public class Log {
         PrintStream out = new PrintStream(socket.getOutputStream());
         String name = userName.getText();
         String pass = String.valueOf(passwordField.getPassword());
+        readUserPass(name, pass);
         out.println(s);
         out.println(name);
         out.println(pass);
-        if (remember.isSelected())
-            out.println("remember");
-        else
-            out.println("don't remember");
-        return in.nextLine();
+        String response = in.nextLine();
+        if (remember.isSelected() && response.equalsIgnoreCase("user entered the game.")) {
+            PrintWriter writer = new PrintWriter("src/game/UserInfo/userToRemember.txt");
+            writer.println(name);
+            writer.println(pass);
+        }
+        return response;
+    }
+
+    private void readUserPass(String username, String password) {
+        Scanner scanner = new Scanner("src/game/UserInfo/userToRemember.txt");
+        String s1 = "*", s2 = "*";
+        if (scanner.hasNextLine()) {
+            s1 = scanner.nextLine();
+        }
+        if (scanner.hasNextLine())
+            s2 = scanner.nextLine();
+        if (!s1.equals("*") && !s2.equals("*")) {
+            username = s1;
+            password = s2;
+        }
     }
 
     private static class MainPanel extends JPanel {

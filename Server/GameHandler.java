@@ -24,8 +24,9 @@ public class GameHandler implements Runnable {
 
     /**
      * The main constructor of the class.
-     * @param vector the list of the players
-     * @param data the gama setting
+     *
+     * @param vector          the list of the players
+     * @param data            the gama setting
      * @param numberOfPlayers the number of the players
      */
     public GameHandler(CopyOnWriteArrayList<User> vector, GameData data, int numberOfPlayers) {
@@ -66,12 +67,12 @@ public class GameHandler implements Runnable {
                 data.playersOnline = join;
                 String userName = new Scanner(socket.getInputStream()).nextLine();
                 for (int j = 0; j < join; j++)
-                        if (playersVector.get(j).getUserName().equals(userName)) {
-                            playersVector.get(j).setClientSocket(socket);
-                            playersVector.get(j).out = new ObjectOutputStream(playersVector.get(j).getClientSocket().getOutputStream());
-                            playersVector.get(j).in = new ObjectInputStream(playersVector.get(j).getClientSocket().getInputStream());// The client hand side sets in User init
-                            break;
-                        }
+                    if (playersVector.get(j).getUserName().equals(userName)) {
+                        playersVector.get(j).setClientSocket(socket);
+                        playersVector.get(j).out = new ObjectOutputStream(playersVector.get(j).getClientSocket().getOutputStream());
+                        playersVector.get(j).in = new ObjectInputStream(playersVector.get(j).getClientSocket().getInputStream());// The client hand side sets in User init
+                        break;
+                    }
             }
             removeGame();
         } catch (Exception e) {

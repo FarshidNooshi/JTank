@@ -8,9 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -37,23 +35,6 @@ public class ClientHandler implements Runnable {
                 if (tmp.equals("Log in")) {
                     String userName = in.nextLine(); // Checking the users
                     String password = in.nextLine(); // username and password
-                    String remember = in.nextLine();
-                    if (check(userName, password) && remember.equalsIgnoreCase("remember")) {
-                        try {
-                            String path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
-                            ArrayList<Pair<String, User>> arrayList;
-                            //noinspection unchecked
-                            arrayList = (ArrayList<Pair<String, User>>) new Reader(path).ReadFromFile(); // Reading the old users info
-                            //noinspection SuspiciousMethodCalls
-                            if (!arrayList.contains(new Pair<>(connectionSocket.getInetAddress(), new User(userName, password)))) {
-                                Writer writer = new Writer(path); // Save all the users again
-                                arrayList.add(new Pair<>(connectionSocket.getInetAddress().toString(), new User(userName, password)));
-                                writer.writeToFile(arrayList);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
                     if (check(userName, password)) {
                         out.println("user entered the game.");
                         //
@@ -174,7 +155,7 @@ public class ClientHandler implements Runnable {
     }
 
     private void connectToGame() {
-        try(ServerSocket serverSocket = new ServerSocket(1723)) {
+        try (ServerSocket serverSocket = new ServerSocket(1723)) {
             Socket socket = serverSocket.accept();
             //
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -216,20 +197,6 @@ public class ClientHandler implements Runnable {
      * the password of the user.
      */
     private boolean check(String id, String pass) {
-        try {
-            String path = new URI("src/game/Server/remember.aut").getPath(); // File path of users
-            ArrayList<Pair<String, User>> arrayList;
-            //noinspection unchecked
-            arrayList = (ArrayList<Pair<String, User>>) new Reader(path).ReadFromFile(); // Reading the old users info
-            for (Pair<String, User> stringUserPair : arrayList)
-                if (connectionSocket.getInetAddress().toString().equals(stringUserPair.getFirst())) {
-                    client = stringUserPair.getSecond();
-                    client.setClientSocket(connectionSocket);
-                    return true;
-                }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         try {
             String path = new URI("src/game/Server/info.aut").getPath();
             ArrayList<User> arrayList;

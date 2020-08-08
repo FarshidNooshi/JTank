@@ -191,7 +191,7 @@ class Setting {
         rounds.setForeground(Color.BLACK);
         roundsInput.setSize(100, 25);
         typeOfTheGame.setSize(100, 25);
-        typeInput.setSize(100,25);
+        typeInput.setSize(100, 25);
         typeOfTheGame.setForeground(Color.BLACK);
         playMode.setSize(100, 25);
         playMode.setForeground(Color.BLACK);
