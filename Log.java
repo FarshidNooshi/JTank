@@ -28,7 +28,7 @@ public class Log {
     private JLabel passwordLabel = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/key_100px.png"));
     private JButton logIn = new JButton("Log in"), signUp = new JButton("Sign Up");
     private JLabel logo = new JLabel(new ImageIcon("src/game/IconsInGame/Farshid/Logo.png"));
-
+ 
     /**
      * This method will build the login frame and will
      * display it to the user.
