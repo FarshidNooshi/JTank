@@ -186,4 +186,8 @@ public class GameState implements Serializable {
             return true;
         }
     }
+
+    public void setToFalse() {
+        keyRIGHT = keyDOWN = keyUP = keyLEFT = shotFired = false;
+    }
 }

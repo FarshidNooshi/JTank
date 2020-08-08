@@ -222,8 +222,25 @@ public class GameLoop {
             user.getState().height = 25;
             while (!user.getState().gameOver) {
                 user.updateDataBox();
+                update();
                 // TODO 08-08-2020: add the update method
             }
+        }
+
+        private void update() {
+            int rand = new Random().nextInt(32);
+            user.getState().setToFalse();
+            if (Integer.bitCount(rand & 1) == 1)
+                user.getState().keyUP = true;
+            if (Integer.bitCount(rand & 2) == 1)
+                user.getState().keyDOWN = true;
+            if (Integer.bitCount(rand & 4) == 1)
+                user.getState().keyLEFT = true;
+            if (Integer.bitCount(rand & 8) == 1)
+                user.getState().keyRIGHT = true;
+            if (Integer.bitCount(rand & 16) == 1)
+                user.getState().shotFired = true;
+            user.updateDataBox();
         }
     }
 
