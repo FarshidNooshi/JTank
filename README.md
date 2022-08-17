@@ -1,6 +1,9 @@
 # JTank Trouble
 
-Our AP final project
+JTank Trouble is a game that you can compete with your friends or computer to win the game and destroy their tanks.
+
+# DescriptionΩ
+This game was developed in the summer of 2020 for AP Final Project.
 
 # contributers
 
